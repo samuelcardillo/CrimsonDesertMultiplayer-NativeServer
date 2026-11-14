@@ -31,7 +31,18 @@ constexpr uintptr_t kVtMercenaryClan = 0x594D250;
 // the new key with `mov [rdi+0x118],r15d` (0x23154AC). The component slot +0x110 is 3527's (not re-derived: a wrong slot
 // fails the vtable check and the main character is read).
 constexpr uintptr_t kVtMercenaryClan3576 = 0x594F340;
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the vtable by RTTI name (vtable_map_3576_3663.json); its vf23 is
+// 0x2385E20 and the focus routine is again vf23 + 0xE0 (0x2385F00, a .pdata start), still storing the new key with
+// `mov [rdi+0x118],r15d` at its +0x2AC (0x23861AC), as 3576's at 0x23154AC. The component slot +0x110 is not re-derived.
+constexpr uintptr_t kVtMercenaryClan3663 = 0x59CAFB8;
 constexpr uint32_t kComponents_Clan = 0x110, kClan_Focus = 0x118;
+
+// The physics object in the control's inner. Build 1.0.0.3663 (static, 2026-11-13; never run): +0x2D0, not +0x2C0: the
+// inner's constructor stores it at 0x39F0007 (`mov [rdi+0x2D0],rax`), 38 sites read [[x+0x140]+0x2D0] (1 reads +0x2C0)
+// and world_offset_sub (0x39F74B1) takes it from [rbx+0x2D0] (build_profile.h, current3663).
+uint32_t inner_physics_offset() {
+    return current_build() == Build::v3663 ? 0x2D0 : off::kControlInner_Physics;
+}
 
 }  // namespace
 
@@ -58,7 +69,7 @@ std::optional<uintptr_t> PlayerReader::resolve_actor() {
     if (!actor) return fail("no controlled actor (not in world)");
     if (!has_vtable(*actor, base_ + profile_->vt_controlled_actor))
         return fail("controlled actor has unexpected type");
-    if (follow_focus_ && layout_3527()) {
+    if (follow_focus_ && (layout_3527() || current_build() == Build::v3663)) {
         if (auto focus = focus_actor(*actor)) return focus;
     }
     return actor;
@@ -69,7 +80,9 @@ std::optional<uintptr_t> PlayerReader::focus_actor(uintptr_t main_actor) {
     auto components = read_ptr(main_actor + off::kActor_ComponentTable);
     if (!components) return std::nullopt;
     auto clan = read_ptr(*components + kComponents_Clan);
-    const uintptr_t vt_clan = current_build() == Build::v3576 ? kVtMercenaryClan3576 : kVtMercenaryClan;
+    const uintptr_t vt_clan = current_build() == Build::v3663   ? kVtMercenaryClan3663
+                              : current_build() == Build::v3576 ? kVtMercenaryClan3576
+                                                                : kVtMercenaryClan;
     if (!clan || !has_vtable(*clan, base_ + vt_clan)) return std::nullopt;
     auto focus = game::read<uint32_t>(*clan + kClan_Focus);
     auto main_key = game::read<uint32_t>(main_actor + off::kActor_Key);
@@ -105,7 +118,7 @@ std::optional<PlayerSnapshot> PlayerReader::read() {
         return fail("CharacterControl component missing");
     auto inner = read_ptr(*control + off::kControl_Inner);
     if (!inner) return fail("control inner missing");
-    auto physics = read_ptr(*inner + off::kControlInner_Physics);
+    auto physics = read_ptr(*inner + inner_physics_offset());
     if (!physics || !has_vtable(*physics, base_ + profile_->vt_physics))
         return fail("physics object missing");
 

@@ -39,6 +39,7 @@
 #include "mod/session2/guest_save_host.h"
 #include "mod/session2/guest_save_tunnel.h"
 #include "mod/session2/horse_follow.h"
+#include "mod/session2/vehicle_follow.h"
 #include "mod/session2/host_scene_diag.h"
 #include "mod/session2/shop_probe.h"
 #include "mod/session2/shop_trade_probe.h"
@@ -766,15 +767,21 @@ constexpr uint8_t kSeqEventApplyHead3527[] = {0x48, 0x89, 0x5C, 0x24, 0x10, 0x44
 // its only `ret` is at +0x82A (0x29ACC6A). The apply moved by +0xC50 with the same 20-byte head (0x2AEFE40, .pdata
 // 0x2AEFE40..0x2AF010A), its `ret` at +0x2C9 (0x2AF0109) as in 3527, and +0x54 (0x2AEFE94) is the same
 // `mov rdx,[rdx]` on the null owner's manager that crashed run 9 at exe+0x2AEF244.
+// Build 1.0.0.3663 (static, 2026-11-13; never run): OnRecvPacket 0x2A0EA70 (profile_s2.h) is again 0x82B bytes (.pdata
+// 0x2A0EA70..0x2A0F29B) with its only `ret` at +0x82A (0x2A0F29A). The apply: kSeqEventApplyHead3527 near 3576 + the
+// region's shift has one hit, 0x2B53E50 (3576 +0x64010), a .pdata entry of the same 0x2CA bytes (..0x2B5411A), its
+// only `ret` at +0x2C9 (0x2B54119), and +0x54 (0x2B53EA4) is the same `mov rdx,[rdx]` after `lea rdx,[rcx+8]`.
 struct GoodbyeGuards {
     uintptr_t recv_ret, apply, apply_ret;
 };
 constexpr GoodbyeGuards kGoodbye3527{kServerRecvRet3527, kSeqEventApply3527, kSeqEventApplyRet3527};
 constexpr GoodbyeGuards kGoodbye3576{0x29ACC6A, 0x2AEFE40, 0x2AF0109};
+constexpr GoodbyeGuards kGoodbye3663{0x2A0F29A, 0x2B53E50, 0x2B54119};
 const GoodbyeGuards* goodbye_guards() noexcept {
     switch (game::current_build()) {
         case game::Build::v3527: return &kGoodbye3527;
         case game::Build::v3576: return &kGoodbye3576;
+        case game::Build::v3663: return &kGoodbye3663;
         default: return nullptr;
     }
 }
@@ -1385,9 +1392,13 @@ void server_probe_log(const char* when) {
     // 3576 (static, 2026-11-06; not yet run): 0x6EAD9B8, what GetCurrentFieldTime 0x22A9BB0 (3527's 0x22A8F70 +0xC40,
     // same head) loads at 0x22A9C20 when the TLS realm byte +0x1EB is set (the client's at 0x6EAD998 otherwise): the
     // Troc block's +0x2000.
+    // Build 1.0.0.3663 (static, 2026-11-13; never run): 0x6F31C98. GetCurrentFieldTime is 0x231A180 (clock_gate's
+    // kGetterHead, unique in the image); with the TLS realm byte +0x1EB set it loads that 32-byte FieldTime at 0x231A1F4,
+    // the client's 0x6F31C78 otherwise (the same +0x20 pair as 3576's); 5 functions read each of the two.
     uint8_t ft[32] = {};
     const auto b = game::current_build();
-    const uintptr_t world_time = b == game::Build::v3576   ? 0x6EAD9B8
+    const uintptr_t world_time = b == game::Build::v3663   ? 0x6F31C98
+                                 : b == game::Build::v3576 ? 0x6EAD9B8
                                  : b == game::Build::v3527 ? 0x6EAB9B8
                                  : b == game::Build::v2976 ? 0x6A6D238
                                                            : 0;
@@ -1740,6 +1751,7 @@ inj::Outcome inject(std::span<const uint8_t> in, InjectKind kind) {
     host_scene_diag_on_in(v->opcode, packet);  // P8 S1 (s1_scene_diag): 2549 and the scene Reqs, counted only
     horse_follow_on_guest_req(v->opcode, v->payload);  // P8 F2: user 2's keys and its riding (counted only)
     attach_follow_on_guest_req(v->opcode, v->payload);  // P8 session 8: user 2's pet riding (measured, registry)
+    vehicle_follow_on_user2_req(v->opcode, v->payload);  // user 2's character on a ship part (vehicle_follow.h)
     return inj::Outcome::Queued;
 }
 

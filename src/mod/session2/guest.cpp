@@ -62,6 +62,7 @@
 #include "mod/session2/reannounce_logic.h"
 #include "mod/session2/rejoin_logic.h"
 #include "mod/session2/remote_interp.h"
+#include "mod/session2/vehicle_follow.h"
 #include "mod/session2/remote_visible.h"
 #include "mod/session2/ride_filter.h"
 #include "mod/session2/report_guard.h"
@@ -99,9 +100,14 @@ inline uintptr_t server_framework_mode_rva() noexcept {
     // 3576 (static, 2026-11-06; not yet run): 0x6EAD858 (the Troc block's +0x2000). The 2002 writer is protected code
     // again; plain code reads it as the same index: ServerNet::OnRecvPacket 0x29AC4EE `mov r8d,[0x6EAD858]` between
     // the Troc registry 0x161ED50 and Troc::Find 0x161EDB0 (op, index), and the server set-up's switch 0x29FCAB8.
+    // Build 1.0.0.3663 (static, 2026-11-13; never run): 0x6F29B70. OnRecvPacket 0x2A0EA70 reads it at the same +0xAE
+    // (0x2A0EB1E `mov r8d,[0x6F29B70]`) between the Troc registry 0x165FA60 and Troc::Find 0x165FAC0; the server set-up
+    // 0x2A5E840 reads it at the same +0x1318 (0x2A5FB58) and plain code writes it: `mov dword [0x6F29B70],4` (0x2A5E899,
+    // 3527's live value); 59 sites read it.
     if (game::current_build() == game::Build::v2976) return kServerFrameworkMode;
     if (game::current_build() == game::Build::v3527) return 0x6EAB858;
     if (game::current_build() == game::Build::v3576) return 0x6EAD858;
+    if (game::current_build() == game::Build::v3663) return 0x6F29B70;
     return 0;
 }
 constexpr uint64_t kMaxDecisionLogged = 32, kMaxInternalLogged = 16, kMaxLoginLogged = 8;
@@ -1204,6 +1210,42 @@ constexpr uintptr_t kVtClientSequencerStageManager3527 = 0x59572E0;
 // compares the manager's marker +0x259 with 2 (0x8562EF), and 0x85741E sets that marker to 1.
 constexpr uintptr_t kVtClientSequencerStageManager3576 = 0x5959438;
 constexpr uintptr_t kWorldSystem3576 = 0x71C0100;
+// Build 1.0.0.3663 (static, 2026-11-13; never run). Two objects of the chain grew, so 3663 has its own offsets:
+// - pa::ClientSequencerStageManager 0x59D57E8 by RTTI (vtable_map_3576_3663.json); its vf4 (0xBD7D00 -> protected
+//   0x9C966B0) writes the marker at +0x261 = 1 (0x9C9674C), as does its inlined copy 0x883E61; the 2322 handler's only
+//   store 0xCD563B (handler 0xCD5450 +0x1EB, as 3527's 0xC9CB9B) writes +0x261 = 2. No plain code touches +0x259 there.
+// - the field-change controller P = [world+0x60]: the loading state machine 0x8825B0 (rcx = P, its only caller 0xC17471)
+//   switches on movzx r14d,byte [P+0x24C] (0x882699), reads the field holder at [P+0x1B0] for ClientField::vf48 0xAE0710
+//   (slot 9 of 0x59C97C0; it reads field+0x180 and actor +0x68 -> +0xA8 -> +0x18) and compares [manager+0x261] with 2
+//   (0x882D87). 3527's +0x15C / +0xC0 are +0x24C / +0x1B0: P grew by 0xF0 below +0xC0. Plain code reads
+//   [[world]+0x60]+0x24C as "loading" (0x3EF4AA, 0x569219, 0x574253, 0x5DAF97, 0x5EF34A: dec al ; cmp al,0x17).
+// - the states: one more than 3527's (the "loading" tests take 1..0x18, state 0x18 sets 0x19), and the marker wait is
+//   0x12 (its case 0x882D78), 3527's 0x11 (preload_release_logic.h). preload_state_3527() maps them back.
+// - unchanged: world 0x72451C0 (profile_s2.h), world+0x30 -> manager -> +0x50 the local actor (0x3EE4BA: the same
+//   chain; the state machine's [P+0x1A8]+0x50 too), actor +0x68 -> +0xA8 -> +0x18 (vf48 above). The actor's +0x60
+//   (key) and +0x90 (user) are 3527's, NOT re-derived (a wrong +0x90 only makes "field is own" false: nothing is sent).
+constexpr uintptr_t kVtClientSequencerStageManager3663 = 0x59D57E8;
+constexpr uintptr_t kWorldSystem3663 = 0x72451C0;
+
+// The field-change controller's offsets, [P+state] (u8) and [P+field_holder] (-> the client's field), and the
+// ClientSequencerStageManager's marker [M+marker] (u8).
+struct LoadController {
+    uint32_t state, field_holder, marker;
+};
+LoadController load_controller() noexcept {
+    if (game::is_3663()) return {0x24C, 0x1B0, 0x261};
+    return {0x15C, 0xC0, 0x259};
+}
+
+// 3663's state number in 3527's numbering for prl (preload_release_logic.h): 3663's marker wait 0x12 is 3527's 0x11
+// and its last state 0x19 is 3527's 0x18; its 0x11 (the step just before the wait) is reported as 0x10, never as the
+// wait. Below that the numbers are passed through (where the extra state sits is not known: logs only).
+uint8_t preload_state_3527(uint8_t raw) noexcept {
+    if (!game::is_3663()) return raw;
+    if (raw == prl::kStateWaitPreload) return static_cast<uint8_t>(prl::kStateWaitPreload - 1);
+    return raw > prl::kStateWaitPreload ? static_cast<uint8_t>(raw - 1) : raw;
+}
+uint8_t g_preload_raw_state = 0;  // the state as the game numbers it (NetworkThread only, for the log)
 
 void preload_release_reset() noexcept {
     g_preload_release.reset();
@@ -1212,22 +1254,29 @@ void preload_release_reset() noexcept {
 }
 
 // The chain of the loading state 0x856090 and of its manager lookup 0xAAA7A0.
-// Builds 3527 and 3576 only; a null anywhere means "not there yet" (readable stays false).
+// Builds 3527, 3576 and 3663 only; a null anywhere means "not there yet" (readable stays false).
 prl::Facts read_preload_facts() noexcept {
     prl::Facts f;
     f.now_ms = GetTickCount64();
     const bool v3576 = game::current_build() == game::Build::v3576;
+    const bool v3663 = game::current_build() == game::Build::v3663;
     const auto* profile = game::reader_profile();
-    if (!v3576 && !profile) return f;
-    const uintptr_t world_slot = v3576 ? kWorldSystem3576 : profile->world_system;
-    const uintptr_t vt_sequencer = v3576 ? kVtClientSequencerStageManager3576 : kVtClientSequencerStageManager3527;
+    if (!v3576 && !v3663 && !profile) return f;
+    const uintptr_t world_slot = v3663 ? kWorldSystem3663 : v3576 ? kWorldSystem3576 : profile->world_system;
+    const uintptr_t vt_sequencer = v3663   ? kVtClientSequencerStageManager3663
+                                   : v3576 ? kVtClientSequencerStageManager3576
+                                           : kVtClientSequencerStageManager3527;
+    const LoadController lc = load_controller();
     uintptr_t world = 0, controller_object = 0, field_holder = 0, field = 0, manager = 0, actor = 0, components = 0,
               component = 0, sequencer = 0, vt = 0;
     uint32_t owner = 0, local_user = 0;
+    uint8_t raw_state = 0;
     if (!peek(g_base + world_slot, world) || !world) return f;
     if (!peek(world + 0x60, controller_object) || !controller_object) return f;
-    if (!peek(controller_object + 0x15C, f.state)) return f;
-    if (!peek(controller_object + 0xC0, field_holder) || !field_holder) return f;
+    if (!peek(controller_object + lc.state, raw_state)) return f;
+    g_preload_raw_state = raw_state;
+    f.state = preload_state_3527(raw_state);
+    if (!peek(controller_object + lc.field_holder, field_holder) || !field_holder) return f;
     if (!peek(field_holder, field) || !field || !peek(field + 0x180, owner)) return f;
     if (!peek(world + 0x30, manager) || !manager) return f;
     if (!peek(manager + 0x50, actor) || !actor) return f;
@@ -1236,24 +1285,29 @@ prl::Facts read_preload_facts() noexcept {
     if (!peek(components + 0xA8, component) || !component) return f;
     if (!peek(component + 0x18, sequencer) || !sequencer) return f;
     if (!peek(sequencer, vt) || vt != g_base + vt_sequencer) return f;
-    if (!peek(sequencer + 0x259, f.marker)) return f;
+    if (!peek(sequencer + lc.marker, f.marker)) return f;
     f.field_is_own = owner != 0 && owner == local_user;
     f.readable = true;
     return f;
 }
 
 void preload_release_tick(uintptr_t net) noexcept {
-    if (game::current_build() != game::Build::v3527 && game::current_build() != game::Build::v3576) return;
+    const auto build = game::current_build();
+    if (build != game::Build::v3527 && build != game::Build::v3576 && build != game::Build::v3663) return;
     const uint64_t now = GetTickCount64();
     if (now < g_preload_next_ms) return;
     g_preload_next_ms = now + kPreloadTickMs;
     try {
         const prl::Facts f = read_preload_facts();
-        if (f.readable && (f.state != g_preload_last_state || f.marker != g_preload_last_marker)) {
-            g_preload_last_state = f.state;
+        // Each change of the game's own number (3663's 0x10 and 0x11 are both 3527's 0x10).
+        const uint8_t game_state = build == game::Build::v3663 ? g_preload_raw_state : f.state;
+        if (f.readable && (game_state != g_preload_last_state || f.marker != g_preload_last_marker)) {
+            g_preload_last_state = game_state;
             g_preload_last_marker = f.marker;
-            log::info("Session2 guest load: state 0x{:X} marker {} (own 0x{:X}, field is own {})", f.state, f.marker,
-                      f.own_key, f.field_is_own);
+            log::info("Session2 guest load: state 0x{:X} marker {} (own 0x{:X}, field is own {}){}", f.state, f.marker,
+                      f.own_key, f.field_is_own,
+                      build == game::Build::v3663 ? std::format(" (3527's numbering; the game's 0x{:X})", g_preload_raw_state)
+                                                  : std::string());
         }
         const prl::Action action = g_preload_release.decide(f);
         if (action == prl::Action::None) return;
@@ -1417,13 +1471,14 @@ void end_without_host(const goodbye::State& s) noexcept {
     if (g_goodbye_ending.exchange(true)) return;
     try {
         // Read only, for the record: the loading state's Q (the client's field,
-        // [[[exe+0x6D69190]+0x60]+0xC0]) and its state byte [P+0x15C].
+        // [[[exe+0x6D69190]+0x60]+0xC0]) and its state byte [P+0x15C] (3663: +0x1B0 and +0x24C, load_controller()).
         uintptr_t world = 0, p = 0, q = 0;
         uint8_t state = 0;
+        const LoadController lc = load_controller();
         const bool have_p = game::safe_read(g_base + addr(off::kWorldSystemSlot), &world, sizeof world) && world &&
                             game::safe_read(world + 0x60, &p, sizeof p) && p;
-        const bool have_q = have_p && game::safe_read(p + 0xC0, &q, sizeof q);
-        const bool have_state = have_p && game::safe_read(p + 0x15C, &state, sizeof state);
+        const bool have_q = have_p && game::safe_read(p + lc.field_holder, &q, sizeof q);
+        const bool have_state = have_p && game::safe_read(p + lc.state, &state, sizeof state);
         log::error("Session2 guest: the client said goodbye (2001) {} ms ago with a field of the host (its 3093 went "
                    "to the host) and {}. Answering locally would delete its own user, the field's owner, before the "
                    "field (session 6: crash at exe+0x2045A6A 22 ms later), so the game ENDS NOW (TerminateProcess, "
@@ -1866,7 +1921,7 @@ void guest_local_load_watch() noexcept {
         uint8_t state = 0;
         const bool ok = game::safe_read(g_base + addr(off::kWorldSystemSlot), &world, sizeof world) && world &&
                         game::safe_read(world + 0x60, &p, sizeof p) && p &&
-                        game::safe_read(p + 0x15C, &state, sizeof state);
+                        game::safe_read(p + load_controller().state, &state, sizeof state);
         if (g_ll_watch.sample(now, state, ok)) end_local_after_remote(g_ll_epoch.load(), now - g_ll_watch.since_ms(), state);
     } catch (...) {
     }
@@ -2017,6 +2072,8 @@ void deliver_body(std::vector<uint8_t>&& packet) {
     // P8 session 25 (remote_interp.h, remote_interp_combat): the enemies engaged with this client's character; off:
     // nothing.
     if (v) remote_interp_on_host_packet(v->opcode, v->payload);
+    // The other player's ship parts (vehicle_follow.h): their controller's local positions; off: nothing.
+    if (v) vehicle_follow_on_in(v->opcode, v->payload);
     // P8 session 9, D1 (ride_filter.h): the host character's mount/dismount actions -> native locomotion, in
     // place, before the client gets the packet; probe: counted only. Off: nothing.
     if (v && ride_filter_active()) ride_filter_on_guest_packet(packet, g_epoch.load());

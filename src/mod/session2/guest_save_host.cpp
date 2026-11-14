@@ -150,6 +150,36 @@ constexpr ErrorSite kErrSaveFail3576 = {0x19B060A, 0x714BF10, "SavePlayerToSlot'
 // logout flush, flush timer).
 constexpr gsv::CallerRets kRets3576{0x2EBBE90, 0x2EE2BA6, 0xE3927C4, 0xB8A7871, 0xE35801F, 0x2B5CD6F, 0xE69FA8D};
 
+// ---------------------------------------------------------------- build 1.0.0.3663
+//
+// [static, 2026-11-13; never run] Every head above is byte-identical and unique in the code section, each a .pdata
+// entry: LoadSlot 0x1A16C40 (3576 +0x65630), SavePlayerToSlot 0x1A15930 (+0x65620), FlushPendingSaveData 0x1A192D0
+// (+0x65670), AddFile 0x25C0900 (+0x71860). GetOrCreateSlot's thunk 0x25BB470 (AddFile - 0x5490, as in 3576; right
+// after the function ending at 0x25BB46F) jumps to 0xD85F010, which writes [slot+0x699] = 1 (0xD85F12E);
+// SavePlayerToSlot calls it at 0x1A15A86, just before it reads the character's user at r14 + 0xA0 (0x1A15A8B), as in
+// 3576. Callers (E8 scan of every executable section, the protected one included): exactly 3 of LoadSlot, 2 of
+// SavePlayerToSlot, 2 of FlushPendingSaveData, as in 3527/3576. Plain code: the user login 0x2F242AB and the 3093 lobby
+// 0x2F4B021 (3576 +0x68420 / +0x68480, in that order), the logout flush 0x2BC2A6A (+0x65D00). Protected: the 3093
+// character load 0xE9F5065 (in 0xE9F4F70, the jmp at 0x2C172E0 next to the login phases), the autosave 0xBB0BEC8 (in
+// 0xBB0BCC0, the target of the jmp at 0x1A15670 = SavePlayerToSlot - 0x2C0, as 3576's 0x19B0050), the 2910 save
+// 0xE98E356 (in 0xE98E290, the jmp at 0x2BCD7E0 = 3576's 0x2B67A70 +0x65D70) and the flush timer 0xED099C8 (in
+// 0xED09970, the jmp at 0x2F41D90). The error sites at the same offsets in the moved functions (LoadSlot +0x18E / +0xDF,
+// LoadComponentsFromFile 0x22951B0 +0xE1F, SavePlayerToSlot +0x2FA), each still mov eax,[rip+..] to the error globals,
+// all moved by +0x84DE8. The server realm's TLS byte is +0x1EB (GetCurrentFieldTime 0x231A1E4: mov edx,0x1EB ;
+// gs:[0x58] ; movzx eax,byte [rdx+rcx]). FlushPendingSaveData still reads the manager's +0x5C (0x1A193D4).
+constexpr uint8_t kGetOrCreateHead3663[] = {0xE9, 0x9B, 0x3B, 0x2A, 0x0B};
+constexpr CallSite kCallSites3663[] = {
+    {0x2F242AB, 0x1A16C40}, {0x2F4B021, 0x1A16C40}, {0xE9F5065, 0x1A16C40},
+    {0xBB0BEC8, 0x1A15930}, {0xE98E356, 0x1A15930},
+    {0x2BC2A6A, 0x1A192D0}, {0xED099C8, 0x1A192D0},
+};
+constexpr ErrorSite kErrBusy3663 = {0x1A16DCE, 0x71D0CFC, "LoadSlot's busy error"};
+constexpr ErrorSite kErrInvalidSlot3663 = {0x1A16D1F, 0x71D092C, "LoadSlot's invalid-slot error"};
+constexpr ErrorSite kErrAbsentSlot3663 = {0x2295FCF, 0x71D0848, "LoadComponentsFromFile's absent-slot error"};
+constexpr ErrorSite kErrSaveFail3663 = {0x1A15C2A, 0x71D0CF8, "SavePlayerToSlot's own failure"};
+// The return addresses of the callers above (each call + 5), in gsv::CallerRets' order.
+constexpr gsv::CallerRets kRets3663{0x2F242B0, 0x2F4B026, 0xE9F506A, 0xBB0BECD, 0xE98E35B, 0x2BC2A6F, 0xED099CD};
+
 struct Addrs {
     uintptr_t load_slot, save, flush, get_or_create, add_file;
     std::span<const uint8_t> load_head, save_head, flush_head, get_or_create_head, add_file_head;
@@ -176,9 +206,14 @@ const Addrs kAddrs3576{0x19B1610, 0x19B0310, 0x19B3C60, 0x2549C10, 0x254F0A0,
                        kLoadSlotHead3527, kSaveHead3527, kFlushHead3527, kGetOrCreateHead3576, kAddFileHead3527,
                        kCallSites3576, &kErrBusy3576, &kErrInvalidSlot3576, &kErrAbsentSlot3576, &kErrSaveFail3576,
                        kRets3576, 0x1EB};
+const Addrs kAddrs3663{0x1A16C40, 0x1A15930, 0x1A192D0, 0x25BB470, 0x25C0900,
+                       kLoadSlotHead3527, kSaveHead3527, kFlushHead3527, kGetOrCreateHead3663, kAddFileHead3527,
+                       kCallSites3663, &kErrBusy3663, &kErrInvalidSlot3663, &kErrAbsentSlot3663, &kErrSaveFail3663,
+                       kRets3663, 0x1EB};
 const Addrs& addrs() {
     if (game::is_3549()) return kAddrs3549;
     if (game::is_3576()) return kAddrs3576;
+    if (game::is_3663()) return kAddrs3663;
     return game::current_build() == game::Build::v3527 ? kAddrs3527 : kAddrs2976;
 }
 

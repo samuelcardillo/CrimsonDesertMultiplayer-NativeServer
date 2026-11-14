@@ -44,6 +44,7 @@
 #include "mod/session2/tree_bend.h"
 #include "mod/session2/docked_gimmicks.h"
 #include "mod/session2/interact_gate.h"
+#include "mod/session2/vehicle_follow.h"
 #include "mod/session2/guest_shop_window.h"
 #include "mod/session2/shop_ui_trace.h"
 #include "mod/session2/store_gate.h"
@@ -77,6 +78,7 @@
 #include "mod/session2/focus_follow.h"
 #include "mod/session2/manager_probe.h"
 #include "mod/session2/pivot_guard.h"
+#include "mod/session2/ride_null_guard.h"
 #include "mod/session2/seq_marker.h"
 #include "mod/session2/ui_pause.h"
 #include "mod/session2/user2_funnels.h"
@@ -237,10 +239,11 @@ public:
         if (!in_game_) return;
         reader_.set_follow_focus(true);  // the panel and the other player's marker follow a character switch
         if (reader_.init()) {
-            // 3576's profile is static evidence only so far (build_profile.h): said so in the log.
+            // 3576's and 3663's profiles are static evidence only so far (build_profile.h): said so in the log.
+            const bool static_only =
+                game::current_build() == game::Build::v3576 || game::current_build() == game::Build::v3663;
             log::info("Game reader enabled (build {} {})", game::reader_profile()->version,
-                      game::current_build() == game::Build::v3576 ? "offsets from static analysis, not yet run"
-                                                                  : "verified offsets");
+                      static_only ? "offsets from static analysis, not yet run" : "verified offsets");
         } else {
             log::warn("Game reader DISABLED: {}. Only networking will run.",
                       reader_.last_failure());
@@ -265,6 +268,12 @@ public:
         s.rot = last_->rotation;
         s.health = last_->health;
         s.health_max = last_->health_max;
+        // Ships (session2/vehicle_follow.h): this character's key and what it stands on; zeros when the module is off.
+        float anchor_pos[3] = {}, anchor_rot[4] = {0, 0, 0, 1};
+        if (session2::vehicle_follow_own_anchor(&s.self_key, &s.anchor, anchor_pos, anchor_rot)) {
+            s.anchor_pos = {anchor_pos[0], anchor_pos[1], anchor_pos[2]};
+            s.anchor_rot = {anchor_rot[0], anchor_rot[1], anchor_rot[2], anchor_rot[3]};
+        }
         return s;
     }
 
@@ -446,6 +455,10 @@ void run_network(const Config& cfg, LocalSource& local) {
         if (const auto& rs = session.remote_state(); rs && session.stats().remote_states != last_channel_state) {
             last_channel_state = session.stats().remote_states;
             session2::remote_motion_channel_position(rs->pos.x, rs->pos.y, rs->pos.z);
+            // Ships: what the other player's character stands on (vehicle_follow.h); off or unknown key: nothing.
+            const float anchor_pos[3] = {rs->anchor_pos.x, rs->anchor_pos.y, rs->anchor_pos.z};
+            const float anchor_rot[4] = {rs->anchor_rot.x, rs->anchor_rot.y, rs->anchor_rot.z, rs->anchor_rot.w};
+            session2::vehicle_follow_on_peer_state(rs->self_key, rs->anchor, anchor_pos, anchor_rot);
         }
         const bool connected = session.state() == ClientSession::State::Connected;
         if (host && was_connected && !connected && peer) {
@@ -1176,6 +1189,7 @@ DWORD WINAPI worker(LPVOID) {
                 session2::ui_pause_start(cfg.s2_ui_pause_block, /*guest=*/true);
                 session2::seq_marker_start(cfg.s2_seq_marker_guard, /*guest=*/true, cfg.s2_seq_marker_trace);
                 session2::pivot_guard_start(cfg.s2_change_pivot_guard, /*guest=*/true);
+                session2::ride_null_guard_start(cfg.s2_ride_null_guard, /*guest=*/true);
                 session2::focus_follow_start(cfg.s2_focus_follow, /*guest=*/true);
                 session2::field_leave_guard_start(cfg.s2_field_leave_guard, /*guest=*/true);
                 session2::achievement_guard_start(cfg.s2_achievement_guard);
@@ -1225,6 +1239,8 @@ DWORD WINAPI worker(LPVOID) {
                 session2::guest_shop_branch_start(cfg.s2_guest_shop_branch, /*guest=*/true, dir + ini.name);
                 session2::shop_ui_trace_start(cfg.s2_shop_ui_trace, /*guest=*/true);
                 session2::guest_shop_window_start(cfg.s2_guest_shop_window, /*guest=*/true);
+                // 13-nov (vehicle_follow.h): the host's ship drawn where the host has it. Nothing with 0.
+                session2::vehicle_follow_start(cfg.s2_vehicle_follow, /*guest=*/true, cfg.s2_vehicle_follow_delay_ms);
             }
             session2 = false;  // nothing of the host's side on the guest's PC
         }
@@ -1263,6 +1279,8 @@ DWORD WINAPI worker(LPVOID) {
                                           cfg.s2_interact_gate_types, /*guest=*/false);
             session2::store_gate_start(cfg.s2_store_gate, /*guest=*/false);
             session2::shop_ui_trace_start(cfg.s2_shop_ui_trace, /*guest=*/false);
+            // 13-nov (vehicle_follow.h): user 2's ships drawn where user 2 has them. Nothing with 0.
+            session2::vehicle_follow_start(cfg.s2_vehicle_follow, /*guest=*/false, cfg.s2_vehicle_follow_delay_ms);
         }
         // The same read-only schedule self-check on the host (its client is the reference: p8-impl-horarios.md §8).
         if (session2) session2::schedule_selfcheck_start(cfg.s2_schedule_load_selfcheck, /*host=*/true);
@@ -1271,6 +1289,7 @@ DWORD WINAPI worker(LPVOID) {
         // The host gets no death screen once a guest has joined without this (session2/seq_marker.h).
         if (session2) session2::seq_marker_start(cfg.s2_seq_marker_guard, /*guest=*/false, cfg.s2_seq_marker_trace);
         if (session2) session2::pivot_guard_start(cfg.s2_change_pivot_guard, /*guest=*/false);
+        if (session2) session2::ride_null_guard_start(cfg.s2_ride_null_guard, /*guest=*/false);
         if (session2) session2::focus_follow_start(cfg.s2_focus_follow, /*guest=*/false);
         if (session2) session2::field_leave_guard_start(cfg.s2_field_leave_guard, /*guest=*/false);
         if (session2) session2::manager_probe_start(cfg.s2_manager_probe);

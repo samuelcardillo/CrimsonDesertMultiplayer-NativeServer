@@ -37,13 +37,14 @@ using gpr::Tl;
 using gpr::Whose;
 
 // The build, its fields and its world slot: written by guest_seq_present_start before any hook or thread.
-bool g_3527 = false;  // 3527's layout (3527, 3549, 3576)
+bool g_3527 = false;  // 3527's layout (3527, 3549, 3576, 3663: the same processor slots)
 bool g_3576 = false;  // 3576's addresses
+bool g_3663 = false;  // 3663's addresses (and its stage layout, kStageLayout3663)
 const gpr::StageLayout* g_sl = &gpr::kStageLayout2976;
 const gpr::RaLayout* g_rl = &gpr::kRaLayout2976;
 uintptr_t g_world_slot = off::kWorldSystemSlot;
 gpr::EvInfo ev_of(Ev e) {
-    return g_3576 ? gpr::ev_info_3576(e) : g_3527 ? gpr::ev_info_3527(e) : gpr::ev_info(e);
+    return g_3663 ? gpr::ev_info_3663(e) : g_3576 ? gpr::ev_info_3576(e) : g_3527 ? gpr::ev_info_3527(e) : gpr::ev_info(e);
 }
 
 // ---------------------------------------------------------------- verified code (build 2976, capstone; s45-datos)
@@ -133,6 +134,16 @@ constexpr EvPoint kEvPoints3576[] = {
     {Ev::CameraSelector, 0x37A1320, 5, 0, 0, kCamSelSig3576, {}},
     {Ev::PlayerCameraPreset, 0xC349E0, 5, 0xC349E0, 0xC34EC0, kPresetSig3527, {}},
 };
+// Build 1.0.0.3663 (static, 2026-11-13; never run): slot 99 of each vtable (RTTI). The thunk 0x3818600 is a 5-byte jmp to
+// 0x10B8A670 in the protected section, no .pdata covers it (the 11 bytes after it read as they are); the preset
+// 0xC6CC40 (+0x38680 from 3527) with 3527's 40 bytes and .pdata [0xC6CC40,0xC6D120) (3527's size 0x4E0). No branch lands
+// in either patch (rel32 scan of both code sections).
+constexpr uint8_t kCamSelSig3663[] = {0xE9, 0x6B, 0x20, 0x37, 0x0D, 0x0F, 0x8E, 0x05,
+                                      0xE4, 0x3A, 0x01, 0xBB, 0x92, 0xB5, 0x0C, 0xCC};
+constexpr EvPoint kEvPoints3663[] = {
+    {Ev::CameraSelector, 0x3818600, 5, 0, 0, kCamSelSig3663, {}},
+    {Ev::PlayerCameraPreset, 0xC6CC40, 5, 0xC6CC40, 0xC6D120, kPresetSig3527, {}},
+};
 // 0xBA9066 mov rcx,[0x71BDF40] ; mov edx,[rdx+0x2D0] ; mov rcx,[rcx+0x120] ; call 0x37ACC60 (right before P1's call)
 constexpr uint8_t kStartLookup3527[] = {0x48, 0x8B, 0x0D, 0xD3, 0x4E, 0x61, 0x06, 0x8B, 0x92, 0xD0, 0x02, 0x00, 0x00,
                                         0x48, 0x8B, 0x89, 0x20, 0x01, 0x00, 0x00, 0xE8, 0xE1, 0x3B, 0xC0, 0x02};
@@ -169,6 +180,14 @@ const Bytes kSaCode3527[] = {{0xBA9066, kStartLookup3527}, {0x37ACCA5, kTlIdCmp3
 // 3576: the dispatcher +0xDB0 with the same bytes; the id's compare and store +0xD00 with the same bytes.
 const Bytes kRbCode3576[] = {{0x3930334, kRbCall1}, {0x393043D, kRbCall2}, {0x3930470, kRbRet}};
 const Bytes kSaCode3576[] = {{0xBA9486, kStartLookup3576}, {0x37AD9A5, kTlIdCmp3527}, {0x37AD33D, kTlIdSet3527}};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the dispatcher's three pieces with 2976's bytes (each unique in the
+// PE). 0xBE0FF6 (in P1's caller 0xBE0F60) mov rcx,[0x7245210] ; mov edx,[rdx+0x2E0] (THE STAGE'S TIMELINE ID MOVED: +0x2D0
+// before) ; mov rcx,[rcx+0x120] ; call 0x3824BA0; the id's compare 0x3824BE5 (callee + 0x45, as on 3576) and its store
+// 0x382457D (after a lock xadd of the counter) with 3527's bytes.
+constexpr uint8_t kStartLookup3663[] = {0x48, 0x8B, 0x0D, 0x13, 0x42, 0x66, 0x06, 0x8B, 0x92, 0xE0, 0x02, 0x00, 0x00,
+                                        0x48, 0x8B, 0x89, 0x20, 0x01, 0x00, 0x00, 0xE8, 0x91, 0x3B, 0xC4, 0x02};
+const Bytes kRbCode3663[] = {{0x39A98B4, kRbCall1}, {0x39A99BD, kRbCall2}, {0x39A99F0, kRbRet}};
+const Bytes kSaCode3663[] = {{0xBE0FF6, kStartLookup3663}, {0x3824BE5, kTlIdCmp3527}, {0x382457D, kTlIdSet3527}};
 
 // ---------------------------------------------------------------- state
 
@@ -196,6 +215,13 @@ constexpr uint32_t kRaDeletingDtor3527 = 0x6959B0;
 // base destructor: 3527's 23 bytes at 0x220C925 (+0xC40), the only hit in the PE.
 constexpr Jmp kRaLifetime3576[] = {{0x695DA0, 0x8E885D0}, {0x696010, 0x8E89070}, {0x696070, 0x8E8AF20}};
 constexpr uint32_t kRaDeletingDtor3576 = 0x696010;
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the client vtable 0x5997A38's slot 0 is the thunk 0x6C1EE0 -> 0x9037B20
+// (the deleting destructor, which calls 0x90402D0 first); the thunks 0x6C1C70 -> 0x9036A70 (the constructor) and
+// 0x6C1F40 -> 0x90402D0 (the destructor) sit -0x270 / +0x60 from it as on 3576; 0x9036A70 and 0x90402D0 are the only two
+// functions that load the client vtable (lea at 0x9036A8A / 0x90402E4, both code sections scanned). The stage's base
+// destructor: 3527's 23 bytes at 0x227BB86, the only hit in the PE (an anchor of anchors_3663.json).
+constexpr Jmp kRaLifetime3663[] = {{0x6C1C70, 0x9036A70}, {0x6C1EE0, 0x9037B20}, {0x6C1F40, 0x90402D0}};
+constexpr uint32_t kRaDeletingDtor3663 = 0x6C1EE0;
 constexpr uint8_t kRaBaseDtor3527[] = {0x48, 0x8B, 0x4F, 0x60, 0x48, 0x85, 0xC9, 0x74, 0x0E, 0x48, 0x8B, 0x01,
                                        0xBA, 0x01, 0x00, 0x00, 0x00, 0xFF, 0x10, 0x48, 0x89, 0x77, 0x60};  // 0x220BCE5
 
@@ -570,7 +596,9 @@ void rb_event(Ev ev, safetyhook::Context& ctx, gpr::RaMode mode) noexcept {
     gpr::RbFacts f;
     f.mode = mode;
     f.caller = rva_of(rdv<uint64_t>(ctx.rsp));
-    if (g_3576) {
+    if (g_3663) {
+        f.callers = gpr::kRbCallers3663;
+    } else if (g_3576) {
         f.callers = gpr::kRbCallers3576;
     } else if (g_3527) {
         f.callers = gpr::kRbCallers3527;
@@ -1052,8 +1080,8 @@ bool read_pdata(std::vector<RUNTIME_FUNCTION>& out, std::string& why) {
     if (g_base != off::kImageBase || !game::safe_read(g_base, &dos, sizeof dos) || dos.e_magic != IMAGE_DOS_SIGNATURE ||
         dos.e_lfanew <= 0 || dos.e_lfanew > 0x100000 ||
         !game::safe_read(g_base + static_cast<uint32_t>(dos.e_lfanew), &nt, sizeof nt) ||
-        nt.Signature != IMAGE_NT_SIGNATURE || !(game::legacy_layout() || g_3576)) {
-        why = "not build 1.0.0.2976, 3527, 3549 nor 3576 (base / PE timestamp)";
+        nt.Signature != IMAGE_NT_SIGNATURE || !(game::legacy_layout() || g_3576 || g_3663)) {
+        why = "not build 1.0.0.2976, 3527, 3549, 3576 nor 3663 (base / PE timestamp)";
         return false;
     }
     g_image_size.store(nt.OptionalHeader.SizeOfImage, std::memory_order_relaxed);  // before any hook (rva_of)
@@ -1171,18 +1199,22 @@ void verify_ra(std::span<const gad::Section> secs, gpr::RaMode mode) {
         }
     }
     // The lifetime evidence (per stage, deleted through slot 0): the .rsrc thunks it goes through.
-    if (c[0] != (g_3576 ? kRaDeletingDtor3576 : g_3527 ? kRaDeletingDtor3527 : kRaDeletingDtor) ||
-        plan.use[0] != gpr::RaUse::Native) {
+    const uint32_t deleting_dtor = g_3663   ? kRaDeletingDtor3663
+                                   : g_3576 ? kRaDeletingDtor3576
+                                   : g_3527 ? kRaDeletingDtor3527
+                                            : kRaDeletingDtor;
+    if (c[0] != deleting_dtor || plan.use[0] != gpr::RaUse::Native) {
         refuse("slot 0 (the deleting destructor) is not the expected one or not kept native");
         return;
     }
-    const uint32_t base_dtor = g_3576 ? 0x220C925u : 0x220BCE5u;
+    const uint32_t base_dtor = g_3663 ? 0x227BB86u : g_3576 ? 0x220C925u : 0x220BCE5u;
     if (g_3527 &&
         !(gad::in_real_code(secs, base_dtor, sizeof kRaBaseDtor3527) && bytes_at(base_dtor, kRaBaseDtor3527))) {
         refuse(std::format("the stage's base destructor exe+0x{:X} is not this build's", base_dtor));
         return;
     }
     const std::span<const Jmp> lifetime = !g_3527            ? std::span<const Jmp>(kRaLifetime)
+                                          : g_3663          ? std::span<const Jmp>(kRaLifetime3663)
                                           : g_3576          ? std::span<const Jmp>(kRaLifetime3576)
                                           : game::is_3549() ? std::span<const Jmp>(kRaLifetime3549)
                                                             : std::span<const Jmp>(kRaLifetime3527);
@@ -1265,19 +1297,23 @@ void verify_rb(std::span<const gad::Section> secs, gpr::RaMode mode) {
         refuse("a camera start hook (0x34CFC20 / 0xB27880) is not installed (see its line)");
         return;
     }
-    const std::span<const Bytes> rb_code = g_3576   ? std::span<const Bytes>(kRbCode3576)
+    const std::span<const Bytes> rb_code = g_3663   ? std::span<const Bytes>(kRbCode3663)
+                                           : g_3576 ? std::span<const Bytes>(kRbCode3576)
                                            : g_3527 ? std::span<const Bytes>(kRbCode3527)
                                                     : std::span<const Bytes>(kRbCode);
-    const std::span<const Bytes> sa_code = g_3576   ? std::span<const Bytes>(kSaCode3576)
+    const std::span<const Bytes> sa_code = g_3663   ? std::span<const Bytes>(kSaCode3663)
+                                           : g_3576 ? std::span<const Bytes>(kSaCode3576)
                                            : g_3527 ? std::span<const Bytes>(kSaCode3527)
                                                     : std::span<const Bytes>(kSaCode);
     if (!code_ok(secs, rb_code, why) || !code_ok(secs, sa_code, why)) {
         refuse(why);
         return;
     }
-    // The timeline object's vtable has no RTTI: its first two slots (3527: the constructor 0x1062DB50 writes it).
-    if (q64(g_sl->vt_timeline) != g_base + (g_3576 ? 0x37912A0 : g_3527 ? 0x37905A0 : 0x34C0B60) ||
-        q64(g_sl->vt_timeline + 8) != g_base + (g_3576 ? 0x378DE40 : g_3527 ? 0x378D140 : 0x34BD680)) {
+    // The timeline object's vtable has no RTTI: its first two slots (3527: the constructor 0x1062DB50 writes it; 3663:
+    // 0x10B1E270, gpr::kVtTimeline3663).
+    const uint64_t tl_slot0 = g_3663 ? 0x3808590 : g_3576 ? 0x37912A0 : g_3527 ? 0x37905A0 : 0x34C0B60;
+    const uint64_t tl_slot1 = g_3663 ? 0x3805130 : g_3576 ? 0x378DE40 : g_3527 ? 0x378D140 : 0x34BD680;
+    if (q64(g_sl->vt_timeline) != g_base + tl_slot0 || q64(g_sl->vt_timeline + 8) != g_base + tl_slot1) {
         refuse(std::format("the timeline object's vtable exe+0x{:X} is not this build's", g_sl->vt_timeline));
         return;
     }
@@ -1344,6 +1380,7 @@ DWORD WINAPI install_thread(LPVOID) {
     }
     std::string on, refused;
     const std::span<const EvPoint> ev_points = !g_3527            ? std::span<const EvPoint>(kEvPoints)
+                                               : g_3663          ? std::span<const EvPoint>(kEvPoints3663)
                                                : g_3576          ? std::span<const EvPoint>(kEvPoints3576)
                                                : game::is_3549() ? std::span<const EvPoint>(kEvPoints3549)
                                                                  : std::span<const EvPoint>(kEvPoints3527);
@@ -1407,12 +1444,15 @@ bool guest_seq_present_needs_p1(bool probe, const std::string& ra, const std::st
 
 void guest_seq_present_start(bool probe, const std::string& ra, const std::string& rb, const std::string& route_mode) {
     g_3576 = game::current_build() == game::Build::v3576;
-    g_3527 = game::current_build() == game::Build::v3527 || g_3576;
+    g_3663 = game::current_build() == game::Build::v3663;
+    g_3527 = game::current_build() == game::Build::v3527 || g_3576 || g_3663;
     if (g_3527) {
-        g_sl = g_3576 ? &gpr::kStageLayout3576 : &gpr::kStageLayout3527;
-        g_rl = g_3576 ? &gpr::kRaLayout3576 : &gpr::kRaLayout3527;
+        g_sl = g_3663 ? &gpr::kStageLayout3663 : g_3576 ? &gpr::kStageLayout3576 : &gpr::kStageLayout3527;
+        g_rl = g_3663 ? &gpr::kRaLayout3663 : g_3576 ? &gpr::kRaLayout3576 : &gpr::kRaLayout3527;
         if (const auto* profile = game::reader_profile()) g_world_slot = profile->world_system;
         if (g_3576) g_world_slot = 0x71C0100;  // core_globals_3576.json (no reader profile for 3576 yet)
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): WorldSystem, profile_s2.h's rva3663().
+        if (g_3663) g_world_slot = 0x72451C0;
         if (probe) {
             log::warn("GuestSeqPresent: guest_seq_foreign_present_probe (S-A, S-B, S-C, S-D) is not ported to build 3527: "
                       "REFUSED; R-A and R-B do not need it, and their own 'probe' value still works");

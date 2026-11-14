@@ -54,6 +54,7 @@ std::span<const Entry> entries(Build build) noexcept {
     case Build::v2976: return kEntries2976;
     case Build::v3527:
     case Build::v3576: return kEntries3527;  // the same catalogue (native_opcode.h)
+    case Build::v3663: return kEntries3663;
     default: return {};
     }
 }
@@ -68,6 +69,12 @@ std::optional<uint16_t> decode(Build build, uint16_t native) noexcept {
 
 std::optional<uint16_t> encode(Build build, uint16_t logical) noexcept {
     if (build == Build::v2976) return decode(build, logical); // Identity catalog, including removed messages.
+    if (build == Build::v3663) {
+        const auto it = std::lower_bound(kLogicalOrder3663.begin(), kLogicalOrder3663.end(), logical,
+            [](uint16_t index, uint16_t id) { return kEntries3663[index].logical < id; });
+        if (it == kLogicalOrder3663.end() || kEntries3663[*it].logical != logical) return std::nullopt;
+        return kEntries3663[*it].native;
+    }
     if (build != Build::v3527 && build != Build::v3576) return std::nullopt;
     const auto it = std::lower_bound(kLogicalOrder3527.begin(), kLogicalOrder3527.end(), logical,
         [](uint16_t index, uint16_t id) { return kEntries3527[index].logical < id; });

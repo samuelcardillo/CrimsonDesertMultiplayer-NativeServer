@@ -66,6 +66,25 @@ constexpr uintptr_t kAcquireField3576 = 0x2DA1550;
 constexpr uintptr_t kEnterField3576 = 0x2E63220;
 constexpr uintptr_t kTryAddRef3576 = 0x1618170;
 constexpr uintptr_t kVecPush3576 = 0x4A2890;
+// Build 1.0.0.3663 (static, 2026-11-13; never run). The four heads are the 3527 bytes, unchanged:
+// - AcquireField 0x2DA08E0 -> 0x2E08520 (+0x67C40, 0x2BE bytes): MoveField 0x2ECA480's five-argument call at 0x2ECAA51
+//   (fifth argument on the stack, r8b = 2); it still reads out+0x24 (0x2E08552), the manager's hash +0x48/+0x4C/+0x58/
+//   +0x60 (0x2E08556..0x2E0858C), stores the traveller's key +0x60 at field+0x180 (0x2E08737), calls TryAddRef at
+//   0x2E0876D and fills out +0x18/+8/+0x10/+0x20 (0x2E087A9..0x2E087C5) after out's vf+0x10 (0x2E087A6).
+// - EnterField 0x2E625B0 -> 0x2ECB130 (+0x68B80; 0x526 bytes, 0xE less than on 3576): MoveField's call at 0x2ECABD7
+//   (rcx = r15 FieldMover, r8 = the field); it reads the character as [[FM]+8] at 0x2ECB15C.
+// - TryAddRef 0x1617950 -> 0x1658E90 (+0x41540): the target of AcquireField's call at 0x2E0876D.
+// - VecPush 0x4A2500 -> 0x4CAE10 (+0x28910; 16-byte elements, `shl ecx,4` at 0x4CAE7D): the target of
+//   OnActorSectorChanged's call at 0x2DF6987 (3527's 0x2D8EF77, +0x1E7 in both) and of AddActor's {user, 1} push at
+//   0xEB6883B (AddActor thunk 0x2DFD3A0 -> the protected section's 0xEB68740, +0xFB as on 3527).
+// AddActor (0xEB68740) keeps actor+0xA0, the locks +0x18/[+8] and the ServerField tail +2A8/+2B0/+2B8/+2D8; MoveField
+// forms the FieldMover as TS+0x508 (0x2ECA74C) and every FieldMover instruction of field_mover_layout_3527.json that
+// field_share reads was found with 3527's bytes (+8/+0x10/+0x40/+0x48/+0x4A, GetField 0x2EC9C70, release 0x2EC9A70):
+// kFieldLayout3527 holds on 3663.
+constexpr uintptr_t kAcquireField3663 = 0x2E08520;
+constexpr uintptr_t kEnterField3663 = 0x2ECB130;
+constexpr uintptr_t kTryAddRef3663 = 0x1658E90;
+constexpr uintptr_t kVecPush3663 = 0x4CAE10;
 
 struct FieldProfile {
     game::Build build;
@@ -104,10 +123,17 @@ const FieldProfile* field_profile() {
                                               kEnterFieldHead3527, sizeof kEnterFieldHead3527,
                                               kTryAddRefHead3527, sizeof kTryAddRefHead3527,
                                               kVecPushHead3527, sizeof kVecPushHead3527};
+    static constexpr FieldProfile current3663{game::Build::v3663,
+                                              kAcquireField3663, kEnterField3663, kTryAddRef3663, kVecPush3663,
+                                              kAcquireFieldHead3527, sizeof kAcquireFieldHead3527,
+                                              kEnterFieldHead3527, sizeof kEnterFieldHead3527,
+                                              kTryAddRefHead3527, sizeof kTryAddRefHead3527,
+                                              kVecPushHead3527, sizeof kVecPushHead3527};
     switch (game::current_build()) {
         case game::Build::v2976: return &old;
         case game::Build::v3527: return &current;
         case game::Build::v3576: return &current3576;
+        case game::Build::v3663: return &current3663;
         default: return nullptr;
     }
 }

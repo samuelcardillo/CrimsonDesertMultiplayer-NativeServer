@@ -24,6 +24,13 @@ namespace gad = session2::gad;
 
 constexpr uint32_t kCopyHorse = 0xB010F002;
 
+// 3527's object layout and phase logic (game::layout_3527(): 3527, 3549, 3576) or 3663, whose offsets this module reads
+// were checked in its 3663 code (kPhase3663 below): the CC's +0x08 / +0x30 / +0x88 and the selector's +0x1B in the
+// verified apply arrays, the layer chart +0x118 (character_profile.h), the actor's +0x68 in listeners_entry.
+bool layout_ok() noexcept {
+    return game::layout_3527() || game::current_build() == game::Build::v3663;
+}
+
 struct Site {
     uintptr_t rva;
     uint8_t head[16];
@@ -190,7 +197,7 @@ std::atomic<uint32_t> g_last_shape[3] = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF};
 // Guarded reads of scalars only (no struct copy: no CRT memcpy in a mid hook).
 uint32_t remote_local_key() {
     uint32_t local = g_remote_local.load(std::memory_order_relaxed);
-    if (local || !game::layout_3527()) return local;
+    if (local || !layout_ok()) return local;
     const auto* profile = game::reader_profile();
     if (!profile) return 0;
     const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
@@ -214,7 +221,7 @@ bool remote_without_action(uintptr_t cc, uint32_t local, uint32_t& key, uint32_t
         const auto actor = *reinterpret_cast<const uintptr_t*>(cc + 0x08);
         if (!actor) return false;
         ctrl = *reinterpret_cast<const uint32_t*>(actor + off::kActor_OwnerUser);
-        const bool scoped = game::layout_3527()
+        const bool scoped = layout_ok()
             ? game::phase3527::user_requires_readiness(ctrl, local) : gad::remote_user_controlled(ctrl, local);
         if (!scoped) return false;
         bool lacks0 = false, lacks1 = false;
@@ -241,7 +248,7 @@ bool remote_without_action(uintptr_t cc, uint32_t local, uint32_t& key, uint32_t
 // The remote mode's whole hook body (update and post-update): true = return at once.
 bool contain_remote(uintptr_t cc, std::atomic<uint64_t>& skipped) {
     const uint32_t local = remote_local_key();
-    if (!local && !game::layout_3527()) return false;
+    if (!local && !layout_ok()) return false;
     uint32_t key = 0, ctrl = 0;
     if (!remote_without_action(cc, local, key, ctrl)) return false;
     skipped.fetch_add(1, std::memory_order_relaxed);
@@ -394,16 +401,42 @@ constexpr PhaseSites kPhase3576{0x94FB60, 0xB0B650, 0xB0BA2E, 0x2519FB0, 0x251A0
                                 0x2249211, 0x25193CB, 0x251A291, 0x251A583,
                                 0x2519FC4, 0x2519FCC, 0x251AF7D, 0x251AF85, 0x224921B};
 
+// Build 1.0.0.3663 (static, 2026-11-13; never run). 3663 is a recompile (frames and some struct offsets changed), so
+// each site was found again:
+// - the movement phase 0x97D6D0 (.pdata start, phase_head): the movement job 0x9CA6D0 (3527's 0x99B380 + 0x2F350, the
+//   same 65 instructions but for three struct displacements) calls it at the same +0x8A and ignores its result (the
+//   next instruction reloads rcx). Its body is recompiled (frame 0x180, [r13+0x5C8] -> +0x5E0), the entry is what is
+//   hooked;
+// - the action query 0xB42220 (.pdata start; 3527's body, guest_phase_3527.txt, found by its own bytes at +0xA0 /
+//   +0x110 / +0x170 -> +0xA7 / +0x119 / +0x179): it gained a third byte argument (r8b; the callers 0x800662,
+//   0x973626, 0x997756, 0x9A9C05 pass 0, 0xB4294D a byte) and pushes r12/r14/r15, so its head and false return differ
+//   (query_head3663; query_false3663 at 0xB426BC, `xor al,al; mov rbx,[rsp+0x70]`). It still reads [rcx+8] -> +0x68
+//   -> +0x20 / +0x40 as 3527's. The hook returns false at its entry, before any push, as in 3527;
+// - the application 0x258A230 (3527 2517A80): every array byte for byte, the only match near: selector_write
+//   0x258ADAB (+0xB7B as in 3576), apply_read 0x258B930 / apply_gate 0x258B998 / listeners 0x258BC11..0x258BF03 (the
+//   function is 0x60 bytes shorter between +0xB7B and +0x1700; the listener block is 0x2F2 bytes as in 3527/3576);
+// - 251A170 -> 0x258C8C0 (.pdata start; the three arrays at its +0x29 / +0x86 / +0x9D as in 3527);
+// - the AI component's read 0x22BA541 (+0x41 in 0x22BA500, as 3576's in 0x22491D0).
+// Hook points and resumes are inside the verified arrays at 3527's distances.
+constexpr PhaseSites kPhase3663{0x97D6D0, 0xB42220, 0xB426BC, 0x258B930, 0x258B998, 0x258C8E9, 0x258C946, 0x258C95D,
+                                0x22BA541, 0x258ADAB, 0x258BC11, 0x258BF03,
+                                0x258B944, 0x258B94C, 0x258C8FD, 0x258C905, 0x22BA54B};
+
 bool install_phase_guards() {
     if (game::current_build() == game::Build::v2976) return true;
-    if (!game::layout_3527()) return false;
-    const PhaseSites& s = game::current_build() == game::Build::v3576 ? kPhase3576 : kPhase3527;
+    if (!layout_ok()) return false;
+    const bool b3663 = game::current_build() == game::Build::v3663;
+    const PhaseSites& s = b3663 ? kPhase3663 : game::current_build() == game::Build::v3576 ? kPhase3576 : kPhase3527;
     const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     constexpr uint8_t phase_head[]{0x48,0x89,0x5C,0x24,0x10,0x55,0x56,0x57,
                                    0x41,0x54,0x41,0x55,0x41,0x56,0x41,0x57};
-    constexpr uint8_t query_head[]{0x48,0x89,0x5C,0x24,0x08,0x48,0x89,0x6C,
-                                   0x24,0x10,0x56,0x57,0x41,0x56,0x48,0x83};
-    constexpr uint8_t query_false[]{0x32,0xC0,0x48,0x8B,0x5C,0x24,0x60};
+    constexpr uint8_t query_head3527[]{0x48,0x89,0x5C,0x24,0x08,0x48,0x89,0x6C,
+                                       0x24,0x10,0x56,0x57,0x41,0x56,0x48,0x83};
+    constexpr uint8_t query_false3527[]{0x32,0xC0,0x48,0x8B,0x5C,0x24,0x60};
+    // 3663: push r12 / r14 / r15 (the new third argument), so a larger save area.
+    constexpr uint8_t query_head3663[]{0x48,0x89,0x5C,0x24,0x08,0x48,0x89,0x6C,
+                                       0x24,0x10,0x56,0x57,0x41,0x54,0x41,0x56};
+    constexpr uint8_t query_false3663[]{0x32,0xC0,0x48,0x8B,0x5C,0x24,0x70};
     constexpr uint8_t apply_read[]{0x49,0x8B,0x47,0x30,0x0F,0xB6,0x58,0x1B,
         0x49,0x8B,0x84,0xDF,0x88,0,0,0,0x48,0x8B,0x48,0x18,
         0x48,0x8B,0x41,0x28,0x0F,0xB6,0x78,0x7E,0x49,0x8B,0x4F,0x08};
@@ -422,15 +455,16 @@ bool install_phase_guards() {
         uint8_t actual[N]{};
         return game::safe_read(base + rva, actual, N) && std::memcmp(actual, bytes, N) == 0;
     };
-    if (!game::validate_native_catalog() || !matches(s.phase, phase_head) ||
-        !matches(s.query, query_head) || !matches(s.query_false, query_false) ||
+    const bool query_ok = b3663 ? matches(s.query, query_head3663) && matches(s.query_false, query_false3663)
+                                : matches(s.query, query_head3527) && matches(s.query_false, query_false3527);
+    if (!game::validate_native_catalog() || !matches(s.phase, phase_head) || !query_ok ||
         !matches(s.apply_read, apply_read) || !matches(s.apply_gate, apply_gate) ||
         !matches(s.secondary_read, secondary_read) || !matches(s.secondary_gate, secondary_gate) ||
         !matches(s.secondary_flag, secondary_flag) || !matches(s.ai_flag, ai_flag) ||
         !matches(s.selector_write, selector_write) || !matches(s.listeners_entry, listeners_entry) ||
         !matches(s.listeners_exit, listeners_exit)) {
         log::error("Character phase guards: {} signatures do not match",
-                   game::current_build() == game::Build::v3576 ? "3576" : "3527");
+                   b3663 ? "3663" : game::current_build() == game::Build::v3576 ? "3576" : "3527");
         return false;
     }
     g_phase_hook = safetyhook::create_mid(reinterpret_cast<void*>(base + s.phase), &on_movement_phase);

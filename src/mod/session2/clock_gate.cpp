@@ -76,6 +76,31 @@ constexpr uintptr_t kLoading3576 = 0x236C400;
 constexpr uintptr_t kLoadingFlagCmp3576 = 0x236C43B;
 constexpr uintptr_t kGetter3576 = 0x22A9BB0;
 constexpr uintptr_t kWorldTime3576 = 0x6EAD9B8;  // server-realm FieldTime
+// Build 1.0.0.3663 (static, 2026-11-13; never run). MoveField is 0x2ECA480 (3527's 0x2E61990 + 0x68AF0; .pdata to
+// 0x2ECB127; it calls AcquireField 0x2E08520 at 0x2ECAA51 and EnterField 0x2ECB130 at 0x2ECABD7, field_share.cpp). Its
+// owner check moved register: `cmp [rsi+0x180],eax` at 0x2ECAABD (the destination field is now RSI; R15 is still the
+// FieldMover, `mov r15,rcx` at 0x2ECA4A0, and eax is still [[[r15]+8]+0xA0]+0x60 or 0), then `jne 0x2ECABA4`, the
+// non-owner branch: the getter call 0x2ECABAF (rcx = rsi, the field) to GetCurrentFieldTime 0x231A180 (kGetterHead
+// unchanged) and the setter call 0x2ECABBA to the thunk 0x23E17C0 (jmp 0xD040130 in the protected section: stores the
+// 32 bytes at TS+0x450, and when TLS +0x1EB is set and [field+0x180] == [[TS+8]+0xA0]+0x60 the server-realm FieldTime
+// at 0x6F31C98; the client realm's is 0x6F31C78). The owner branch now publishes inline (0x2ECAB4C). LoadingComplete
+// 0x236B6B0 -> 0x23DC630 (+0x70F80; the only one of the four `cmp [rbp+0x50],r12b ; je +0x10C` in the expected range,
+// at +0x3B as on 3527); its head saves rbx/rsi/rdi at +0x10/+0x18/+0x20 (2976's head bytes, not 3527's), with 3527's
+// argument moves (r13 = r9, rsi = r8, r14 = rdx, rbx = rcx); its flag path publishes 0x6F31C98 at 0x23DC72C.
+constexpr uintptr_t kTravelOwnerCmp3663 = 0x2ECAABD;
+constexpr uint8_t kTravelOwnerCmp3663Bytes[] = {0x39, 0x86, 0x80, 0x01, 0x00, 0x00};  // cmp [rsi+0x180],eax
+constexpr uintptr_t kTravelGetterCall3663 = 0x2ECABAF;
+constexpr uint8_t kTravelGetterCall3663Bytes[] = {0xE8, 0xCC, 0xF5, 0x44, 0xFF};  // 0x2ECABAF: call 0x231A180
+constexpr uintptr_t kTravelSetterCall3663 = 0x2ECABBA;
+constexpr uint8_t kTravelSetterCall3663Bytes[] = {0xE8, 0x01, 0x6C, 0x51, 0xFF};  // 0x2ECABBA: call 0x23E17C0
+constexpr uintptr_t kLoading3663 = 0x23DC630;
+constexpr uint8_t kLoadingHead3663[] = {0x48, 0x89, 0x5C, 0x24, 0x10, 0x48, 0x89, 0x74, 0x24, 0x18, 0x48,
+                                        0x89, 0x7C, 0x24, 0x20, 0x55, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56,
+                                        0x41, 0x57, 0x48, 0x8B, 0xEC, 0x48, 0x83, 0xEC, 0x60, 0x4D, 0x8B,
+                                        0xE9, 0x49, 0x8B, 0xF0, 0x4C, 0x8B, 0xF2, 0x48, 0x8B, 0xD9};
+constexpr uintptr_t kLoadingFlagCmp3663 = 0x23DC66B;
+constexpr uintptr_t kGetter3663 = 0x231A180;
+constexpr uintptr_t kWorldTime3663 = 0x6F31C98;  // server-realm FieldTime
 
 struct ClockProfile {
     game::Build build;
@@ -92,6 +117,9 @@ struct ClockProfile {
     uintptr_t travel_cmp, getter_call, setter_call;
     const uint8_t* getter_call_bytes;
     const uint8_t* setter_call_bytes;
+    // The owner check's bytes and the register that holds the destination field there (RDI on 3527/3576, RSI on 3663).
+    const uint8_t* travel_cmp_bytes = kTravelOwnerCmp3527Bytes;
+    bool field_in_rsi = false;
 };
 
 const ClockProfile* clock_profile() {
@@ -132,10 +160,27 @@ const ClockProfile* clock_profile() {
                                               kTravelGetterCall3576Bytes, kTravelSetterCall3576Bytes};
     static_assert(sizeof kTravelGetterCall3576Bytes == sizeof kTravelGetterCall3527Bytes &&
                   sizeof kTravelSetterCall3576Bytes == sizeof kTravelSetterCall3527Bytes);
+    static constexpr ClockProfile current3663{game::Build::v3663,
+                                              kLoading3663,
+                                              kLoadingHead3663,
+                                              sizeof kLoadingHead3663,
+                                              kLoadingFlagCmp3663,
+                                              kLoadingFlagCmp3527Bytes,
+                                              sizeof kLoadingFlagCmp3527Bytes,
+                                              kGetter3663,
+                                              kWorldTime3663,
+                                              true,
+                                              kTravelOwnerCmp3663, kTravelGetterCall3663, kTravelSetterCall3663,
+                                              kTravelGetterCall3663Bytes, kTravelSetterCall3663Bytes,
+                                              kTravelOwnerCmp3663Bytes, true};
+    static_assert(sizeof kTravelGetterCall3663Bytes == sizeof kTravelGetterCall3527Bytes &&
+                  sizeof kTravelSetterCall3663Bytes == sizeof kTravelSetterCall3527Bytes &&
+                  sizeof kTravelOwnerCmp3663Bytes == sizeof kTravelOwnerCmp3527Bytes);
     switch (game::current_build()) {
         case game::Build::v2976: return &old;
         case game::Build::v3527: return &current;
         case game::Build::v3576: return &current3576;
+        case game::Build::v3663: return &current3663;
         default: return nullptr;
     }
 }
@@ -265,7 +310,8 @@ void __fastcall travel_detour(void* fm, void* field) noexcept {
     if (!gated) g_travel.unsafe_call<void>(fm, field);
 }
 
-// 1.0.0.3527 (and 3576), immediately before `cmp dword ptr [rdi+0x180], eax`.
+// 1.0.0.3527 (and 3576), immediately before `cmp dword ptr [rdi+0x180], eax`
+// (3663: `cmp dword ptr [rsi+0x180], eax`, profile field_in_rsi).
 // r15 is FieldMover and [r15] is its TransformSync.  For user 2, make eax
 // unequal to the destination owner so the original JNE takes the game's
 // existing getter+setter path.  No instruction is skipped or reimplemented.
@@ -273,12 +319,13 @@ void travel_owner_gate_3527(safetyhook::Context& ctx) noexcept {
     try {
         uintptr_t ts = 0;
         uint32_t owner = 0;
-        if (!peek(ctx.r15, ts) || !ts || !peek(ctx.rdi + 0x180, owner) || who_now(ts) != ClockWho::User2) return;
+        const uintptr_t field = g_profile && g_profile->field_in_rsi ? ctx.rsi : ctx.rdi;
+        if (!peek(ctx.r15, ts) || !ts || !peek(field + 0x180, owner) || who_now(ts) != ClockWho::User2) return;
         ctx.rax = (ctx.rax & 0xFFFFFFFF00000000ull) | static_cast<uint32_t>(owner ^ 0xFFFFFFFFu);
         g_travels.fetch_add(1);
         note("Session2 clock gate: user 2 move to field 0x{:X} (owner 0x{:X}) uses native non-owner time path; "
              "world clock is not published",
-             ctx.rdi, owner);
+             field, owner);
     } catch (...) {
         // Leave the game's comparison untouched if identity or memory cannot
         // be inspected safely.
@@ -366,7 +413,7 @@ bool clock_gate_install() {
         return false;
     }
     const bool travel_code_ok = g_profile->travel_mid
-        ? code_ok(g_profile->travel_cmp, kTravelOwnerCmp3527Bytes, sizeof kTravelOwnerCmp3527Bytes,
+        ? code_ok(g_profile->travel_cmp, g_profile->travel_cmp_bytes, sizeof kTravelOwnerCmp3527Bytes,
                   "MoveField owner-clock check") &&
               code_ok(g_profile->getter_call, g_profile->getter_call_bytes, sizeof kTravelGetterCall3527Bytes,
                       "its non-owner getter call") &&

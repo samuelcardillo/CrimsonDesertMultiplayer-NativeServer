@@ -1,8 +1,8 @@
 #pragma once
 // P8 session 25, the grappling hook's blue rope ("RemoteCatch") of the OTHER player
 // (docs/research/s25/gancho-cuerda.md): the pure logic of remote_rope.cpp, with no game access, so the tests can run
-// it. Builds 1.0.0.2976, 1.0.0.3527 and 1.0.0.3576 (the addresses named below are 2976's; 3527's and 3576's tables
-// follow them).
+// it. Builds 1.0.0.2976, 1.0.0.3527, 1.0.0.3576 and 1.0.0.3663 (the addresses named below are 2976's; 3527's, 3576's
+// and 3663's tables follow them).
 //
 // The faults [V, S25 captures + decompile]:
 //   1. RemoteCatchResultAck 2763 (ToNear, both clients) names the hooked tree by its scene id (16 bytes, the same on
@@ -635,6 +635,102 @@ inline constexpr uintptr_t kActDispatch3576 = 0x251A511;  // kActDispatchBytes35
 inline constexpr uintptr_t kActKeepTest3576 = 0x1947790;
 inline constexpr uintptr_t kActNotify3576 = 0x19477C6;
 inline constexpr uintptr_t kActSelfRelease3576 = 0x194785F;
+
+// ---------------------------------------------------------------- build 1.0.0.3663 (static, 2026-11-13; never run)
+
+// Found as 3576's were: the handlers and components by RTTI (vtable_map_3576_3663.json), then each function's own bytes
+// (3527/3576 arrays, relative fields masked, searched over the whole code section: one hit each). Every function moved
+// whole, and 3527's data offsets hold: the per-slot state +0xA4C / flight +0xB24 at 0x6898E4 / 0x68994A (in 0x689870,
+// 0x66 apart as before; imul rsi,rdx,0x1A0 at 0x6898BA), the slots +0x20 / 0x58 (the slot reset 0x19AD971 writes
+// 0x10106 at [comp + slot*0x58 + 0x20]), the frame event's slot +0xC / reason +0xD (0x2A79504 / 0x2A795E6), the
+// physics' vf3B8 of [WorldSystem+0xE8] (7 calls, e.g. 0x68D96F with a 40-byte transform). Code section (by its flags,
+// R-X): 0x1000 + 0x5612000.
+// - TrocTrRemoteCatchResultAck 0x5A17AB8 slot 2 = 0xCA0D40: its only call of the apply 0x67AF30 (kApplyHead identical)
+//   at 0xCA11B3 (+0x473 as in 3576); kInfoCopyBytes at 0x67AF7F (+0x4F); both failures read 0x71D00C4 (0x67B054 /
+//   0x67B126, +0x124 / +0x1F6 as in 3576).
+// - The thrower's mapping 0x67D40C (in 0x67C750, +0xCBC as in 3576): 3576's bytes with new rel32 / RIP fields: WorldSystem
+//   0x72451C0, ResolveUuidLookup 0x19F84A0 (kResolveHead), SyncSceneObjectDataAttacher 0x5BF66E0, its base 0x597BFE0 and
+//   ScopeAttacherBase 0x5B40000 (all three by RTTI); the dtor after it 0x1659380 (kAttDtorHead).
+// - ClientRemoteCatchActorComponent 0x5994CC8: vf158 = the release 0x68F130 (kReleaseHead), its main-thread check
+//   0x68F19D (after GetCurrentThreadId at 0x68F17E) -> 0x6F29B54 (231 RIP references); vf140 0x673E10 calls 0x19ACF60
+//   at 0x673E69 (+0x59 as in 3576; that call is its only direct caller).
+// - TrocTrReleaseRemoteCatchResultAck 0x5A179D8 slot 2 = 0xCA13F0 (k2471HandlerHead3527 identical); its release call
+//   0xCA15DE (+0x1EE as in 3576; -> 0x68F130).
+// - ServerFrameEventReleaseRemoteCatch 0x5F609D0 vf1 = 0x2A794D0 (kSrvReleaseHead); kSrvArgsBytes3527 at 0x2A794F4.
+// - ServerRemoteCatchActorComponent 0x5F62490: vf140 0x19ACF60 (kActReleaseHead; keep test / notify / own release at
+//   3527's offsets: 0x19AD1E0 / 0x19AD216 / 0x19AD2AF, their bytes identical), vf148 0x2BD5960 with the writer site
+//   0x2BD5A89 (+0x129 as in 3576; ISendTargetFinder 0x5F68740, ToNearSendTargetFinder 0x5F68780 by RTTI; the writer
+//   0x2C428E0, kWriterHead, its two callers 0x2BD5622 / 0x2BD5ABD; it allocates 0xB bytes and writes u32 | u8 | u8 under
+//   `mov word [r14],0xBE1` = ReleaseRemoteCatchResultAck 3041 on 3663), vf158 = the slot reset 0x19AD850.
+// - ToNearSendTargetFinder vf1 0x2D6C210 (kToNearVf1Bytes; jmp 0x2ED0860, whose first call 0x2ED05F0 has the owner call
+//   0x2ED0612, kTsOwnerCallBytes; vf1D8 / vf160 at +0x2C / +0x45 as in 3527).
+// - The action change's vf140 call 0x258BE91 (the same 30 bytes, unique; in 0x258A230 at +0x1C61, 3576 +0x1CC1: that
+//   function changed a little; its callers 0x973FE0 (client) and 0x2D72222 (server), as 3527's two).
+inline constexpr uintptr_t kCodeEnd3663 = 0x5613000;
+inline constexpr uintptr_t kApply3663 = 0x67AF30;
+inline constexpr uintptr_t kApplyCall3663 = 0xCA11B3;
+inline constexpr uint8_t kApplyCallBytes3663[5] = {0xE8, 0x78, 0x9D, 0x9D, 0xFF};
+inline constexpr uintptr_t kApplyReturn3663 = 0xCA11B8;
+inline constexpr uintptr_t kInfoCopy3663 = 0x67AF7F;
+inline constexpr uintptr_t kMapSite3663 = 0x67D40C;
+inline constexpr uint8_t kMapSiteBytes3663[136] = {
+    0x48, 0x8B, 0x05, 0xAD, 0x7D, 0xBC, 0x06, 0x48, 0x8B, 0x88, 0xC8, 0x00,
+    0x00, 0x00, 0x48, 0x8B, 0x09, 0x4C, 0x8D, 0x45, 0x28, 0x48, 0x8D, 0x55,
+    0xA0, 0x48, 0x8B, 0x89, 0x80, 0x00, 0x00, 0x00, 0xE8, 0x6F, 0xB0, 0x37,
+    0x01, 0x90, 0x48, 0x8B, 0x55, 0xA8, 0x48, 0x8B, 0x4A, 0x58, 0x48, 0x85,
+    0xC9, 0x74, 0x06, 0x80, 0x79, 0x15, 0x01, 0x75, 0x09, 0x80, 0xBA, 0xA4,
+    0x00, 0x00, 0x00, 0x00, 0x74, 0x21, 0x48, 0x85, 0xC9, 0x74, 0x1C, 0x80,
+    0x79, 0x15, 0x01, 0x74, 0x16, 0x48, 0x8B, 0x89, 0xE0, 0x00, 0x00, 0x00,
+    0x48, 0x85, 0xC9, 0x74, 0x0A, 0x48, 0x8B, 0x01, 0xFF, 0x50, 0x70, 0x48,
+    0x89, 0x45, 0x38, 0x48, 0x8D, 0x05, 0x6A, 0x92, 0x57, 0x05, 0x48, 0x89,
+    0x45, 0xA0, 0x48, 0x8D, 0x05, 0x5F, 0xEB, 0x2F, 0x05, 0x48, 0x89, 0x45,
+    0xA0, 0x4C, 0x8D, 0x3D, 0x74, 0x2B, 0x4C, 0x05, 0x4C, 0x89, 0x7D, 0xA0,
+    0x48, 0x8D, 0x4D, 0xA0,
+};
+inline constexpr uintptr_t kWorldSystem3663 = 0x72451C0;
+inline constexpr uintptr_t kResolve3663 = 0x19F84A0;
+inline constexpr uintptr_t kAttDtor3663 = 0x1659380;
+inline constexpr uintptr_t kScopeAttacherBaseVtbl3663 = 0x5B40000;
+inline constexpr uintptr_t kRelease3663 = 0x68F130;
+inline constexpr uintptr_t kReleaseThreadCheck3663 = 0x68F19D;  // cmp [0x146F29B54],eax ; jnz deferred
+inline constexpr uint8_t kReleaseThreadCheckBytes3663[6] = {0x39, 0x05, 0xB1, 0xA9, 0x89, 0x06};
+inline constexpr uintptr_t kMainThreadId3663 = 0x6F29B54;
+inline constexpr uintptr_t kClientRemoteCatchVtbl3663 = 0x5994CC8;
+inline constexpr uintptr_t kApplyFailedErr3663 = 0x71D00C4;
+inline constexpr uintptr_t k2471Handler3663 = 0xCA13F0;       // k2471HandlerHead3527 / k2471HandlerBoundaries3527
+inline constexpr uintptr_t k2471HandlerSlot3663 = 0x5A179E8;  // vtable 0x5A179D8 slot 2
+inline constexpr uintptr_t k2471Release3663 = 0xCA15DE;
+inline constexpr uint8_t k2471ReleaseBytes3663[30] = {
+    0x48, 0x8B, 0x49, 0x68, 0xC6, 0x44, 0x24, 0x20, 0x01, 0x45,
+    0x33, 0xC9, 0x44, 0x0F, 0xB6, 0x45, 0x60, 0x0F, 0xB6, 0x55,
+    0x68, 0x48, 0x8B, 0x49, 0x78, 0xE8, 0x34, 0xDB, 0x9E, 0xFF,
+};
+inline constexpr uintptr_t kSrvRelease3663 = 0x2A794D0;
+inline constexpr uintptr_t kSrvReleaseSlot3663 = 0x5F609D8;  // vtable 0x5F609D0 slot 1
+inline constexpr uintptr_t kSrvArgs3663 = 0x2A794F4;           // kSrvArgsBytes3527
+inline constexpr uintptr_t kWriter3663 = 0x2C428E0;
+inline constexpr uintptr_t kWriterSite3663 = 0x2BD5A89;  // in vf148 0x2BD5960
+inline constexpr uint8_t kWriterSiteBytes3663[57] = {
+    0x48, 0x8D, 0x1D, 0xB0, 0x2C, 0x39, 0x03, 0x48, 0x89, 0x5C, 0x24, 0x20,
+    0xC6, 0x44, 0x24, 0x28, 0x01, 0x48, 0x8D, 0x05, 0xDF, 0x2C, 0x39, 0x03,
+    0x48, 0x89, 0x44, 0x24, 0x20, 0x48, 0x89, 0x7C, 0x24, 0x30, 0x4C, 0x8D,
+    0x4C, 0x24, 0x78, 0x4C, 0x8D, 0x44, 0x24, 0x68, 0x48, 0x8D, 0x54, 0x24,
+    0x20, 0x48, 0x8B, 0xCF, 0xE8, 0x1E, 0xCE, 0x06, 0x00,
+};
+inline constexpr uintptr_t kToNearVtbl3663 = 0x5F68780;
+inline constexpr uintptr_t kToNearVf13663 = 0x2D6C210;
+inline constexpr uintptr_t kTsOwnerCall3663 = 0x2ED0612;
+inline constexpr uintptr_t kActRelease3663 = 0x19ACF60;
+inline constexpr uintptr_t kServerRemoteCatchVtbl3663 = 0x5F62490;
+inline constexpr uintptr_t kActReleaseSlot3663 = 0x5F625D0;    // 0x5F62490 + 0x140
+inline constexpr uintptr_t kSrvCompVf158Slot3663 = 0x5F625E8;  // 0x5F62490 + 0x158 = 0x19AD850
+inline constexpr uintptr_t kSlotReset3663 = 0x19AD850;
+inline constexpr uintptr_t kActClientCall3663 = 0x673E69;  // the client's vf140 0x673E10; 0x19ACF60's only direct caller
+inline constexpr uint8_t kActClientCallBytes3663[5] = {0xE8, 0xF2, 0x90, 0x33, 0x01};
+inline constexpr uintptr_t kActDispatch3663 = 0x258BE91;  // kActDispatchBytes3527
+inline constexpr uintptr_t kActKeepTest3663 = 0x19AD1E0;
+inline constexpr uintptr_t kActNotify3663 = 0x19AD216;
+inline constexpr uintptr_t kActSelfRelease3663 = 0x19AD2AF;
 
 // ---------------------------------------------------------------- pure helpers
 

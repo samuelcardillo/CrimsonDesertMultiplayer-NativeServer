@@ -39,6 +39,18 @@ constexpr uint8_t kSerializerReturn[] = {
 constexpr uint8_t kCallBytes3576[] = {  // 0x22E3300
     0x48, 0x8B, 0x4F, 0x08, 0x48, 0x8B, 0xD3, 0xE8, 0xF4, 0x1C, 0x1B, 0x00,
     0x0F, 0xB7, 0x57, 0x10, 0xE8, 0xDB, 0xBB, 0x0F, 0xFE};
+// Build 1.0.0.3663 (static, 2026-11-13; never run). ServerInteraction vtable 0x5EF4338 -> 0x5F6DE10 (RTTI map); its
+// slot +0xC8 is the method 0x2353AE0 (3527's 0x22E25F0 + 0x714F0, .pdata 0x1F2 bytes; still RSI = component, RDI = entry
+// with stride 0x38 from [+0x90] / [+0x98] at 0x2353B18, RBX = archive). The call site 0x22E2657 -> 0x2353B47 (+0x67 as
+// on 3527): `mov rcx,[rdi+8] ; mov rdx,rbx ; call 0x2506E70` with 3527's bytes but the rel32, then the entry's +0x10 is
+// now passed by address (`lea rcx,[rdi+0x10] ; call 0x3DAD70`, 3527 `movzx edx,word [rdi+0x10] ; call 0x3DEC10`); the
+// entry fields the method serializes (+8/+0x10/+0x20/+0x28/+0x30/+0x18/+0x14/+0x2C) keep their offsets. The serializer
+// 0x2494230 -> 0x2506E70 (+0x72C40; head and return bytes unchanged). What the rule reads keeps 3527's code: derived
+// entries get +0x2E = parent index (0x235C721), +8 null, +0x20 stage 0; the copy skips empty strings (0x235E503); the
+// shared string keeps chars +0 / length +8 (0x16450AF / 0x16450C1).
+constexpr uint8_t kCallBytes3663[] = {  // 0x2353B40
+    0x48, 0x8B, 0x4F, 0x08, 0x48, 0x8B, 0xD3, 0xE8, 0x24, 0x33, 0x1B, 0x00,
+    0x48, 0x8D, 0x4F, 0x10, 0xE8, 0x1B, 0x72, 0x08, 0xFE};
 
 struct Sites {
     uintptr_t call, vtable, method, serializer;
@@ -46,6 +58,7 @@ struct Sites {
 };
 const Sites kSites3527{kCall, kServerInteractionVtable, 0x22E25F0, 0x2494230, kCallBytes};
 const Sites kSites3576{0x22E3307, 0x5EF4338, 0x22E32A0, 0x2495000, kCallBytes3576};
+const Sites kSites3663{0x2353B47, 0x5F6DE10, 0x2353AE0, 0x2506E70, kCallBytes3663};
 const Sites* g_sites = &kSites3527;
 
 // Native 2494230 reads only the first pointer on its empty path, emits one
@@ -123,10 +136,13 @@ uintptr_t interaction_condition_argument(uintptr_t holder, uintptr_t entry) noex
 
 bool interaction_condition_install() {
     if (game::current_build() == game::Build::v2976) return true;
-    if (game::current_build() != game::Build::v3527 && game::current_build() != game::Build::v3576) return false;
+    const game::Build build = game::current_build();
+    if (build != game::Build::v3527 && build != game::Build::v3576 && build != game::Build::v3663) return false;
     if (g_hook) return true;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    g_sites = game::current_build() == game::Build::v3576 ? &kSites3576 : &kSites3527;
+    g_sites = build == game::Build::v3663   ? &kSites3663
+              : build == game::Build::v3576 ? &kSites3576
+                                            : &kSites3527;
     uintptr_t method = 0;
     if (!code_matches(g_sites->call - 7, g_sites->call_bytes) ||
         !code_matches(g_sites->serializer, kSerializerHead) ||

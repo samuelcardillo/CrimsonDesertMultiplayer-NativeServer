@@ -35,6 +35,13 @@ using cfl::Skip;
 // 3527 [V capstone 0x15F9B20, 0x1386C1C]: 0x70D9E60, 0x70D9E70, 0x71BE198.
 // Build 1.0.0.3576 (static, 2026-11-06; not yet run): the frame clock 0x15FA340 reads 0x70DBF68 / 0x70DBF78 (0x15FA360,
 // 0x15FA36C), setInterpolatePositionData 0x13873B0 the bias 0x71C03A8 (0x13873CC): 3527's + 0x2108 / + 0x2210.
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the frame clock 0x163B030 (called right before the delay read of
+// setInterpolatePositionData 0x13C5A50) reads ms 0x71600E8 at +0x20 and us 0x71600F0 at +0x2C (as 3576's; now 8 bytes
+// apart), setInterpolatePositionData reads the bias 0x7245468 at +0x1C (0x13C5A6C). The actor / TransformSync offsets
+// below are 3527's: comps +0x68 and TransformSync comps+0x1A0 are in 3663's code (the action query 0xB42220 is called on
+// [comps+0x1A0]; TransformSync's load reader 0x23DCEA0 is 3527's 0x236BF20 instruction for instruction; 0x146C2C7..
+// 0x146C315 still adds [+0xB4/+0xB8/+0xBC] to the sector shorts [+0xC0/+0xC2] * 1000), but the quaternion +0xA4, the
+// control byte +0xC8 and the actor manager's table are not re-derived.
 uintptr_t kClockBase = 0x6C8CD68;
 uintptr_t kClockFrac = 0x6C8CD70;
 uintptr_t kClockBias = 0x6D69438;
@@ -183,7 +190,7 @@ void decide_one(const cfl::Enemy& e, const float (&rpos)[3], const float (&rquat
     if (keepalive && pol.keepalive_same_pose) st.keepalives.fetch_add(1, std::memory_order_relaxed);
     st.last_key.store(e.key, std::memory_order_relaxed);
     if (send) {
-        // 3576's MoveActorAck is 3527's (game::wire_build()).
+        // 3576's and 3663's MoveActorAck are 3527's (game::wire_build()).
         const bool sent = game::wire_build() == game::Build::v3527
                               ? server_push_extra(cfl::make_move_ack_3527(e.key, pos, quat, vel, ts))
                               : server_push_extra(cfl::make_move_ack(e.key, pos, quat, vel, ts));
@@ -547,7 +554,8 @@ bool combat_follow_start(const std::string& raw, const std::string& raw_v2) {
     }
     if (g_started.exchange(true)) return false;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    if (g_base != g2976::kImageBase || (!game::legacy_layout() && game::current_build() != game::Build::v3576)) {
+    if (g_base != g2976::kImageBase || (!game::legacy_layout() && game::current_build() != game::Build::v3576 &&
+                                        game::current_build() != game::Build::v3663)) {
         log::warn("CombatFollow: unexpected image base or build; off");
         return false;
     }
@@ -559,6 +567,10 @@ bool combat_follow_start(const std::string& raw, const std::string& raw_v2) {
         kClockBase = 0x70DBF68;
         kClockFrac = 0x70DBF78;
         kClockBias = 0x71C03A8;
+    } else if (game::current_build() == game::Build::v3663) {
+        kClockBase = 0x71600E8;
+        kClockFrac = 0x71600F0;
+        kClockBias = 0x7245468;
     }
     if (pv2.mode != Mode::Off) {
         LARGE_INTEGER f;

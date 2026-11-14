@@ -4,6 +4,6 @@
 
 namespace cdmp::native_opcode {
 inline constexpr uint32_t kMappingVersion = 1;
-inline constexpr uint64_t kMappingFingerprint = 0x01cc7f9fb4ee59f6ULL;
-// Full canonical SHA-256: 01cc7f9fb4ee59f6752b4144b053c689f168e289a63144dd12664ce4b8fca3b6
+inline constexpr uint64_t kMappingFingerprint = 0xdc593f98104ccfccULL;
+// Full canonical SHA-256: dc593f98104ccfcc0cf9f86b0c028345bb99a95a2faaa06d94e3c258e5ff3497
 } // namespace cdmp::native_opcode

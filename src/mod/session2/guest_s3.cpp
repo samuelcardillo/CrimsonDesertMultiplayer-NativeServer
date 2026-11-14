@@ -89,8 +89,16 @@ constexpr uintptr_t kSpawnCall = 0x48B18F;
 // there); the only place within +0x3000 of 3527's where kNullConsumerBytes is followed at +0x3B by kNullRead3527Bytes
 // (0x251EDCB, the same +0xE8 read). Its first 0x3B bytes save r8 and do not change it.
 constexpr uintptr_t kNullConsumer3576 = 0x251ED90, kNullRead3576 = 0x251EDCB;
+// Build 1.0.0.3663 (static, 2026-11-13; never run): kNullRead3527Bytes occurs once in the whole code section, at
+// 0x259075B, and kNullConsumerBytes is 0x3B before it: the consumer 0x2590720 (.pdata begins there; 3576 + 0x71990),
+// whose first 0x3B bytes save r8 (mov r15,r8) and do not change it; it then reads CC+8 (0x25907A0) and the layers
+// CC+0x88 / +0x90 (0x25907EF / 0x2590812) as before. Its only caller 0x259070E (rcx = CC, dl, r8 = the snapshot).
+constexpr uintptr_t kNullConsumer3663 = 0x2590720, kNullRead3663 = 0x259075B;
 
 Site null_consumer_site() noexcept {
+    if (game::current_build() == game::Build::v3663) {
+        return {kNullConsumer3663, kNullConsumerBytes, 5, "null-action consumer"};
+    }
     if (game::current_build() == game::Build::v3576) {
         return {kNullConsumer3576, kNullConsumerBytes, 5, "null-action consumer"};
     }
@@ -102,13 +110,17 @@ Site null_consumer_site() noexcept {
 
 uintptr_t null_read_rva() noexcept {
     const game::Build b = game::current_build();
-    return b == game::Build::v3576 ? kNullRead3576 : b == game::Build::v3527 ? 0x251DFFB : kNullRead;
+    return b == game::Build::v3663   ? kNullRead3663
+           : b == game::Build::v3576 ? kNullRead3576
+           : b == game::Build::v3527 ? 0x251DFFB
+                                     : kNullRead;
 }
 
 std::span<const uint8_t> null_read_bytes() noexcept {
     const game::Build b = game::current_build();
-    return b == game::Build::v3527 || b == game::Build::v3576 ? std::span<const uint8_t>{kNullRead3527Bytes}
-                                                                : std::span<const uint8_t>{kNullReadBytes};
+    return b == game::Build::v3527 || b == game::Build::v3576 || b == game::Build::v3663
+               ? std::span<const uint8_t>{kNullRead3527Bytes}
+               : std::span<const uint8_t>{kNullReadBytes};
 }
 
 // Offsets (build 2976; p8-raiz-invitado.md §5, companeros.md).
@@ -429,8 +441,13 @@ void refresh_local() noexcept {
     try {
         // Build 1.0.0.3576 (static, 2026-11-06; not yet run): no reader profile yet; world slot 0x71C0100
         // (core_globals_3576.json), ClientActorManager vtable 0x5946C40 (RTTI).
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): world slot 0x72451C0 (profile_s2.h rva3663), ClientActorManager
+        // vtable 0x59C2760 (RTTI).
         uintptr_t world_slot = 0, vt_mgr = 0;
-        if (game::current_build() == game::Build::v3576) {
+        if (game::current_build() == game::Build::v3663) {
+            world_slot = 0x72451C0;
+            vt_mgr = 0x59C2760;
+        } else if (game::current_build() == game::Build::v3576) {
             world_slot = 0x71C0100;
             vt_mgr = 0x5946C40;
         } else if (const auto* profile = game::reader_profile()) {
@@ -571,14 +588,16 @@ void rearm_crash_filter();
 DWORD WINAPI install_thread(LPVOID) {
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     const game::Build build = game::current_build();
-    if (build == game::Build::unsupported || !(game::legacy_layout() || build == game::Build::v3576)) {
+    if (build == game::Build::unsupported ||
+        !(game::legacy_layout() || build == game::Build::v3576 || build == game::Build::v3663)) {
         log::error("GuestS3: unsupported game build; guest_s3_diag / guest_crash_dump / guest_update_guard stay off");
         return 0;
     }
-    if ((build == game::Build::v3527 || build == game::Build::v3576) && g_diag.exchange(false)) {
+    if ((build == game::Build::v3527 || build == game::Build::v3576 || build == game::Build::v3663) &&
+        g_diag.exchange(false)) {
         log::warn("GuestS3: optional guest_s3_diag probes are not ported to build {} and stay off; the required "
                   "guest update guard remains enabled",
-                  build == game::Build::v3576 ? 3576 : 3527);
+                  build == game::Build::v3663 ? 3663 : build == game::Build::v3576 ? 3576 : 3527);
     }
     if (!read_rsrc()) {
         log::error("GuestS3: the game's section table has no .rsrc; nothing is installed");

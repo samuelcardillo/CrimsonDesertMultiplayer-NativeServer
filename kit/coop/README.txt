@@ -4,11 +4,22 @@ CRIMSON DESERT MULTIPLAYER - CO-OP (TEST VERSION)
 Two players in one world: the world is the HOST's, and the GUEST joins it with their own character.
 This is an unofficial mod. Use it at your own risk.
 
-THIS ZIP IS FOR 1.0.0.3576 (Steam's update of 6 November 2026, evening). On 3576, with two copies of the game on one
-PC, these were checked: joining, the guest going back to the title and joining again, SHOPKEEPERS (Delkin: the menu
-and buying Water), MARKET STALLS (buying a box) and HOUSES (the host's whole house on the guest's screen, door and
-window shutters included, and the host's building changes live). Everything else in the list below was checked on the version before (1.0.0.3549) and not yet again
-on 3576: please tell us if something that worked before no longer does.
+THIS ZIP IS FOR 1.0.0.3663 (Steam's update of 13 November 2026, evening). Both PCs need that version. 3663 changed a
+lot inside the game, so the mod was ported to it again. On 3663, with two copies of the game on one PC, these were
+checked: JOINING (the guest loads into the host's world), the guest going back to the title and JOINING AGAIN, the
+weather, SHIPS (the host sailing with the guest on board, see below), the HOST'S HOUSE as the guest sees it (the
+whole house and the pets; the building mode was not tried), SHOPKEEPERS (Delkin in Hernand: the guest opened the
+shop, bought a Water with its own money, sold it back and left) and MARKET STALLS (the guest bought a Harvest Sack
+and a Rosemary from two stalls, holding E), with no error. Not tried on 3663 yet: mounts and fighting; please tell
+us if something that worked before no longer does. Looks only: next to the host's house the guest's ground looked
+wet (puddles) while the host's was dry. And the guest always shows the HOST's weather and daylight as the host's own
+camera has them: while the host is outdoors, a room the guest walks into is lit like the outdoors (a blue tint), and
+while the host is inside a building the guest's sky may look dimmer. It matches again when you are in the same place.
+
+Checked on 1.0.0.3576 (the version before), with two copies of the game on one PC: joining, the guest going back to
+the title and joining again, SHOPKEEPERS (Delkin: the menu and buying Water), MARKET STALLS (buying a box) and HOUSES
+(the host's whole house on the guest's screen, door and window shutters included, and the host's building changes
+live).
 
 Checked on 1.0.0.3549, with two copies of the game on one PC:
 - Joining, seeing each other, moving, calling a mount, riding and dismounting.
@@ -50,6 +61,27 @@ Checked on 1.0.0.3549, with two copies of the game on one PC:
   the porch, the plot as it was before the house was built (HOST's cdmp.ini, [session2]: housing_share_level_states=1).
   Known gap: a door the host opens may still look closed for the guest. The guest should not try to build in the
   host's house.
+- SHIPS (checked on 1.0.0.3663, 14 November, two copies on one PC): when the HOST sails its ship, the guest sees it
+  where the host has it, moving and turning with it (drawn about 0.3 seconds behind: about 1.5 m at cruising speed,
+  5 to 8 m at full sail), and the guest can board it and ride along. Checked: the guest climbed the ladder at
+  the mooring, stood and walked on the deck while the host sailed at up to 14 m/s, and stayed on board.
+  NEW in v23:
+  * The ship's wheel. On the guest's screen it used to float about 3 m above the deck; it now sits in its mount, with
+    the host's hands on it.
+  * Both players on board. Each player now sees the other standing on the ship. Before, the host saw a guest who
+    stood still on the deck left behind in the water (100 m behind at full sail), and the guest saw the host beside
+    the wheel instead of at it. Measured after the change: within about 0.5 m of the right spot for both.
+  * Walking on the deck. Before, a player walking on the deck looked frozen to the other player (the game does not
+    send those positions); now each mod tells the other where its player stands on the ship.
+  * A crash of the guest's game while joining with the host's ship out (it happened once in seven joins) now has a
+    guard. The guard is in place but has not had to act yet; if the guest's game still closes while joining, join
+    again.
+  BOTH PCs need this same kit: v23 changes how the two mods talk to each other, so a PC with v22 and a PC with v23
+  will not play together.
+  Not covered yet: the sails look the same for both only by chance (their state is not sent). The guest's own ship as
+  the host sees it: not tested.
+  To turn all of it off: [session2] vehicle_follow=0 in the GUEST's cdmp.ini (and in the HOST's for the "both on
+  board" part).
   If the guest's game crashes near the house, set the HOST's cdmp.ini, [session2]: housing_share_drop_gimmicks=waiting
   (the guest then loses the door, the shutters and the furniture: the doorway looks like a wall), or
   housing_share_rekey=0 (no walls at all). If it crashes when the host changes the house, set the GUEST's cdmp.ini,
@@ -87,6 +119,12 @@ KNOWN PROBLEMS
   guest_seq_route=0, HOST's observer_seq_copy=0.
 - HOUSES: if the guest's game misbehaves near a house, turn it off in the HOST's cdmp.ini, [session2]:
   housing_share=0 (the guest then sees its own houses, as before).
+- SHIPS: if the guest's game misbehaves near the host's ship, set the GUEST's cdmp.ini, [session2]: vehicle_follow=0
+  (the guest then sees its own copy of the ship, as before: it stays behind or drifts away).
+- SHIPS: on the guest, two of the ship's mast lanterns can stay floating in the air where the ship was moored after
+  the host sails away (seen at dusk). They belong to the guest's own copy of the ship, which stays there. Cosmetic.
+- SHIPS: boarding is only checked at the mooring. If the guest falls through the deck or cannot climb the ladder of a
+  ship that is already under way, wait for the host to stop.
 - One HOST crash while a guest was joining (2026-11-06, two copies on one PC): inside the game's own drawing of static
   objects, not in a part of the mod we know of. Seen once in about 13 joins that day.
 - MARKET STALLS: if buying or carrying misbehaves for the guest, turn it off in the GUEST's cdmp.ini, [session2]:
@@ -98,7 +136,7 @@ KNOWN PROBLEMS
 
 1. REQUIREMENTS (BOTH PLAYERS)
 ------------------------------
-- Crimson Desert 1.0.0.3576 (right-click bin64\CrimsonDesert.exe > Properties > Details: File version).
+- Crimson Desert 1.0.0.3663 (right-click bin64\CrimsonDesert.exe > Properties > Details: File version).
   With another version the mod turns itself off, and if Steam updates the game you will need a new zip.
 - Each player has their own Steam account and copy of the game. You must be Steam friends, and BOTH USE THE SAME ZIP.
 - The guest needs a save of their own: they join with the most recent one and its character. Joining with no save at
@@ -112,7 +150,21 @@ KNOWN PROBLEMS
 
 2. INSTALLING (BOTH PLAYERS)
 ----------------------------
-In Steam: right-click the game > Manage > Browse local files > bin64 folder.
+THE EASY WAY: THE LAUNCHER (new on 14 November). Unzip the whole zip into a folder of its own (not the game's) and
+start cdmp_launcher.exe from that folder. It finds the game through Steam. Type your name, choose how to play and
+press the big button: it copies the mod into the game folder, writes your settings and starts the game through Steam.
+    Join a friend   You are the GUEST. "Automatic" connects to the only Steam friend who is playing; with "Add a
+                    friend..." you pick the host by name, or paste their SteamID64.
+    Host a game     You are the HOST. You can also say which friend may join.
+    Single-player   Takes the mod out of the game folder and starts the game as Steam installed it. The mod comes
+                    back when you choose Join or Host again.
+If the kit is for another version of the game, the launcher says so instead of starting a game with the mod off.
+Checked so far: finding the game, and installing, writing the settings and removing on a COPY of the game folder.
+Not checked yet: starting the real game from it, and getting an update over the internet. If it does anything odd,
+install by hand as below and tell us. Windows may warn that cdmp_launcher.exe comes from an unknown publisher (it
+is not signed): More info > Run anyway. The cdmp.ini you had before is kept as cdmp.ini.before-launcher.
+
+BY HAND, WITHOUT THE LAUNCHER: in Steam, right-click the game > Manage > Browse local files > bin64 folder.
 Copy these there:
     winmm.dll   (loads the mod)
     cdmp.asi    (the mod)
@@ -150,6 +202,8 @@ to Private). Then the guest must put the host's SteamID64 (17 digits) in cdmp.in
     peer_steamid=7656119xxxxxxxxxx
 The guest's cdmp.log lists each friend who is playing, with their SteamID64. The host's SteamID64 is on their Steam
 account page. Do not set Steam to Invisible or Offline while playing.
+With the launcher there is no file to edit: "Join a friend" > "Add a friend..." and pick the host. The launcher
+also shows your own SteamID64 with a Copy button, to send to the other player.
 
 
 4. MOUNTS
@@ -203,4 +257,5 @@ If the guest cannot get in: on joining they upload their save to the host and ha
 can fail. Set guest_own_save=0 in cdmp.ini on both PCs: the guest then plays a copy of the host's character and their
 progress is not saved.
 
-To uninstall: delete winmm.dll, cdmp.asi and cdmp.ini from bin64.
+To uninstall: delete winmm.dll, cdmp.asi and cdmp.ini from bin64 (the launcher's "Single-player" removes the first
+two for you).

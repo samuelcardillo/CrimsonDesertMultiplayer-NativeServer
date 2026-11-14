@@ -1,5 +1,5 @@
 #pragma once
-// [session2] interact_gate = 0 (default) | probe | 1, BOTH roles (bypass on the guest only), build 3549 only.
+// [session2] interact_gate = 0 (default) | probe | 1, BOTH roles (bypass on the guest only), builds 3549, 3576 and 3663 (static).
 // interact_gate_errors = hex error values (the runtime values of eErrNo* globals) the guest lets pass with 1.
 // interact_gate_pass = the result code written then (default 3).
 //

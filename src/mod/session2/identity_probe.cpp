@@ -108,6 +108,16 @@ constexpr uintptr_t kLoad3576 = 0x2225E90;
 constexpr uintptr_t kPhases3576 = 0x2BB19D0;
 constexpr uintptr_t kStatusVtable3576 = 0x5EE9828;
 constexpr uintptr_t kStatusLoad3576 = 0x2BB06B0;
+// Build 1.0.0.3663 (static, 2026-11-13; never run). The load entry: kLoadHead unique in the code section at 0x22951B0
+// (3576 +0x6F320, .pdata 0x22951B0..0x2295FEE; it still reads the actor's descriptor at [r14+0x88] and the slot's
+// +0x69C). The login phases: kPhases3527Head unique at 0x2C17410 (3576 +0x65A40, .pdata 0x2C17410..0x2C178E7).
+// ServerStatusActorComponent's vtable 0x5F63430 by RTTI; its +0x50 is the 5-byte thunk 0x2C160B0 -> protected
+// 0xE9F4150, the same Status load: mov rax,[rdi+0x90] (0xE9F419E) ; movabs rcx,0x7FFF...FFFF, so Status -> u64*
+// characterNo is +0x90 as in 3527.
+constexpr uintptr_t kLoad3663 = 0x22951B0;
+constexpr uintptr_t kPhases3663 = 0x2C17410;
+constexpr uintptr_t kStatusVtable3663 = 0x5F63430;
+constexpr uintptr_t kStatusLoad3663 = 0x2C160B0;
 
 struct IdentityProbeProfile {
     uintptr_t load, phases, status_vtable, status_load;
@@ -127,10 +137,14 @@ const IdentityProbeProfile* identity_probe_profile() noexcept {
     static constexpr IdentityProbeProfile current3576{kLoad3576, kPhases3576, kStatusVtable3576, kStatusLoad3576,
                                                        kLoadHead, sizeof kLoadHead, kPhases3527Head,
                                                        sizeof kPhases3527Head, false};
+    static constexpr IdentityProbeProfile current3663{kLoad3663, kPhases3663, kStatusVtable3663, kStatusLoad3663,
+                                                       kLoadHead, sizeof kLoadHead, kPhases3527Head,
+                                                       sizeof kPhases3527Head, false};
     switch (game::current_build()) {
         case game::Build::v2976: return &old;
         case game::Build::v3527: return &current;
         case game::Build::v3576: return &current3576;
+        case game::Build::v3663: return &current3663;
         default: return nullptr;
     }
 }
@@ -233,11 +247,15 @@ std::string character_no(uintptr_t actor) {
 // (tools/porting/data/identity_fields_3527.txt). 3576 (static, 2026-11-06; not yet run): the same compare in the same
 // load 0xE390C80 (0xE390CEF), and the one global CommonStatusActorComponent::LoadSaveData 0x18C9190 writes at 0x18C93A4
 // (the 2976 site's bytes, mov eax,[r11+0x60] ; mov [rip+..],eax). 0: unknown (logged as unreadable).
+// Build 1.0.0.3663 (static, 2026-11-13; never run): 0x7160118, compared with 4 by the Status load 0xE9F4150 at
+// 0xE9F41BF, and the global the only `mov eax,[r11+0x60] ; mov [rip+..],eax` site writes (0x192EC51, in
+// CommonStatusActorComponent::LoadSaveData 0x192EA40); 21 code references.
 uintptr_t restore_version_rva() {
     switch (game::current_build()) {
         case game::Build::v2976: return kRestoreVersion;
         case game::Build::v3527: return 0x70D9E90;
         case game::Build::v3576: return 0x70DBF98;
+        case game::Build::v3663: return 0x7160118;
         default: return 0;
     }
 }
@@ -635,7 +653,9 @@ IdWho identity_who(uintptr_t actor, const IdUsers& users, uintptr_t user_vtable,
 
 uint32_t identity_status_number_offset() noexcept {
     const auto b = game::current_build();
-    return identity_status_number_offset_for_build(b == game::Build::v3527 || b == game::Build::v3576);
+    // 3663: +0x90 too (the Status load 0xE9F4150, above).
+    return identity_status_number_offset_for_build(b == game::Build::v3527 || b == game::Build::v3576 ||
+                                                   b == game::Build::v3663);
 }
 
 bool identity_character_no_at(uintptr_t actor, uint64_t& no, uint32_t status_number_offset) {

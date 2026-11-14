@@ -185,6 +185,10 @@ std::vector<uint8_t> encode(const Packet& packet) {
             w.f32(b.health);
             w.f32(b.health_max);
             w.u8(b.flags);
+            w.u32(b.self_key);
+            w.u32(b.anchor);
+            write_vec3(w, b.anchor_pos);
+            write_quat(w, b.anchor_rot);
         }
         void operator()(const GameEvent& b) const {
             w.u8(static_cast<uint8_t>(b.kind));
@@ -265,6 +269,10 @@ std::optional<Packet> decode(std::span<const uint8_t> bytes) {
             b.health = r.f32();
             b.health_max = r.f32();
             b.flags = r.u8();
+            b.self_key = r.u32();
+            b.anchor = r.u32();
+            b.anchor_pos = read_vec3(r);
+            b.anchor_rot = read_quat(r);
             p.body = b;
             break;
         }

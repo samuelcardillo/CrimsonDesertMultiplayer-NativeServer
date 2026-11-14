@@ -283,6 +283,24 @@ constexpr uintptr_t kClearLobbySite3576 = 0x2EE2AD2;
 constexpr uintptr_t kClearListSite3576 = 0x2EE2AF9;
 constexpr uintptr_t kStatusVtable3576 = 0x5EE9828;
 constexpr uintptr_t kStatusLoad3576 = 0x2BB06B0;
+// Build 1.0.0.3663 (static, 2026-11-13; never run). Vtables by RTTI (vtable_map_3576_3663.json): lobby 0x5EF5638 ->
+// 0x5F6F2E8, its slot +0x50 = LoadSaveData 0x2E879A0 (3527's 0x2E1F600 + 0x683A0; kLobbyLoad3527Head unchanged; .pdata
+// to 0x2E87FF9). Inside, the function is 0xB bytes shorter before the constant: `movabs rax,7FFF.. ; mov [rbp-0x40],rax`
+// (kLobbyConstant3527Bytes) at 0x2E87DB0 (+0x410, 3527 +0x41B) and the add-entry call at 0x2E87E10 (+0x470, 3527 +0x47B;
+// r8 = &[rbp-0x40], new rel32) to the thunk 0x237EA60 (jmp 0xCF99D80 in the protected section: the same [comp+0x18]
+// list, stride 0xD0, number at +0). The 3093's sites 0x2EE1E62 / 0x2EE1E89 -> 0x2F4AF52 / 0x2F4AF79 (+0x690F0, 3527's
+// bytes; the first is unique near the shift). Status 0x5EE9828 -> 0x5F63430, slot +0x50 = 0x2C160B0, a thunk to the
+// protected 0xE9F4150, which still writes the constant through [Status+0x90] at 0xE9F419E (identity_probe.cpp's +0x90
+// on 3663). Server realm: TLS +0x1EB, set at 0x2A0E1B6 (3527 0x29AAF36 + 0x63280, same bytes).
+constexpr uintptr_t kLobbyLoad3663 = 0x2E879A0;
+constexpr uintptr_t kLobbyVtable3663 = 0x5F6F2E8;
+constexpr uintptr_t kLobbyConstant3663 = 0x2E87DB0;
+constexpr uintptr_t kLobbyAddCall3663 = 0x2E87E10;
+constexpr uint8_t kLobbyAddCall3663Bytes[] = {0xE8, 0x4B, 0x6C, 0x4F, 0xFF};  // 0x2E87E10: call 0x237EA60
+constexpr uintptr_t kClearLobbySite3663 = 0x2F4AF52;
+constexpr uintptr_t kClearListSite3663 = 0x2F4AF79;
+constexpr uintptr_t kStatusVtable3663 = 0x5F63430;
+constexpr uintptr_t kStatusLoad3663 = 0x2C160B0;
 constexpr uint32_t kLoginMgrActors = 0xB8;
 constexpr uint32_t kLoginMgrCount = 0xC0;
 constexpr uint16_t kOpLoginUser = 2490;
@@ -317,10 +335,17 @@ const IdentityProfile* identity_profile() noexcept {
         0, 0, 0, 0, kLobbyLoad3527Head, sizeof kLobbyLoad3527Head,
         kLobbyConstant3527Bytes, sizeof kLobbyConstant3527Bytes,
         kLobbyAddCall3576Bytes, sizeof kLobbyAddCall3576Bytes, 0x1EB};
+    static constexpr IdentityProfile current3663{
+        kLobbyLoad3663, kLobbyVtable3663, kLobbyConstant3663, kLobbyAddCall3663,
+        kClearLobbySite3663, kClearListSite3663, kStatusVtable3663, kStatusLoad3663,
+        0, 0, 0, 0, kLobbyLoad3527Head, sizeof kLobbyLoad3527Head,
+        kLobbyConstant3527Bytes, sizeof kLobbyConstant3527Bytes,
+        kLobbyAddCall3663Bytes, sizeof kLobbyAddCall3663Bytes, 0x1EB};
     switch (game::current_build()) {
         case game::Build::v2976: return &old;
         case game::Build::v3527: return &current;
         case game::Build::v3576: return &current3576;
+        case game::Build::v3663: return &current3663;
         default: return nullptr;
     }
 }

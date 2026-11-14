@@ -1,5 +1,5 @@
 #pragma once
-// housing_trace (build 3576, diagnóstico, solo observa): cuenta las llamadas a las funciones de vivienda del cliente
+// housing_trace (build 3576; 3663 sin portar, diagnóstico, solo observa): cuenta las llamadas a las funciones de vivienda del cliente
 // (los métodos de pa::VHousingManager y las de sus registros) y registra las primeras de cada una con sus argumentos y
 // quién la llamó. Sirve para encontrar qué función construye los muros de una casa al cargar su escenario.
 #include <cstdint>

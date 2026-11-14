@@ -48,6 +48,22 @@ constexpr Addrs k3549{0x6CCA40, 0xE8BD20, 0x255C110, 0x255C800, 0x2202A60, 0x21F
 constexpr Addrs k3576{0x6CD0A0, 0xE8C140, 0x255CEE0, 0x255D5D0, 0x22036A0, 0x21FEA50, 0x2BA2090,
                       0x5D457E8, 0x5D45850, 0x5D458B8, 0x5D45920, 0x5D45988, 0x5D459F0, 0x5D45A58, 0x5D45AC0,
                       0x5D45B28, 0x5D451D0, 0x5D46128};
+// Build 1.0.0.3663 (static, 2026-11-13; never run). Every hooked head is 3549's (checked before each hook, as before):
+// - UIControl dispatch 0x6F8D30 (kDispatchHead3576 of guest_shop_window, unique; [rcx+0x1A] first; callers read the
+//   list [[[0x7245210]+0x28]+0xA38]) and the window's setter 0xEC5F40 = slot +0x498 of UIGamePlayControlRootNpcBuyStore2
+//   0x5A6AE58 (RTTI);
+// - the InputBlock / UIControl vf8 thunks 0x25CE760 / 0x25CEE70 = slot 8 of StageChart_Function_InputBlock 0x5DC1240 /
+//   _UIControl 0x5DC11D8 (mov rax,[rdx] ; mov r8,rcx ; mov rcx,[rax+0x60] ; jmp [rax+0x158] / [+0x160]);
+// - the executor 0x2272840 (.pdata, head kExecBytes): r15 = rcx the node, [node+0x38] -> +0x48 / +0x50 (0x22728C9),
+//   the functions' +0x10 / +0x14 windows, call [rax+0x40] (0x2272A3E), node +0x68 / +0x78 (+0x60 / +0x70 lists), r9b
+//   the timed phase; the other function with that head 0x450 after it (0x2272C90), as in 3576;
+// - the node event 0x226DB80 (head kNodeEventBytes; [rcx+0x38] its definition, the event u32* at entry [rsp+0x28], the
+//   u8 at [rsp+0x30], the pointer at [rsp+0x40]), called at +0x1950 (0x2C09310; 3576 +0x1940) by the stage step
+//   0x2C079C0 (head kStageStepBytes, 0x1BA5 B; the only function with that head and a call to the node event there);
+// - the StageChart_Function_* vtables by RTTI (vtable_map_3576_3663.json).
+constexpr Addrs k3663{0x6F8D30, 0xEC5F40, 0x25CE760, 0x25CEE70, 0x2272840, 0x226DB80, 0x2C079C0,
+                      0x5DC0FD0, 0x5DC1038, 0x5DC10A0, 0x5DC1108, 0x5DC1170, 0x5DC11D8, 0x5DC1240, 0x5DC12A8,
+                      0x5DC1310, 0x5DC0A58, 0x5DC1B48};
 Addrs g_a = k3549;
 // mov r11,rsp ; mov [r11+0x18],rbx
 constexpr uint8_t kUiControlBytes[7] = {0x4C, 0x8B, 0xDC, 0x49, 0x89, 0x5B, 0x18};
@@ -415,13 +431,16 @@ DWORD WINAPI worker(LPVOID) {
 
 void shop_ui_trace_start(const std::string& mode, bool guest) {
     if (mode != "1") return;
-    if (!game::is_3549() && !game::is_3576()) {
-        log::warn("ShopUiTrace: shop_ui_trace is for builds 3549 and 3576 only; off");
+    if (!game::is_3549() && !game::is_3576() && !game::is_3663()) {
+        log::warn("ShopUiTrace: shop_ui_trace is for builds 3549, 3576 and 3663 only; off");
         return;
     }
     if (g_started.exchange(true)) return;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    if (game::is_3576()) {
+    if (game::is_3663()) {
+        g_a = k3663;
+        g_world_slot = 0x72451C0;  // docs/research/port-3663.md (two AOB patterns)
+    } else if (game::is_3576()) {
         g_a = k3576;
         g_world_slot = 0x71C0100;  // core_globals_3576.json (no reader profile for 3576 yet)
     } else if (const auto* profile = game::reader_profile()) {

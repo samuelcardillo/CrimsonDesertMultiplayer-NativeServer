@@ -144,6 +144,31 @@ inline uint32_t vf40_ret_of_3576(uint32_t rva) {
     }
     return rva;
 }
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the same callers, each `call [rax+0x40]` at the same offset of its
+// function as in 3576, except the respawn one and the fast-travel step (their functions changed a little before the
+// call). Function starts from the Trocs' vtable slot 2 by RTTI (2112 0x2D3C910, 2369 0x2D3D520, 2372 0x2D3C650, 2477
+// 0x2D3C060, 2354 0x2D3D250, 2051 0x2F40530, 2215 0x2D3E000) or from their calls.
+inline constexpr Vf40Ret3527 kVf40Rets3663[] = {
+    {0x2E0256E, kRespawnVf40Ret},            // 0x2E02450 (13 callers, as 3527's): `call 0x2DFF2F0` (vf40) at +0x119
+                                             // (3576 +0x127); mov rcx,r14 (the field) before it
+    {0x2F5770F, kTriggerVf40Ret},            // 0x2F576B0 +0x5F, from the 2112 handler 0x2D3C910
+    {0x2BE074B, kQuestEventVf40Ret},         // 0x2BE0710 +0x3B (thunk 0x2C021A0 registered by vfB0 0x2BDA410)
+    {0xEA6E9D7, kChallengeDiscoverVf40Ret},  // 0xEA6E860 (the 2215 handler 0x2D3E000's jmp), protected code: the only
+                                             // call [rax+0x40] in its first 0x300 bytes, at +0x174 as in 3576
+    {0x2F405AD, kChallengeTimerVf40Ret},     // the 2051 handler 0x2F40530 +0x7D
+    {0x2F578D0, kChangeCharacterVf40Ret},    // 0x2F57880 +0x50, from the 2369 handler 0x2D3D520
+    {0x2F5744D, kTraceVf40Ret},              // 0x2F573F0 +0x5D, from the 2372 handler 0x2D3C650
+    {0x2D3C3A3, kMissionUiVf40Ret},          // the 2477 handler 0x2D3C060 +0x343
+    {0x2D3D391, kMissionAlarmVf40Ret},       // the 2354 handler 0x2D3D250 +0x141
+    {0x2B58C1F, 0x2896347},                  // the fast-travel apply 0x2B586B0's quest step: its only call [rax+0x40],
+                                             // +0x56F (3576 +0x572)
+};
+inline uint32_t vf40_ret_of_3663(uint32_t rva) {
+    for (const Vf40Ret3527& r : kVf40Rets3663) {
+        if (r.native == rva) return r.logical;
+    }
+    return rva;
+}
 // Measured only at the ingress (the open decision about the guest's dialog choices, politica-misiones.md).
 inline constexpr uint16_t kOpQuestDialogEnd = 2342, kOpSetQuestDialog = 2857, kOpStageBranchState = 2436,
                           kOpUpdateStageChartEvent = 2591;

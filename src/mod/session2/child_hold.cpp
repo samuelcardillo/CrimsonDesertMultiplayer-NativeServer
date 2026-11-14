@@ -108,10 +108,12 @@ std::optional<uintptr_t> sector_with(const M& m, uintptr_t actor) {
     const auto back = ts ? m.template rd<uintptr_t>(*ts + hold::kTsActor) : std::nullopt;
     if (!back || *back != actor) return std::nullopt;
     // 3527's +0x548 on 3527/3549 and on 3576 (static, 2026-11-06: ToNearExceptOneControl 0x2D05490 and
-    // ToNearExceptOneSelf 0x2D05360 read it with the same bytes, 3527's sites + 0xC70).
+    // ToNearExceptOneSelf 0x2D05360 read it with the same bytes, 3527's sites + 0xC70). 3663 (static, 2026-11-13):
+    // the same +0x548 read at 0x2D6C3E0 / 0x2D6C2B0 (ToNearExceptOneControl / ToNearExceptOneSelf vf1).
     const game::Build build = game::current_build();
-    const uint32_t sector_offset = build == game::Build::v3527 || build == game::Build::v3576
-                                       ? hold::kTsSector3527 : hold::kTsSector;
+    const uint32_t sector_offset =
+        build == game::Build::v3527 || build == game::Build::v3576 || build == game::Build::v3663
+            ? hold::kTsSector3527 : hold::kTsSector;
     return m.template rd<uintptr_t>(*ts + sector_offset);
 }
 
@@ -136,7 +138,8 @@ template <class M>
 std::optional<uintptr_t> find_actor_with(const M& m, uintptr_t sam, uint32_t key) {
     // 3527 SAM vf4 (0x2D10C10, vtable 0x5EECE88): 0x2D10CCD..0x2D10D64
     // confirms the helper's index mask, +98/+9C/+A8/+B0 map and holder +4/+8. 3576 (static): the same reads in vf4
-    // 0x2D11880 (vtable 0x5EEF0A8), 0x2D1193D..0x2D11994.
+    // 0x2D11880 (vtable 0x5EEF0A8), 0x2D1193D..0x2D11994. 3663 (static, 2026-11-13): vf4 0x2D787E0 (vtable 0x5F69100),
+    // the same reads at 0x2D788A4..0x2D788F0.
     auto actor = sam_find_actor_with(m, sam, key);
     if (!actor) actor = sam_find_actor_with(m, sam, key);  // the map has no lock here: ask twice
     return actor;
@@ -946,6 +949,36 @@ constexpr HoldCodeCheck kHoldChecks3576[] = {
     {0x2BE1530, kStartActionHead3527, "StartActionReq::vf2"},
     {0x2519E2A, kRestoreWriteBytes3527, "the restore byte's writer"},
     {0x29ABB86, kServerRealmSetBytes3527, "ServerRunThread's realm mark"}};
+// Build 1.0.0.3663 (static, 2026-11-13; never run). Every site found again inside the same function (.pdata, 3576's
+// sizes), with 3527's bytes except three rel32 (new arrays below):
+//   NotifyAppear 0x2D96BB0 -> 0x2DFE6D0 (+0x67B20, 0x31F bytes; head, session and key vectors with 3527's bytes); its key
+//     finder 0x2D9F1D0 -> 0x2E06E00 (+0x67C30, so the call at 0x2DFE85F is now E8 9C 85 00 00; the finder still takes
+//     TLS block 0 +0x1EB at 0x2E06E3B);
+//   OnActorSectorChanged 0x2D8ED90 -> 0x2DF67A0 (+0x67A10, 0xFED bytes): the exe's only rel32 calls to 0x2DFE6D0 are its
+//     0x2DF6D9B and 0x2DF6F9C (3527's +0x5FB / +0x7FC, new rel32); sector observers +0x68/+0x70 (0x2DF694F / 0x2DF6953)
+//     and owner +0xA0 (0x2DF70E5) read as on 3527;
+//   StartActionReq::vf2 0x2BE08C0 -> 0x2C46FA0 (+0x666E0, 0x6D8 bytes) = slot 2 of .?AVTrocTrStartActionReq@pa@@'s vtable
+//     0x5F682B8 (3576's 0x5EEE318, vtable_map_3576_3663.json); info +0x88 (0x2C473BB), components +0x68 (0x2C47416) and
+//     CC +0x40 (0x2C4743D) read as on 3527;
+//   the restore writer 0x251905A -> 0x258B7AA (+0x72750; in 0x258A230, which is 0x60 bytes shorter than on 3576; the
+//     8 bytes are unique in the code section: `mov rax,[r15+0x40] ; mov byte [rax+0x30],1`);
+//   ServerRunThread's realm mark 0x29AAF36 -> 0x2A0E1B6 (+0x63280; function 0x2A0E1A0, 0x5C bytes): TLS +0x1EB = 1;
+//   TransformSync sector +0x548: ToNearExceptOneControl / ToNearExceptOneSelf vf1 (0x2D6C360 / 0x2D6C230, profile_s2.h)
+//     read [TS+0x548] at 0x2D6C3E0 / 0x2D6C2B0 after TS = [components+0x1A0].
+// Not re-derived on 3663: the action logic's controller +0x90 (child_hold.h kActorController).
+constexpr uint8_t kNotifyFindCallBytes3663[] = {0xE8, 0x9C, 0x85, 0x00, 0x00};      // 0x2DFE85F: call 0x2E06E00
+constexpr uint8_t kCallerNewObserversBytes3663[] = {0xE8, 0x30, 0x79, 0x00, 0x00};  // 0x2DF6D9B: call 0x2DFE6D0
+constexpr uint8_t kCallerMovingUserBytes3663[] = {0xE8, 0x2F, 0x77, 0x00, 0x00};    // 0x2DF6F9C: call 0x2DFE6D0
+constexpr HoldCodeCheck kHoldChecks3663[] = {
+    {0x2DFE6D0, kNotifyAppearHead3527, "NotifyAppear"},
+    {0x2DFE7DC, kNotifyReadSessionsBytes3527, "NotifyAppear's session vector"},
+    {0x2DFE847, kNotifyReadKeysBytes3527, "NotifyAppear's key vector"},
+    {0x2DFE85F, kNotifyFindCallBytes3663, "NotifyAppear's key lookup"},
+    {0x2DF6D9B, kCallerNewObserversBytes3663, "OnActorSectorChanged's first call"},
+    {0x2DF6F9C, kCallerMovingUserBytes3663, "OnActorSectorChanged's second call"},
+    {0x2C46FA0, kStartActionHead3527, "StartActionReq::vf2"},
+    {0x258B7AA, kRestoreWriteBytes3527, "the restore byte's writer"},
+    {0x2A0E1B6, kServerRealmSetBytes3527, "ServerRunThread's realm mark"}};
 struct ChildHoldProfile {
     uintptr_t notify, action, action_vtable, caller_new, caller_moving;
     uint32_t tls_realm;
@@ -959,10 +992,14 @@ const ChildHoldProfile* child_hold_profile() noexcept {
     // 3576 (static, 2026-11-06; not yet run): kHoldChecks3576 above.
     static constexpr ChildHoldProfile current3576{0x2D97820, 0x2BE1530, 0x5EEE318,
         0x2D8FFFB, 0x2D901FC, 0x1EB, kHoldChecks3576};
+    // Build 1.0.0.3663 (static, 2026-11-13; never run): kHoldChecks3663 above.
+    static constexpr ChildHoldProfile current3663{0x2DFE6D0, 0x2C46FA0, 0x5F682B8,
+        0x2DF6D9B, 0x2DF6F9C, 0x1EB, kHoldChecks3663};
     switch (game::current_build()) {
         case game::Build::v2976: return &old;
         case game::Build::v3527: return &current;
         case game::Build::v3576: return &current3576;
+        case game::Build::v3663: return &current3663;
         default: return nullptr;
     }
 }

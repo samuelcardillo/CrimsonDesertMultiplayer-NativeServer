@@ -214,6 +214,7 @@ Config load_config(const std::wstring& ini_path) {
     c.s2_seq_marker_guard = read_uint(ini_path, L"session2", L"seq_marker_guard", 1) != 0;
     c.s2_seq_marker_trace = read_uint(ini_path, L"session2", L"seq_marker_trace", 0) != 0;
     c.s2_change_pivot_guard = read_uint(ini_path, L"session2", L"change_pivot_guard", 1) != 0;
+    c.s2_ride_null_guard = read_uint(ini_path, L"session2", L"ride_null_guard", 1) != 0;
     c.s2_focus_follow = read_uint(ini_path, L"session2", L"focus_follow", 1) != 0;
     c.s2_field_leave_guard = read_uint(ini_path, L"session2", L"field_leave_guard", 1) != 0;
     c.s2_docking_dedupe = read_uint(ini_path, L"session2", L"docking_dedupe", 1) != 0;
@@ -381,6 +382,8 @@ Config load_config(const std::wstring& ini_path) {
     c.s2_interact_gate_errors = narrow(read_string(ini_path, L"session2", L"interact_gate_errors", ""));
     c.s2_interact_gate_pass = narrow(read_string(ini_path, L"session2", L"interact_gate_pass", "3"));
     c.s2_interact_gate_types = narrow(read_string(ini_path, L"session2", L"interact_gate_types", "7"));
+    c.s2_vehicle_follow = narrow(read_string(ini_path, L"session2", L"vehicle_follow", "0"));
+    c.s2_vehicle_follow_delay_ms = read_uint(ini_path, L"session2", L"vehicle_follow_delay_ms", 300);
     c.s2_store_gate = narrow(read_string(ini_path, L"session2", L"store_gate", "0"));
     c.s2_guest_shop_branch = narrow(read_string(ini_path, L"session2", L"guest_shop_branch", "0"));
     c.s2_shop_ui_trace = narrow(read_string(ini_path, L"session2", L"shop_ui_trace", "0"));

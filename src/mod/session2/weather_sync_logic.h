@@ -436,6 +436,28 @@ inline constexpr GameAddrs kGame3576{
     0x20, 0x28, 0x30, 0x40C34B0, kUpdateHead3549, kUpdateBoundaries3549, 0x3DF6BE0, kUpdateCall3549,
     0x1000, 0x5597000, 0x70DBF68, 0x70DBF78, 0x71C03A8};
 
+// Build 1.0.0.3663 (static, 2026-11-13; never run). X's update 0x40C34B0 -> 0x4143B20 (3549's 0x40C2580 + 0x815A0;
+// .pdata 0x70C bytes, kUpdateHead3549 and its boundaries unchanged, `vmovaps xmm10,xmm1` +0x2E / `mov rsi,rcx` +0x32;
+// no rel32 nor in-function branch lands in its first 20 bytes); its only rel32 caller is 0x3E74457, so the caller's
+// `mov rcx,[rcx+0xF70] ; call` is at 0x3E74450 with a new rel32 (kUpdateCall3663). The mixer 0x413F780 (0x607 bytes, the
+// update's call at 0x4143B74; X+0x31 / +0x80 / +0x88, holder vf+0x160), X's ctor 0x413A6E0 (0x367 bytes) and M's ctor
+// 0x41466C0 (0x4CD bytes) have 3549's sizes. M: its ctor stores it into 0x7160240 (0x41466FC; the simulators read that
+// slot, then [rax+0xF70]) and sets its vtable 0x619D818, whose +0x60 is 0x7D7940 (kGetterVf60Bytes). X's vtable
+// 0x619D3D0 (no RTTI): the ctor's last store to [X] (0x413A746; [X+0x28] = 0x619D3A0, word [X+0x30] = 0 as on 3549); its
+// slots 0/1 are 0x413AA50 / 0x4145620 (3549's + 0x81590 / + 0x815A0); the factory 0x4145AB0 allocates 0x100228 bytes.
+// X_b: the SyncWeatherStateReq sender 0xAE8DF0 reads [[[0x72451C8]+0x48]+0x38] (0xAE8E2B, again 0xAE8EDA) and calls X's
+// getters 0x4142CC0 / 0x4142D70 / 0x4142E20 / 0x4142EB0 (3549's 0x40C1720.. + 0x815A0) with it. The clock: the frame
+// clock 0x163B030 reads base 0x71600E8 and frac 0x71600F0 (0x163B050 / 0x163B05C, now 8 bytes apart), the bias is
+// 0x7245468 (setInterpolatePositionData 0x13C5A50 at +0x1C; combat_follow.cpp / remote_motion.cpp). Holder blocks A/B/C
+// at +0x20/+0x28/+0x30 (the update's `lea rcx,[rax+0x20]` at 0x4143B7D), so kLayout3549 holds. The code section ends at
+// 0x5613000.
+inline constexpr uint8_t kUpdateCall3663[12] = {0x48, 0x8B, 0x89, 0x70, 0x0F, 0x00, 0x00,
+                                                0xE8, 0xC4, 0xF6, 0x2C, 0x00};  // 0x3E74450: call 0x4143B20
+inline constexpr GameAddrs kGame3663{
+    "1.0.0.3663", 0x7160240, 0x60, 0xF70, 0x60, 0x7D7940, 0x72451C8, 0x48, 0x38, 0x619D3D0, 0x31, 0x60, 0x88,
+    0x20, 0x28, 0x30, 0x4143B20, kUpdateHead3549, kUpdateBoundaries3549, 0x3E74450, kUpdateCall3663,
+    0x1000, 0x5613000, 0x71600E8, 0x71600F0, 0x7245468};
+
 // The relocated prologue safetyhook may copy: whole verified instructions only (a prefix of the head whose length is
 // one of the boundaries).
 inline bool whole_head(const GameAddrs& g, std::span<const uint8_t> copied) {

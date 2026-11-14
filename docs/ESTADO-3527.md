@@ -1,5 +1,22 @@
 # Estado del mod en la build 1.0.0.3527
 
+**13-nov-2026, ~19:28: Steam actualizó el juego a 1.0.0.3663 (PE `0x6AF5D198`). Portado esa misma noche (estático, por módulos) y probado en vivo en dos copias: la unión y la despedida con vuelta FUNCIONAN, 0 errores; el resto sin volver a probar. Kit `dist/cdmp-coop-20261113-3663-v22.zip`. Detalle: `docs/research/port-3663.md`. Lo de abajo es de 3527/3549/3576.**
+
+**14-nov-2026 (noche, 3663, dos copias): BARCO.** El invitado sube al barco del anfitrión y navega en él (se queda en
+cubierta y puede andar por ella a 14 m/s); el barco se sigue a 1,5–2,5 m a velocidad de crucero; el timón ya no flota
+(el cliente del invitado lo creaba 2,9 m por encima de la cubierta: se corrige una vez con la posición del dueño); y
+cada jugador ve al otro en su sitio del barco (antes el anfitrión veía al invitado quieto quedarse hasta 107 m atrás,
+en el agua). Todo en `session2/vehicle_follow` (ahora también en el anfitrión). Corregido además lo del 13: de cerca
+la petición del vehículo es de tipo 7 (el 12 es de lejos) y el timón no flotaba por `horse_follow`. Kit
+`dist/cdmp-coop-20261114-3663-v23.zip` (`cdmp.asi` `534d441d…`, protocolo 10: los dos PC con el mismo kit),
+104/104 pruebas. Una caída del invitado al unirse en siete uniones (`exe+0x620B1D`, la de 3576): guardia nueva
+`ride_null_guard`. **Tiendas y puestos comprobados en 3663** esa misma mañana (Delkin: menú, compra y venta; dos
+puestos de Hernand), con el mismo kit. Sin
+subir al fork. Detalle y lo que falta (velas, faroles, el barco del invitado): `docs/research/port-3663.md`,
+«Barco en 3663» (también: el servidor manda `Move` en blanco de quien anda por una cubierta, y por eso la
+posición en el barco va ahora por el canal del mod). Lo que dicen las entradas del 13-nov de abajo sobre «el invitado no puede subir al barco» no se
+había probado y no es así.
+
 Última actualización: 2026-11-05. **La build instalada es ahora 1.0.0.3549: ver su apartado.** Las pruebas son con dos copias del juego en un mismo PC
 (`scripts/launch-2inst.ps1`) y la red por loopback. **La prueba entre dos PC por Steam sigue pendiente:** necesita el
 segundo PC y otra cuenta. Lo que se puede probar de Steam en un PC está en la tabla.
@@ -855,6 +872,176 @@ eports` (pendiente a las 21:00; crashpad lo sube si se vuelve a
       bien. Antes del 12-nov la espera era de 15 s (carga de ~23 s).
     - Kit `dist/cdmp-coop-20261112-3576-v18.zip` (`cdmp.asi` `19c64926…`, el mismo que `bin64`): v17 + la espera de 1,5 s y el
       README con lo medido. 102/102.
+  - **13-nov: EL RECHAZO DE LA TIENDA, SOLO PARA «SHOP»:** el rechazo de v17 miraba solo la escena (NPC de función con 6
+    ramas o menos), así que podía coger otra interacción del mismo NPC (el cochero, por ejemplo). Ahora InteractGate lee
+    también la interacción de la entrada: el manejador de la pulsación hace `movzx edx,[rsi+0x10]; call 0x3DEEF0` en
+    `+0x248` (bytes `0F B7 56 10 E8` comprobados al instalar), y esa función busca en la tabla global `exe+0x71C1098`
+    (`[+8]` cuenta, `[+0x58]` registros, `[registro+8]` clave; bytes `48 8B 1D` en `+0x15` y `3B 53 08` en `+0x1C`). Solo se
+    rechaza si la clave es «Shop» (`0x000F4321`) o ilegible (0). Comprobado (02:58, dos copias): tres pulsaciones en el
+    Farm Owner «REFUSED … entry index 6 (interaction 0x000F4321) … nothing sent». Sin probar: el cochero y una tienda de
+    7 ramas abierta (por diseño no cambian). Kit `dist/cdmp-coop-20261113-3576-v19.zip` (`cdmp.asi` `40381411…`, el mismo
+    que `bin64`; el resto igual que v18).
+  - **13-nov: BARCO, DIAGNÓSTICO (el arreglo, en la entrada siguiente).** Prueba de la noche (dos copias, 03:08–11:00): el anfitrión saca
+    su «Small Greymane Ship» en Vellua, coge el timón y navega; el invitado mira desde el muelle. Capturas
+    `cdmp_packets.{host_20261113-030750,guest_20261113-030812}.bin`; herramientas en `tools/porting/boat/` (`shipscan.py`:
+    Move/Ack de una clave por regex en segundos; `keyops.py`, `opcount.py`; `hw_watch_ship.cpp`, el punto de ruptura).
+    - **Piezas (3576):** el barco es el gimmick `0xB0100E51` (tipo 7, «Game Mechanic», controlador `0x90100000`), hijo
+      en la jerarquía (`ClientHierarchyActorComponent` = `comps+0x1B8`, padre en `+0x1C`, tipo de enganche 7 en `+0x18`)
+      del actor de vehículo `0xB010000A` (tipo 5, `pa::ClientChildOnlyInGameActor`). Tiene `ClientVehicleActorComponent`
+      en `comps+0x48`. Partes hijas `0xB0100E52…57` (tipo 7); el timón es `0xB0100E57` (local `(0, 2,94, 1,85)`), al que
+      va enganchado el personaje del anfitrión.
+    - **Lo que pasa:** cada cliente simula su propia copia del barco con su física. En el invitado, la copia la mueven
+      las acciones del timonel remoto (los 339 `StartActionAck` sí llegan): siguió al anfitrión a 1–2 m durante 100 s
+      con giros. Pero el estado de las velas o la velocidad no llega (`UpdateGimmickReq`/`GimmickExecuteFrameEventReq`
+      del anfitrión: el servidor no los reenvía, ToTarget), así que cuando el barco del anfitrión aceleró a 6 m/s y se
+      paró en la costa (-10384,7, -6363), la copia del invitado siguió a 1,1 m/s y estuvo navegando sola 7 horas.
+    - **Las posiciones del anfitrión no se aplican:** el cliente nunca aplica un `MoveActorAck` a un tipo 7 (manejador
+      `0xC70710`, tabla de saltos `0xC70BF0`: solo tipos 1 y 3–9 llegan a `[CC+0x118]`). Además el servidor reenvió al
+      invitado solo 113 de las 47 791 `MoveActorReq` del barco (no se sabe por qué; en ningún campo se diferencian). Las
+      `MoveActorReq` del invitado para el barco (~1/s) el servidor no las acepta (no es el controlador).
+    - **Lo que sí llega:** el anfitrión manda la pose del actor de vehículo `0xB010000A` (= la del barco, sin padre) a
+      ~1 Hz y el invitado las recibe todas (23 520). Se guardan como «última posición de red» en
+      `TS(0xB010000A)+0x550` (vec3 de mundo) y `+0x55C` (quat), pero su pose actual sigue al barco local
+      (`ChildOnly`): escribirla no sirve, la física la pisa en el siguiente fotograma.
+    - **Reinicio nativo:** cada vez que la copia del invitado cruza z = -7168 (múltiplo de 1024), salta exactamente a la
+      pose del anfitrión (33 veces en la noche, cada ~12 min, sin ningún mensaje del servidor; luego `RegionInOutReq`).
+      Es la prueba de que el juego sabe colocar la copia en la pose de red. Con un punto de ruptura hardware (DLL de
+      diagnóstico `hw_watch_ship.cpp`, cargada a mano en la copia del invitado; solo DR0/DR7 y un VEH): la escritura del
+      salto la hace el tick de TransformSync (`0xB08980` → `0xB06880` → `0xB072B4` → `0x784DB0`, que compone la pose
+      con la del padre), y después la física sigue desde ahí (`0x1C54688` → `0xB047AD`). No pasa por la petición de
+      posición.
+    - **Probado y descartado (escrituras de prueba en la copia del invitado, con copia de las partidas en
+      `backups/save-20261113-103035-shipwrite`):** la petición de posición de TransformSync (`SetPosition` `0xB03AE0` →
+      `0x99186E0` → `0xB03BB0`: guarda pos/sector en `TS+0x5AC`, tipo en `+0x5BC` (0xF = ninguna), banderas en `+0x5BD`/
+      `+0x5BE`, velocidad en `+0x59C`/`+0x5A8`; la consume `0xB06880`) con tipos 0, 4 y 12, y con `+0x5BD = 1`: se consume
+      pero el barco no se mueve (la física lo pisa). Escribir la pose actual del actor de vehículo: igual. Abrir la puerta
+      de interpolación del actor de vehículo (su `pa::NormalMovementMethod` = `[[[comps+0x40]+0xC8]+0x140]`, byte `+0x44`,
+      que estaba a 0; mantenida a 1 durante 3 s): nada.
+    - **La cadena del reinicio, seguida con el punto de ruptura (cuatro reinicios, 11:00–11:36):** nadie escribe una
+      petición de posición (`TS+0x5BC` solo lo escribe `0xB0941A` con «ninguna»). La pose del actor de vehículo sale cada
+      fotograma de su proxy de física (`[CC+0x140]`, posición local al sector en `+0xB8`), que la copia `0x39E6830`
+      (escritura en `0x39E6909`, desde la tarea `0x3CDBF76`) del `SceneObjectClient` del vehículo (`[[proxy+0x20]+8]-0x28`,
+      `0x2905650`); ese nodo cuelga del barco. En el reinicio esa misma copia ya trae la pose del anfitrión: el salto
+      lo hace la física del barco por debajo (Havok), no el TransformSync ni el actor de vehículo.
+    - (Lo que sigue en esta entrada es la búsqueda de la mañana; la solución está en la entrada siguiente, «BARCO,
+      ARREGLO».) El cuerpo de física se teletransporta en el reinicio por debajo (Havok); no se encontró la función.
+      `0xB010000A` resultó ser el CABALLO del anfitrión (el barco cuelga de él: tipo de enganche 7), no un actor propio
+      del barco.
+    - **Otra cosa vista:** `horse_follow` trata como caballo la pieza del timón `0xB0100E57` («last pair 0xA0100001 on
+      0xB0100E57») y manda al invitado ~10 `MoveActorAck` sintéticos por segundo de esa pieza (224 000 en la noche). El
+      invitado los ignora (tipo 7), así que no se ve, pero sobran: habría que excluir los padres de tipo 7.
+    - Las cuatro DLL de diagnóstico (variantes de `hw_watch_ship.cpp`) se quitaron solas (DR0 a 0 en todos los
+      hilos y VEH retirado); la copia del invitado siguió sin problemas.
+  - **13-nov (tarde): BARCO, ARREGLO: `session2/vehicle_follow` (`[session2] vehicle_follow`, invitado = 1 en el perfil y
+    en el kit v20).**
+    - **La palanca (encontrada con un segundo punto de ruptura, `hw_watch.cpp`, modo «req»):** cada fotograma el cliente
+      pide al TransformSync del actor padre del barco (el caballo `0xB010000A`, tipo 5, `ClientChildOnlyInGameActor`) una
+      posición y una rotación de tipo 7 (`0xB03BB0` / `0xB03FB0`, desde su actualización de personaje `0x946567` →
+      `0x9770E7` → `0x979D4A`) con la pose del barco local; el barco se dibuja desde ese padre. Cambiar esa pose por la de
+      red (`TS+0x550` vec3 de mundo, `+0x55C` quat) con una DLL de prueba (puntos de ruptura de ejecución, sin parchear
+      código; `vehicle_follow_test.cpp`) llevó el barco del invitado a la pose del anfitrión y lo mantuvo allí 40 s; al
+      quitarlo volvió a su copia local, que seguía navegando debajo.
+    - **El módulo:** dos ganchos *mid* en las entradas de esos dos setters (bytes comprobados: 24 y 23; parche de 5 bytes,
+      el `mov [rsp+8],rbx` entero). Solo actúan con tipo 7 y un `TS` de la lista; la lista la rehace cada 3 s un hilo:
+      actores tipo 7 con `ClientVehicleActorComponent` (`comps+0x48`) colgados (`comps+0x1B8`: enganche 7 en `+0x18`,
+      padre en `+0x1C`) de un tipo 5 `ChildOnly` cuyo controlador (`+0x90`) no es el usuario local. La pose: las muestras
+      de red (~1 Hz al moverse; el anfitrión las sigue mandando con el barco quieto), dibujadas 300 ms por detrás
+      (`vehicle_follow_delay_ms`) e interpoladas, o extrapoladas con la última velocidad hasta 1 s; saltos de más de 60 m
+      sin interpolar (`vehicle_follow_logic.h`, test `optd_vehicle_follow`).
+    - **Medido en el juego (dos copias, Vellua):** con el retraso inicial de 1,2 s, el anfitrión sale del muelle, gira y
+      navega a ~9 m/s: el barco del invitado lo siguió con el mismo rumbo, 1–1,5 m por detrás a 1 m/s y 10–13 m a 9 m/s
+      (el retraso); quieto, 0,0 m. Por eso se bajó a 300 ms: el personaje del anfitrión se dibuja en el invitado con
+      ~200–600 ms (`RemoteInterp ... players' delay`, ahora 295 ms) y con 1,2 s quedaba ~8 m por delante del timón.
+      Reproducción de esa navegación con las muestras reales que recibió el invitado (`vfreplay.py`; hasta 12,6 m/s),
+      contra la pose real del anfitrión 300 ms antes: con 300 ms, mediana 0,24 m, p90 1,5 m, máximo 13 m (un instante
+      al chocar con la costa); con 1,2 s, mediana 6,3 m, p90 8,9 m. La versión de 300 ms, en vivo: barco encallado
+      0,0 m, rumbo ±0,1°; dos viajes rápidos del invitado con los ganchos puestos, sin caídas. No se pudo volver a navegar
+      (el barco quedó encallado en la playa al sur del muelle y Hopkins ya no abría «Manage Ship»).
+    - **Caídas del invitado durante la prueba:** tres al cargar el mundo del anfitrión con el módulo encendido
+      (`0x5B67B4` y dos `0x5F51DD`, actor nulo; una con solo el escaneo activo), una al andar en una sesión reincorporada
+      tras matar al invitado sin despedida (`0xC8B650E`), y dos al arrancar dentro de NVIDIA Streamline / DLSS-FG
+      (`sl.interposer.dll`, `sl.dlss_g.dll`; también con el módulo apagado). No se sabe si el módulo influye en las de
+      carga; por si acaso ahora no hace nada durante una carga: ni escanea ni engancha hasta que el controlador de cambio
+      de campo `[[mundo+0x60]+0x15C]` vale 0x18 (en el mundo), y lee con `fast_read` (SEH, sin `VirtualQuery`). Con eso:
+      dos uniones sin caída.
+    - **Falta:** el invitado DE PIE en el barco del anfitrión mientras navega (debajo sigue su copia de física: la
+      cubierta puede no sostenerlo); ver en pantalla que el anfitrión queda en el timón y que el timón gira; el estado de
+      velas; el lado del anfitrión (los barcos del invitado; el módulo funciona en los dos papeles, solo se probó en el
+      invitado). También sigue lo de `horse_follow` con la pieza del timón.
+    - **Velas (13-nov, captura de la noche, 03:51, cuando el anfitrión aceleró):** los `UpdateGimmickReq` (2787) y
+      `GimmickExecuteFrameEventReq` (2155) del barco del anfitrión salen a ~2/s todos con el mismo evento
+      `0x49E5213D92786A19`, una marca de tiempo creciente en `+24` y a veces unos valores en `+8`: es una sincronización
+      periódica, no el estado de las velas. Las acciones del timonel (`StartActionReq`, con el barco en `+206`) sí llegan al
+      invitado (339 en esa ventana). Así que la copia del invitado no se queda atrás por falta de esos mensajes; queda
+      sin saber de dónde saca la velocidad la física del barco.
+    - **Automatizar la prueba (13-nov, 16:00–17:00):** no se consiguió volver a navegar para mirarlo en pantalla. Hopkins
+      («R Manage Ship», mirando al SUR desde (-10468.5, -6138.6)) abrió el menú en sesiones nuevas, pero pulsar R a
+      veces solo mueve la cámara hacia el reloj de arena de la mesa (1 de 5 intentos bien). Subir al barco: nadar a
+      (-10381.97, -6208.26), mirar al casco, W 3,5 s + W 3 s (escalera) deja en cubierta; del timón: (-10373.35,
+      -6204.13) mirando a (-10371.1, -6203.6), E. `goto3576.py` no sirve nadando ni en cubierta (el personaje salta por la
+      borda) y el muelle de (-10452, -6168) atrapa al personaje debajo. Lo más rápido: una persona al teclado del
+      anfitrión. Añadido (17:05–17:16): Hopkins abre el menú si se pulsa R nada más llegar en una sesión nueva (hora del
+      juego ~12:20); más tarde la misma pulsación solo mueve la cámara. Por la escalera se llega a la cubierta principal
+      (-10376.5, 351.5, -6209.6); el timón está un nivel más arriba y desde la escalera lateral (-10373.2, 351.6,
+      -6205.4) «E Operate» sale en gris y no responde; el camino que sirvió (14:09) llega desde la cubierta de popa.
+    - Kit `dist/cdmp-coop-20261113-3576-v20.zip` (`cdmp.asi` `d493ce3a…`, el mismo que `bin64`): v19 + `vehicle_follow=1`
+      en el invitado, README con «SHIPS». Herramientas nuevas en `tools/porting/boat/` (`hw_watch.cpp` genérico,
+      `vehicle_follow_test.cpp`).
+  - **13-nov (noche): BARCO, QUÉ VEHÍCULOS SIGUE `vehicle_follow` (kit v21).**
+    - **El fallo de v20:** la regla (gimmick tipo 7 con `ClientVehicleActorComponent` colgado con enganche 7 de un tipo 5
+      `ChildOnly` de otro usuario) no es solo del barco. Los caballos del anfitrión en los establos (`0xB0100004/5/7`,
+      `ChildOnly`, en las dos copias) llevan cada uno 8–12 gimmicks de vehículo (aparejos), y el jugador `0xA0100001` otros
+      8 (tipo 1, ya excluido). v20 metía una entrada POR GIMMICK, con tope de 8: con tres caballos el tope se llenaba antes
+      de llegar al barco según el orden de la tabla, y además «encontraba barcos» y enganchaba sin barco (registro del
+      invitado 17:55–17:59: «ship 0xB010011C» etc., 0 peticiones). `veh+0x160` no sirve para distinguirlos (cambia entre
+      copias para el mismo actor) ni `veh+0x2C0` (igual en barco y aparejos).
+    - **Lo que distingue al barco:** el padre de un barco sacado recibe CADA fotograma una petición de posición tipo 7;
+      un caballo en el establo, nunca (4 s de muestreo en el invitado: ninguna para `0xB0100004/5/7`). El tipo pendiente
+      queda en `TS+0x5BC` (0xF = ninguna) desde el setter hasta que lo consume el tick del TransformSync (~2 % del tiempo).
+      Los vehículos `ClientNormalInGameActor` (`0x5914848`; barcos o carros de PNJ cerca de Vellua, p. ej. `0xB010033D`
+      con 25 hijos) también reciben tipo 7 en el invitado, pero siguen excluidos (no son de un jugador).
+    - **v21:** una entrada por actor de vehículo (padre), tope 16 (aviso si se pasa); antes de enganchar, el hilo mira
+      `TS+0x5BC` de los listados durante 100 ms cada 3 s y solo engancha cuando ve un 7 («drawn from its vehicle gimmick
+      … following it»); ya enganchado, el contador de peticiones del gancho dice cuáles se siguen. El resumen cuenta
+      aparte los listados sin barco. Probado (18:12, dos copias, anfitrión con `vehicle_follow=1` también): el invitado
+      lista `0xB010000A` (11 gimmicks) y los caballos `0xB0100004/5`; detecta el barco 6 s después de entrar y engancha;
+      los caballos no se siguen. Siguió el 100 % de las peticiones durante toda la sesión (28 108).
+    - **Navegación con el anfitrión al timón (18:27–18:40; `vfmon5.py` lee el vehículo en las dos copias cada 1–2 s):**
+      Hopkins a mano (enfocar con la cámara: `look -Dx 90 -Dy 40` desde (-10468.7, -6138.5); si no, R enfoca el reloj de
+      arena), subir por la escalera (nadar a (-10383, -6207) y W 3,5 + 3 s) y del pie de la escalera ir a
+      (-10373.46, 352.64, -6203.26) mirando a (-10372.5, -6203.6): «Ship's Wheel — E Operate». Al timón: LSHIFT acelera
+      (1,5 s = una marcha, 2 m/s), D/A giran (~7,5°/s; D baja el yaw), ALT no frena. Coger el timón suelta el barco: sale
+      solo a 0,8 m/s. Medido: a 2 m/s el invitado lo dibuja a 0,3–1,8 m (mediana ~0,9 m) con el mismo yaw (±3,5° al girar:
+      los 300 ms); parado, 0,0–0,1 m. El barco del anfitrión encalló en el acantilado (-10528, -6429), y al volver al
+      muelle se hundió (casco a y 346,9, cabeceo 12°, balanceo -8°; el anfitrión perdió vida al timón): la copia del
+      invitado lo dibujó hundido igual (misma inclinación al milésimo del cuaternión). Es el juego (choques), no el
+      módulo: el del anfitrión no tenía nada que seguir.
+    - **La física del invitado se queda atrás:** su copia de física del barco encalló en (-10528, -6429) y no volvió;
+      error 257 m durante el resto de la sesión. Lo que se ve es el barco del anfitrión; lo que choca, la copia local.
+      Por eso el invitado NO puede subir a ese barco: no tiene colisión donde se dibuja (falta teletransportar la física,
+      el punto abierto de siempre).
+    - **En pantalla:** desde el muelle (-10403, 353, -6193) el invitado ve el barco del anfitrión a 21–29 m en la pose
+      del anfitrión (hundido y escorado como en el anfitrión) y el marcador «Host3527» en la cubierta de popa. Las
+      capturas son del tamaño de la ventana (1100×619): no se distingue el timón girar. Sigue faltando una mirada humana.
+    - **Faroles flotando (solo en el invitado):** al anochecer, dos faroles de mástil (los de dos pisos) flotan sobre el
+      agua al este del muelle; el anfitrión, desde el mismo punto y dirección, no ve nada. Su dirección cuadra con los
+      faroles del eje del barco (`0xB0100A37` local (0, 4.64, -2.19) y `0xB0100A39` (0, 5.93, 9.71), hijos de
+      `0xB0100A26`) puestos sobre la pose de AMARRE (-10372.86, -6206.81, yaw 41°), donde estaba el barco cuando el
+      invitado empezó a seguirlo; en el barco dibujado no se ven faroles. Ningún actor tiene un `TS` en esos puntos (son
+      objetos de dibujo). **Prueba A/B (18:44–19:27, invitado con `vehicle_follow=probe`, mismo amarre, anochecer):** al
+      navegar el anfitrión (3,3 m/s), la copia del invitado NO se movió del amarre (-10371.0, -6206.6): error 0,0 → 20 →
+      99 m; el invitado veía al anfitrión flotando sobre el agua sin barco (el fallo original). O sea: los faroles se
+      quedan con la copia propia del invitado, que `vehicle_follow` no mueve; sin el módulo se queda allí el barco entero.
+      Es un efecto del módulo, cosmético y mucho menor que el fallo que arregla. Arreglarlo pide saber qué coloca esos
+      faroles (probablemente el nodo de escena del vehículo, `SceneObjectClient`, el mismo camino que la física): va con el
+      punto abierto de teletransportar la copia local. (En la sesión de las 18:12, con el módulo, el error medido sí
+      siguió al barco dibujado hasta encallar, 0–4 m: el argumento de la petición sale del casco, que cuelga del padre que
+      el módulo coloca; no es la copia de física.)
+    - Herramientas nuevas en `tools/porting/boat/`: `vehcands.py` (gimmicks de vehículo con padre, hijos), `vfmon5.py`,
+      `shipparts.py` (árbol de piezas del barco), `shiplocal.py` (punto local del barco → mundo).
+    - Kit `dist/cdmp-coop-20261113-3576-v21.zip` (`cdmp.asi` `1461787e…`, el mismo que `bin64`): v20 + esta selección de
+      vehículos; README «SHIPS» al día (faroles flotando, no se puede subir al barco del anfitrión). 103/103 pruebas con
+      el juego cerrado. Sin subir al fork (v19–v21).
 
 ## Problemas conocidos
 

@@ -15,8 +15,9 @@
 //    of a level ANOTHER user still has loaded is skipped (mode 1), only when the name's hash is proven equal to the
 //    packet's in this process.
 //
-// Builds 1.0.0.2976 (PE 0x6AB28F00), 1.0.0.3527 (PE 0x6AEA07A6) and 1.0.0.3576 (PE 0x6AED2E85), base 0x140000000. The
-// addresses named in the comments are 2976's unless they say otherwise; 3527's and 3576's tables are in their sections.
+// Builds 1.0.0.2976 (PE 0x6AB28F00), 1.0.0.3527 (PE 0x6AEA07A6), 1.0.0.3576 (PE 0x6AED2E85) and 1.0.0.3663 (PE
+// 0x6AF5D198), base 0x140000000. The addresses named in the comments are 2976's unless they say otherwise; 3527's,
+// 3576's and 3663's tables are in their sections.
 
 #include "mod/session2/guest_sched_load_logic.h"  // gsl::hashlittle, kNameHashInit, base_without_ext
 
@@ -187,6 +188,42 @@ inline constexpr std::array<uint8_t, 82> kCallSite3576{
     0x3A, 0x00, 0x74, 0x29, 0x44, 0x88, 0x75, 0x88, 0x40, 0x88, 0x74, 0x24, 0x30, 0xC6, 0x44, 0x24, 0x28, 0x00, 0xC6, 0x44,
     0x24, 0x20, 0x00, 0x41, 0xB1, 0x01, 0x4C, 0x8D, 0x45, 0x88, 0x48, 0x8D, 0x55, 0x40, 0x48, 0x8B, 0xCB, 0xE8, 0x91, 0xD4,
     0xE2, 0xFF};
+
+// ---------------------------------------------------------------- build 1.0.0.3663 (static, 2026-11-13; never run)
+
+// PE 0x6AF5D198. pa::ServerField 0x5EF2B10 -> 0x5F6C7E8 (vtable_map_3576_3663.json). A: 0x2A77180 -> 0x2ADBE00
+// (+0x64C80, .pdata size 0x4DD as on 3576); the 40-byte signature is at 0x2ADBE32, once in the code section, with the
+// 3527 bytes; the same registers (0x2ADBE25 mov rdi,r9; 0x2ADBE28 mov r13,rcx; 0x2ADBE2B mov r8,[rcx+0x210]), its ready
+// write at 0x2ADBF81, and no rel32 or in-function branch lands in 0x2ADBE4E..0x2ADBE53. B: 0x2A70A10 -> 0x2AD51C0
+// (+0x647B0, the same 16-byte head; .pdata size 0xB73, 0x3F less than on 3576); it has the same seven rel32 callers as on
+// 3527, at the same offsets in their functions: the 2834 handler 0x2CA9D40 (+0x30A) returns at 0x2CAA04F, 0x2AE1AB0
+// (+0x25F; it still walks +0x84 / +0x98 / +0x8C, node +0x40 / +0x10, and clears +0x238 / +0x258) at 0x2AE1D14,
+// 0x2B36200 (+0x3B) at 0x2B36240; the others (0x2AC5934, 0x2B36F84, 0x2D96F13, 0xE8535F7) are never changed.
+// The 2834 handler's frame changed: `lea rbp,[rsp-0x60] ; sub rsp,0x170` (7 pushes: still rbp = C + 0x110; 2976's
+// kFrameSite bytes) and the lookup's result moved: &name = [rbp+0x28] = C + 0x138 (3527 C + 0x150), its status at
+// [rbp+0x48]; &type = [rbp-0x78] = C + 0x98 and the hash [rbp-0x28] = C + 0xE8 unchanged. The call site (82 bytes from
+// 0x2CA9FFD) has the 3527 instructions with those displacements and two new rel32 (0x231AA90; the delete 0x2AD51C0).
+// The string object's +8 length is the shared string's (interaction_condition.cpp); its +0xC hash is 3527's, not
+// re-derived.
+inline constexpr uint32_t kPeTimestamp3663 = 0x6AF5D198;
+inline constexpr uint32_t kVtServerField3663 = 0x5F6C7E8;
+inline constexpr uint32_t kGateFnBegin3663 = 0x2ADBE00, kGateFnEnd3663 = 0x2ADC2DD;
+inline constexpr uint32_t kGateRva3663 = 0x2ADBE4D;
+inline constexpr uint32_t kGateSigRva3663 = 0x2ADBE32;
+static_assert(kGateRva3663 - kGateSigRva3663 == kGateSigPatchAt);
+inline constexpr uint32_t kDeleteRva3663 = 0x2AD51C0, kDeleteEnd3663 = 0x2AD5D33;
+inline constexpr uint32_t kRet28343663 = 0x2CAA04F, kRetOwnerLoad3663 = 0x2AE1D14, kRetLoader3663 = 0x2B36240;
+inline constexpr uint32_t kFrameSiteRva3663 = 0x2CA9D50;
+inline constexpr std::array<uint8_t, 12> kFrameSite3663{0x48, 0x8D, 0x6C, 0x24, 0xA0, 0x48, 0x81, 0xEC, 0x70, 0x01, 0x00, 0x00};
+inline constexpr uint32_t kCallSiteRva3663 = 0x2CA9FFD;
+inline constexpr std::array<uint8_t, 82> kCallSite3663{
+    0x44, 0x8B, 0x45, 0xD8, 0x48, 0x8D, 0x55, 0x28, 0x48, 0x8B, 0x8B, 0x10, 0x02, 0x00, 0x00, 0xE8, 0x7F, 0x0A, 0x67, 0xFF,
+    0x90, 0x83, 0x7D, 0x48, 0x00, 0x74, 0x3A, 0x48, 0x8B, 0x45, 0x28, 0x48, 0x8B, 0x10, 0x48, 0x85, 0xD2, 0x74, 0x2E, 0x80,
+    0x3A, 0x00, 0x74, 0x29, 0x44, 0x88, 0x75, 0x88, 0x40, 0x88, 0x74, 0x24, 0x30, 0xC6, 0x44, 0x24, 0x28, 0x00, 0xC6, 0x44,
+    0x24, 0x20, 0x00, 0x41, 0xB1, 0x01, 0x4C, 0x8D, 0x45, 0x88, 0x48, 0x8D, 0x55, 0x28, 0x48, 0x8B, 0xCB, 0xE8, 0x71, 0xB1,
+    0xE2, 0xFF};
+inline constexpr uintptr_t kFrameName3663 = 0x138, kFrameType3663 = 0x98, kFrameHash3663 = 0xE8;
+
 inline bool frame_matches(uintptr_t frame, uintptr_t name_arg, uintptr_t type_arg, uintptr_t name_off, uintptr_t type_off) {
     return frame && name_arg == frame + name_off && type_arg == frame + type_off;
 }

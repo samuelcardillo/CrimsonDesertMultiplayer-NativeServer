@@ -190,6 +190,41 @@ const Region kRegions3576[] = {
     {0x2BD638A, kScope3527, "the scope sender lookup"},
     {0x29ABB86, kRealm3527, "ServerRunThread's realm mark (TLS +0x1EB)"},
 };
+// Build 1.0.0.3663 (static, 2026-11-13; never run): each region searched over the whole code section by its 3527/3576
+// bytes (relative fields masked), one hit each. The site 0x2B3971A in DeleteSequencer 0x2B393C0 (+0x35A; 3576 +0x357):
+// the same bytes but for its two lea (base 0x5F68740 / ToTarget 0x5F68760 by RTTI, vtable_map_3576_3663.json) and its
+// call of the serializer 0x2D42250 (its only caller; it returns to 0x2B39788); the sequencer still in rdi ([rdi+0x30],
+// the id) and the manager in r13 ([r13+0x18]), r9 = [rsi+8]. The owner lookup 0x228876B (in 0x22886F0, key +0xA0), the
+// serializer's body (from 0x2D42255, identical to 3527's, rel32 included) and its opcode write 0x2D4239C (+0x14C as
+// before) `mov word [r14],0xA63` = DeleteSequencerAck 2659 on 3663; it allocates 0x16 bytes (5 + 17: u32 actor | u64
+// [r8] | u32 [r9] | u8 [5th], 0x2D42467..0x2D4251F). ToTarget 0x5F68760: vf0 0x2D6C0F0, vf1 0x2D6C1A0, vf2 0x2D6C200
+// (vf1 / vf2 identical); the constructor 0x2D6C150 (between them, as in 3576) differs only in its two lea (the same
+// vtables). The scope lookup 0x2C3BDFA (in 0x2C3BDE0) and the realm mark 0x2A0E1B6 (in 0x2A0E1A0) identical. The vf 0xE8
+// getters: ChildOnlyInGame 0xC1D4E0 mov rax,[rcx+0xD0], NormalInGame 0x3AD510 xor eax,eax, ServerUserActor 0x2D740C0
+// mov rax,[rcx+0x1F8]. The 2661 it books: its serializer 0x2D41C70 writes u8 4 | u32 actor | 87 bytes of play data
+// (0x26B31E0: owner u32 first, then the u64 id) | 11 bytes per binding: 3527's prefix 92. MoveFieldAck (0x2C7A2B0):
+// u8 | u32 | u32 | u32 | u32 + 0x30 per entry (0x26AB510), as 3527's.
+constexpr uint8_t kSite3663[] = {
+    0x48, 0x8B, 0xF0, 0x48, 0x8B, 0x47, 0x30, 0x48, 0x89, 0x85, 0x50, 0x03, 0x00, 0x00, 0x49, 0x8B, 0x4D, 0x18, 0x4C,
+    0x8D, 0x3D, 0x0D, 0xF0, 0x42, 0x03, 0x4C, 0x89, 0x7C, 0x24, 0x70, 0xC6, 0x44, 0x24, 0x78, 0x00, 0x48, 0x8D, 0x05,
+    0x1C, 0xF0, 0x42, 0x03, 0x48, 0x89, 0x44, 0x24, 0x70, 0x48, 0xC7, 0x45, 0x80, 0x00, 0x00, 0x00, 0x00, 0x48, 0x85,
+    0xC9, 0x74, 0x0D, 0x48, 0x8B, 0x01, 0xFF, 0x90, 0xE8, 0x00, 0x00, 0x00, 0x48, 0x89, 0x45, 0x80, 0x48, 0x8D, 0x85,
+    0x68, 0x03, 0x00, 0x00, 0x48, 0x89, 0x44, 0x24, 0x20, 0x4C, 0x8D, 0x4E, 0x08, 0x4C, 0x8D, 0x85, 0x50, 0x03, 0x00,
+    0x00, 0x48, 0x8D, 0x54, 0x24, 0x70, 0x49, 0x8B, 0x4D, 0x18, 0xE8, 0xC8, 0x8A, 0x20, 0x00};
+constexpr uint8_t kCtor3663[] = {0x48, 0x89, 0x4C, 0x24, 0x08, 0x53, 0x48, 0x83, 0xEC, 0x20, 0x48, 0x8B, 0xD9, 0x48, 0x8D, 0x05,
+                                 0xDC, 0xC5, 0x1F, 0x03, 0x48, 0x89, 0x01, 0xC6, 0x41, 0x08, 0x00, 0x48, 0x8D, 0x05, 0xEE, 0xC5};
+constexpr uint8_t kEmitOp3663[] = {0x66, 0x41, 0xC7, 0x06, 0x63, 0x0A};
+const Region kRegions3663[] = {
+    {0x2B3971A, kSite3663, "the native 2810 call in DeleteSequencer 0x2B393C0"},
+    {0x228876B, kOwnerFind3527, "the owner lookup by [sequencer+0xA0]"},
+    {0x2D42255, kEmitBody3527, "the 2810 serializer's body"},
+    {0x2D4239C, kEmitOp3663, "the 2810 serializer's opcode write"},
+    {0x2D6C150, kCtor3663, "ToTarget constructor"},
+    {0x2D6C1A0, kVf1_3527, "ToTarget vf1 (recipients)"},
+    {0x2D6C200, kVf2_3527, "ToTarget vf2 (equality)"},
+    {0x2C3BDFA, kScope3527, "the scope sender lookup"},
+    {0x2A0E1B6, kRealm3527, "ServerRunThread's realm mark (TLS +0x1EB)"},
+};
 
 struct Layout {
     uintptr_t ret, emit, ctor, vt_target, vt_base, vf0, vf1, vf2;
@@ -198,6 +233,8 @@ struct Layout {
 constexpr Layout kLayout2976{kReturnRva, kEmitRva, kCtorRva, kVtToTarget, kVtFinderBase, kVf0Rva, kVf1Rva, kVf2Rva, kSeq_OwnerKey, 0x1EC};
 constexpr Layout kLayout3527{0x2AD4645, 0x2CDAB60, 0x2D04590, 0x5EEC840, 0x5EEC860, 0x2D04530, 0x2D045E0, 0x2D04640, 0xA0, 0x1EB};
 constexpr Layout kLayout3576{0x2AD5295, 0x2CDB7D0, 0x2D05200, 0x5EEEA60, 0x5EEEA80, 0x2D051A0, 0x2D05250, 0x2D052B0, 0xA0, 0x1EB};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): see kRegions3663.
+constexpr Layout kLayout3663{0x2B39788, 0x2D42250, 0x2D6C150, 0x5F68760, 0x5F68740, 0x2D6C0F0, 0x2D6C1A0, 0x2D6C200, 0xA0, 0x1EB};
 const Layout* g_layout = &kLayout2976;  // published before g_verified
 
 constexpr uint32_t kActor_Key = 0x60, kActor_User = 0xA0, kUser_Main = 0xD0;
@@ -477,9 +514,13 @@ bool observer_scene_copy_verify_current(uintptr_t base) {
     if (!g_wanted.load()) return false;
     g_base = base;
     const bool b3576 = game::current_build() == game::Build::v3576;
-    g_layout = b3576 ? &kLayout3576 : &kLayout3527;
+    const bool b3663 = game::current_build() == game::Build::v3663;
+    const char* build_name = b3663 ? "3663" : b3576 ? "3576" : "3527";
+    g_layout = b3663 ? &kLayout3663 : b3576 ? &kLayout3576 : &kLayout3527;
     std::string bad;
-    for (const Region& r : b3576 ? std::span<const Region>(kRegions3576) : std::span<const Region>(kRegions3527)) {
+    for (const Region& r : b3663   ? std::span<const Region>(kRegions3663)
+                           : b3576 ? std::span<const Region>(kRegions3576)
+                                   : std::span<const Region>(kRegions3527)) {
         std::vector<uint8_t> actual(r.bytes.size());
         if (!game::safe_read(base + r.rva, actual.data(), actual.size()) ||
             !std::equal(actual.begin(), actual.end(), r.bytes.begin())) {
@@ -493,8 +534,8 @@ bool observer_scene_copy_verify_current(uintptr_t base) {
     }
     if (!bad.empty()) {
         g_wanted.store(false);
-        log::error("ObserverSceneCopy: REFUSED, not build {}'s code at:{}; observer_scene_copy stays OFF",
-                   b3576 ? "3576" : "3527", bad);
+        log::error("ObserverSceneCopy: REFUSED, not build {}'s code at:{}; observer_scene_copy stays OFF", build_name,
+                   bad);
         return false;
     }
     g_ctor = reinterpret_cast<CtorFn>(base + g_layout->ctor);
@@ -506,7 +547,7 @@ bool observer_scene_copy_verify_current(uintptr_t base) {
     g_verified.store(true);
     log::info("ObserverSceneCopy ON (build {}): a scene user 2 starts in the host's field lives in the host's manager, "
               "so its closing 2810 goes to the host; user 2 gets the native 2810 too, or its client stays without control",
-              b3576 ? "3576" : "3527");
+              build_name);
     return true;
 }
 

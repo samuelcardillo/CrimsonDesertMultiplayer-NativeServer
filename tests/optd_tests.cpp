@@ -2125,7 +2125,7 @@ void test_save_trace_budget() {
     CHECK(b.total() == 5 && b.non_write_cap() == 2);
 }
 
-    static_assert(proto::kVersion == 9);
+    static_assert(proto::kVersion == 10);
 static_assert(static_cast<uint8_t>(proto::RelKind::TrocFrame) == proto::kMaxRelKind);
 
 }  // namespace

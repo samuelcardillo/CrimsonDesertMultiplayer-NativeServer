@@ -33,6 +33,10 @@ constexpr uint8_t kErrorLoggerHead3527[] = {0x48, 0x89, 0x5C, 0x24, 0x08, 0x48, 
 // only match near), and again exactly 2640 call sites passing [rsp+48] code, [rsp+50] severity, [rsp+58] text
 // (e.g. 0xC754E4..0xC75524).
 constexpr uintptr_t kErrorLogger3576 = 0x3A7660;
+// Build 1.0.0.3663 (static, 2026-11-13; never run): 0x3AACB0 = 3576's +0x3650 (the shift of the client's network code
+// next to it, profile_s2.h), with the same 15-byte head, a .pdata function start (0x3AACB0..0x3AADEA) and 2634 call
+// sites (3576: 2640); 38 of 40 sampled callers store [rsp+48] code, [rsp+50] severity, [rsp+58] text before the call.
+constexpr uintptr_t kErrorLogger3663 = 0x3AACB0;
 constexpr uint32_t kArgCode = 0x50, kArgSeverity = 0x58, kArgText = 0x60, kArgValue = 0x68;
 constexpr int kExtraValues = 3;  // arguments 14-16 (more format values, if any)
 
@@ -85,7 +89,7 @@ std::atomic<bool> g_installed{false};
 void on_error(safetyhook::Context& ctx) {
     Entry e;
     if (!copy_entry(ctx.rsp, e)) return;
-    // 2976's return address only (never ported to 3527 / 3576).
+    // 2976's return address only (never ported to 3527 / 3576 / 3663).
     if (g_base && current_build() == Build::v2976 && e.caller == g_base + kActorCreateFailedFrom) {
         uint64_t found = 0;
         const uint64_t vals[] = {e.value, e.extra[0], e.extra[1], e.extra[2]};
@@ -112,11 +116,12 @@ void on_error(safetyhook::Context& ctx) {
 bool game_errors_install() {
     if (g_hook) return true;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    if (current_build() == Build::v3527 || current_build() == Build::v3576) {
-        // The same plain function on both (3576: kErrorLogger3576).
+    if (current_build() == Build::v3527 || current_build() == Build::v3576 || current_build() == Build::v3663) {
+        // The same plain function on all three (3576: kErrorLogger3576, 3663: kErrorLogger3663).
         const bool is3576 = current_build() == Build::v3576;
-        const uintptr_t logger = is3576 ? kErrorLogger3576 : kErrorLogger3527;
-        const char* const name = is3576 ? "3576" : "3527";
+        const bool is3663 = current_build() == Build::v3663;
+        const uintptr_t logger = is3663 ? kErrorLogger3663 : is3576 ? kErrorLogger3576 : kErrorLogger3527;
+        const char* const name = is3663 ? "3663" : is3576 ? "3576" : "3527";
         uint8_t head3527[sizeof kErrorLoggerHead3527]{};
         if (!safe_read(g_base + logger, head3527, sizeof head3527) ||
             std::memcmp(head3527, kErrorLoggerHead3527, sizeof head3527) != 0) {

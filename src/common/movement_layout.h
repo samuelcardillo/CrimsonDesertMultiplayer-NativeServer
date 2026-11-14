@@ -21,7 +21,13 @@ inline constexpr Layout k3527{518, 239, 729, 196, 180, 208, 4, 16, 32,
                               68, 76, 88, 140, 212, 238, 226, 56};
 inline constexpr const Layout* layout(Build build) noexcept {
     // 3576: the Troc catalogue did not change (troc_mapping_3549_3576.json: 0 size changes), so 3527's payloads.
-    return build == Build::v2976 ? &k2976 : build == Build::v3527 || build == Build::v3576 ? &k3527 : nullptr;
+    // Build 1.0.0.3663 (static, 2026-11-13; never run): opcodes renumbered, payload readers unchanged: the MoveActorReq /
+    // MoveActorAck / StartActionReq / StartActionAck / MoveFieldAck / LoadingFieldDataAck handlers and their MoveData,
+    // StartAction A/B, Path, Transform and MoveField entry readers are 3527's instruction for instruction with relative
+    // operands masked (game::wire_build() in build_profile.h lists the addresses). So 3527's payloads.
+    return build == Build::v2976 ? &k2976
+           : build == Build::v3527 || build == Build::v3576 || build == Build::v3663 ? &k3527
+                                                                                  : nullptr;
 }
 inline constexpr size_t action_shift(bool ack) noexcept { return ack ? 139 : 138; }
 // The logical opcode selects a message; the build selects its native payload.

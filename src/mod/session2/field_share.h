@@ -101,9 +101,14 @@ inline constexpr RuntimeFieldLayout kFieldLayout3527{0x508, 0x2A8, 0x2B0, 0x2B8,
 // Build 1.0.0.3576 (static, 2026-11-06; not yet run) keeps 3527's layout: AddActor (.tls$ 0xE52BF90) reads
 // +2A8/+2B0/+2B8/+2D8 and the FieldMover moves (0x2E61990 + 0xC70) use TS+0x508, FM+0x10/+0x40/+0x48/+0x4A with the
 // same instruction bytes as field_mover_layout_3527.json.
+// Build 1.0.0.3663 (static, 2026-11-13; never run) keeps it too: AddActor (protected 0xEB68740) reads
+// +2A8/+2B0/+2B8/+2D8, MoveField 0x2ECA480 forms TS+0x508, and the FieldMover instructions of
+// field_mover_layout_3527.json are found with 3527's bytes (+0x10/+0x40/+0x48/+0x4A); the TS sector +0x548 is read by
+// ToNearExceptOne* vf1 (child_hold.cpp).
 inline const RuntimeFieldLayout& runtime_field_layout() {
     const auto b = game::current_build();
-    return b == game::Build::v3527 || b == game::Build::v3576 ? kFieldLayout3527 : kFieldLayout2976;
+    return b == game::Build::v3527 || b == game::Build::v3576 || b == game::Build::v3663 ? kFieldLayout3527
+                                                                                          : kFieldLayout2976;
 }
 
 // The level entry AcquireField would use for this FieldInfoKey (its own

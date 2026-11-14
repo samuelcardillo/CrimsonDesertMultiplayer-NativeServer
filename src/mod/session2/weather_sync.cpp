@@ -1128,12 +1128,17 @@ void weather_sync_start(const std::string& raw, bool guest, uint32_t radius_m) {
         // 3549's layout and wire version at 3576's addresses (weather_sync_logic.h kGame3576).
         g_game.store(&wsy::kGame3576, std::memory_order_release);
         g_layout.store(&wsy::kLayout3549, std::memory_order_release);
+    } else if (build == game::Build::v3663 && g_base == g2976::kImageBase) {
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): 3549's layout and wire version at 3663's addresses
+        // (weather_sync_logic.h kGame3663).
+        g_game.store(&wsy::kGame3663, std::memory_order_release);
+        g_layout.store(&wsy::kLayout3549, std::memory_order_release);
     } else if (build == game::Build::v3527) {
         log::warn("WeatherSync: 1.0.0.3527 is not verified for weather_sync (only 1.0.0.3549's PE was read, "
                   "clima-3549.md); weather_sync stays off, nothing hooked or written");
         return;
     } else {
-        log::error("WeatherSync: unsupported game build (not 1.0.0.2976, 3549 or 3576); weather_sync stays off");
+        log::error("WeatherSync: unsupported game build (not 1.0.0.2976, 3549, 3576 or 3663); weather_sync stays off");
         return;
     }
     Mode m = p.mode;

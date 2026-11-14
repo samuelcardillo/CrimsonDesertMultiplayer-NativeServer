@@ -48,8 +48,12 @@ const Addrs kAddrs3527{csq::kApply3527, csq::kApplyCall3527, csq::kApplyReturn35
                        csq::kApplyCallBytes3527, csq::kCheckSiteBytes3527};
 const Addrs kAddrs3576{csq::kApply3576, csq::kApplyCall3576, csq::kApplyReturn3576, csq::kCheckSite3576, 0x5597000,
                        csq::kApplyCallBytes3576, csq::kCheckSiteBytes3576};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): catch_seq_logic.h; code section end 0x5613000.
+const Addrs kAddrs3663{csq::kApply3663, csq::kApplyCall3663, csq::kApplyReturn3663, csq::kCheckSite3663, 0x5613000,
+                       csq::kApplyCallBytes3663, csq::kCheckSiteBytes3663};
 const Addrs& addrs() noexcept {
-    static const Addrs& a = game::current_build() == game::Build::v3576   ? kAddrs3576
+    static const Addrs& a = game::current_build() == game::Build::v3663   ? kAddrs3663
+                            : game::current_build() == game::Build::v3576 ? kAddrs3576
                             : game::current_build() == game::Build::v3527 ? kAddrs3527
                                                                           : kAddrs2976;
     return a;
@@ -269,7 +273,8 @@ bool install_hook() {
 bool build_ok() {
     const game::Build b = game::current_build();
     return g_base == g2976::kImageBase &&
-           (b == game::Build::v2976 || b == game::Build::v3527 || b == game::Build::v3576);
+           (b == game::Build::v2976 || b == game::Build::v3527 || b == game::Build::v3576 ||
+            b == game::Build::v3663);
 }
 
 std::string byte_text(uint64_t v) { return v == kUnread ? std::string("unreadable") : std::format("0x{:02X}", v); }
@@ -383,7 +388,7 @@ void catch_seq_start(const std::string& raw, bool guest) {
     if (g_started.exchange(true)) return;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     if (!build_ok()) {
-        log::error("CatchSeq: unsupported game build (not 1.0.0.2976, 3527 or 3576); catch_seq stays off");
+        log::error("CatchSeq: unsupported game build (not 1.0.0.2976, 3527, 3576 or 3663); catch_seq stays off");
         return;
     }
     g_mode.store(static_cast<uint8_t>(p.mode), std::memory_order_release);

@@ -78,8 +78,17 @@ constexpr uint8_t kCall2Bytes3527[] = {0xE8, 0x65, 0x12, 0xCC, 0x02};
 // loop's write at 0xBDF1D6..0xBDF1F6 (frac += dt us): local 0x70DBF2D, base 0x70DBF68, frac 0x70DBF78 (read only).
 constexpr uint8_t kCall1Bytes3576[] = {0xE8, 0xDF, 0x1B, 0xCC, 0x02};
 constexpr uint8_t kCall2Bytes3576[] = {0xE8, 0x45, 0x1B, 0xCC, 0x02};
-bool g_is_3527 = false;  // 3527's layout: 3527, 3549 and 3576
+// Build 1.0.0.3663 (static, 2026-11-13; never run): kScaleHead is unique in the code section, at 0x39191C0 (.pdata
+// 0x39191C0..0x39192D1, 0x111 bytes as before; vmovss xmm6,[rip+..] right after it, as 2976's). Its only two callers
+// (every E8 rel32 of the code section scanned) are 0xC160EC / 0xC16186 in 0xC15FB0, at the same +0x13C / +0x1D6 as in
+// 3576; only their rel32 changed. The clock globals, from FrameClock_NowMs 0x163B030 (cmp byte [local],0 ; base +
+// frac / 1000) and the main loop's write at 0xC1667D..0xC1669D (frac += dt us): local 0x71600AD, base 0x71600E8, frac
+// 0x71600F0 (read only; frac is base + 8 here, 3576 had + 0x10).
+constexpr uint8_t kCall1Bytes3663[] = {0xE8, 0xCF, 0x30, 0xD0, 0x02};
+constexpr uint8_t kCall2Bytes3663[] = {0xE8, 0x35, 0x30, 0xD0, 0x02};
+bool g_is_3527 = false;  // 3527's layout: 3527, 3549, 3576 and 3663
 bool g_is_3576 = false;  // 3576's addresses
+bool g_is_3663 = false;  // 3663's addresses
 // vf 0x168 of every UI root: vmovss xmm0,[rip+..] (1.0f) ; ret.
 constexpr uintptr_t kTrivialVf = 0x63DA70;
 constexpr uint8_t kTrivialVfBytes[] = {0xC5, 0xFA, 0x10, 0x05, 0x3C, 0x56, 0x73, 0x05, 0xC3};
@@ -246,6 +255,9 @@ bool bytes_at(uintptr_t rva, std::span<const uint8_t> expected) {
 }
 
 bool code_ready() {
+    if (g_is_3663) {
+        return bytes_at(kScale, kScaleHead) && bytes_at(kCall1, kCall1Bytes3663) && bytes_at(kCall2, kCall2Bytes3663);
+    }
     if (g_is_3576) {
         return bytes_at(kScale, kScaleHead) && bytes_at(kCall1, kCall1Bytes3576) && bytes_at(kCall2, kCall2Bytes3576);
     }
@@ -272,7 +284,11 @@ bool install() {
     const Ctx ctx_3576[] = {{kScale, kScaleHead, "the UI time scale 0x38A0830 (30-byte prologue)"},
                             {kCall1, kCall1Bytes3576, "its caller 0xBDEC4C"},
                             {kCall2, kCall2Bytes3576, "its caller 0xBDECE6"}};
-    const std::span<const Ctx> sites = g_is_3576   ? std::span<const Ctx>(ctx_3576)
+    const Ctx ctx_3663[] = {{kScale, kScaleHead, "the UI time scale 0x39191C0 (30-byte prologue)"},
+                            {kCall1, kCall1Bytes3663, "its caller 0xC160EC"},
+                            {kCall2, kCall2Bytes3663, "its caller 0xC16186"}};
+    const std::span<const Ctx> sites = g_is_3663   ? std::span<const Ctx>(ctx_3663)
+                                       : g_is_3576 ? std::span<const Ctx>(ctx_3576)
                                        : g_is_3527 ? std::span<const Ctx>(ctx_3527)
                                                    : std::span<const Ctx>(ctx_2976);
     for (const Ctx& c : sites) {
@@ -446,6 +462,13 @@ std::string ledger_text() {
 // every hop's vtable checked): the world is up. Read only, VirtualQuery-checked reads.
 bool player_in_world() {
     uintptr_t world = 0, mgr = 0, vt = 0, actor = 0, avt = 0;
+    if (g_is_3663) {
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): world slot 0x72451C0 (profile_s2.h rva3663; 3195 RIP
+        // references, 1039 of them followed by `mov rcx,[rcx+0x30]`), ClientActorManager vtable 0x59C2760 (RTTI).
+        return peek(g_base + 0x72451C0, world) && world && peek(world + g2976::kWorldSystem_ActorManager, mgr) && mgr &&
+               peek(mgr, vt) && vt == g_base + 0x59C2760 && peek(mgr + g2976::kActorManager_ControlledActor, actor) &&
+               actor && peek(actor, avt) && avt;
+    }
     if (g_is_3576) {
         // Build 1.0.0.3576 (static, 2026-11-06; not yet run): no reader profile yet. World slot 0x71C0100
         // (core_globals_3576.json; 0xC9DB6B reads it and then +0x30), ClientActorManager vtable 0x5946C40 (RTTI).
@@ -554,11 +577,23 @@ void watch_frames(FrameWatch& w) {
 DWORD WINAPI ui_thread(LPVOID) {
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     const auto build = game::current_build();
-    if (build == game::Build::unsupported || !(game::legacy_layout() || build == game::Build::v3576)) {
+    if (build == game::Build::unsupported ||
+        !(game::legacy_layout() || build == game::Build::v3576 || build == game::Build::v3663)) {
         log::error("UiPause: unsupported game build; ui_pause_block stays off");
         return 0;
     }
-    if (build == game::Build::v3576) {  // see kCall1Bytes3576
+    if (build == game::Build::v3663) {  // see kCall1Bytes3663
+        g_is_3527 = true;
+        g_is_3663 = true;
+        kScale = 0x39191C0;
+        kCall1 = 0xC160EC;
+        kCall2 = 0xC16186;
+        kRet1 = 0xC160F1;
+        kRet2 = 0xC1618B;
+        kClockLocal = 0x71600AD;
+        kClockBase = 0x71600E8;
+        kClockFrac = 0x71600F0;
+    } else if (build == game::Build::v3576) {  // see kCall1Bytes3576
         g_is_3527 = true;
         g_is_3576 = true;
         kScale = 0x38A0830;

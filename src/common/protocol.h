@@ -29,7 +29,9 @@ inline constexpr uint32_t kMagic = 0x504D4443;  // bytes "CDMP"
 // (equip_state.h); a v6 peer would lose them. 8: RelKind::TrocFrame (option D,
 // common/troc_frame.h). 9: logical Troc IDs with a native-build/map handshake;
 // v8 game traffic contains native IDs and must never be interpreted as logical.
-inline constexpr uint16_t kVersion = 9;
+// 10: PlayerState ends with the character's key and what it stands on (anchor: an actor key and the character's pose
+// local to it), for ship passengers (session2/vehicle_follow.h).
+inline constexpr uint16_t kVersion = 10;
 // Hello and Welcome start the same in every version from 5 (name, then the
 // rest), so a peer with another version is recognised and reported instead
 // of being ignored in silence.
@@ -140,6 +142,13 @@ struct PlayerState {
     float health = 0;      // current HP
     float health_max = 0;  // 0 = unknown
     uint8_t flags = 0;
+    // The sender's character in the game's own terms (0 = not known), and what it stands on: the key of its hierarchy
+    // parent (0 = nothing) with the character's pose local to that parent. The game's server sends the other player
+    // blank Moves for a character on a ship's deck, so this is the only way the receiver learns where it stands.
+    uint32_t self_key = 0;
+    uint32_t anchor = 0;
+    Vec3 anchor_pos;
+    Quat anchor_rot;
 };
 
 struct GameEvent {

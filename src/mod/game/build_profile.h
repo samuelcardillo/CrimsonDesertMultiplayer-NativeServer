@@ -23,6 +23,10 @@ inline constexpr uint32_t kPeTimestamp3549 = 0x6AEB7D59, kImageSize3549 = 0x13CF
 // tools/porting/data/vtable_map_3549_3576.json), the code grew and shifted (+0x4A000 .. +0x312000), the Troc catalogue
 // is unchanged. Each module needs its own port to it (docs/research/port-3576.md); until then it refuses it.
 inline constexpr uint32_t kPeTimestamp3576 = 0x6AED2E85, kImageSize3576 = 0x13CC4000;
+// 1.0.0.3663 (Steam, 2026-11-13 ~19:28): another new layout (vtables +0x79000..+0x7E000, code shifted, globals
+// +0x85000) and a RENUMBERED Troc catalogue (native_opcode.h). docs/research/port-3663.md. Nothing ported yet: every
+// module refuses it (their gates admit only the builds they carry tables for).
+inline constexpr uint32_t kPeTimestamp3663 = 0x6AF5D198, kImageSize3663 = 0x144E9000;
 
 // The running exe's PE identity; zero if it is not a 64-bit image at the game's fixed base.
 struct PeIdentity {
@@ -59,11 +63,17 @@ inline bool is_3576() noexcept {
     return id.timestamp == kPeTimestamp3576 && id.image_size == kImageSize3576;
 }
 
+inline bool is_3663() noexcept {
+    const PeIdentity id = pe_identity();
+    return id.timestamp == kPeTimestamp3663 && id.image_size == kImageSize3663;
+}
+
 inline Build current_build() noexcept {
     const PeIdentity id = pe_identity();
     if (id.timestamp == build_2976::kPeTimestamp) return Build::v2976;
     if ((id.timestamp == kPeTimestamp3527 && id.image_size == kImageSize3527) || is_3549()) return Build::v3527;
     if (is_3576()) return Build::v3576;
+    if (is_3663()) return Build::v3663;
     return Build::unsupported;
 }
 
@@ -84,9 +94,17 @@ inline bool layout_3527() noexcept {
 // The build whose native payload layout applies (common/movement_layout.h). Build 1.0.0.3576 (static, 2026-11-06):
 // the Troc catalogue is 3527's with 0 opcode and 0 size changes (troc_mapping_3549_3576.json,
 // opcode_mapping_3549_3576.json), so its payloads are read and written as 3527's.
+// Build 1.0.0.3663 (static, 2026-11-13; never run): opcodes renumbered (native_opcode.h) but the payload READERS are
+// 3527's: every function of tools/porting/data/payload_*_3527.txt, compared instruction by instruction with relative
+// operands masked, is the same in 3663 (the handlers by their Troc vtable's slot 2, troc_mapping_3576_3663.json; the
+// helpers by the calls at the same offsets): MoveActorReq 0x2C52CD0, MoveActorAck 0xCA8AB0, StartActionReq 0x2C46FA0,
+// StartActionAck 0xC9CA10 (these three differ only in their jump-table bases), MoveFieldAck 0xCD4D70,
+// LoadingFieldDataAck 0xCD6E00 (entry stride 56), MainPlayerDataStartAck 0xCB72E0; MoveData 0x26A8CE0, StartAction
+// A/B 0x26A6F70 / 0x26A7570, Path 0x14CB240 / 0x14CB150, Transform 0x1644720, quaternion 0x1644640, the stream read
+// 0x1643CD0 (data +0x20, length +0x28, cursor +0x2C), the MoveField entry 0x26AB5D0. So its payloads are 3527's.
 inline Build wire_build() noexcept {
     const Build b = current_build();
-    return b == Build::v3576 ? Build::v3527 : b;
+    return b == Build::v3576 || b == Build::v3663 ? Build::v3527 : b;
 }
 
 inline Build native_build() noexcept { return current_build(); }
@@ -98,13 +116,24 @@ inline bool validate_native_catalog() noexcept {
     if (validated.load(std::memory_order_acquire)) return true;
     const auto build = current_build();
     const auto catalog = native_opcode::entries(build);
-    if (catalog.empty() || catalog.size() > 1175) return false;
+    constexpr size_t kMaxCatalog = 1200;  // 1175 messages in 3527/3576, 1179 in 3663
+    if (catalog.empty() || catalog.size() > kMaxCatalog) return false;
     const auto base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    // The singleton block (troc_mapping_*.json instance_range); 3576's moved by +0x2000.
-    const uintptr_t begin = build == Build::v3576 ? 0x6E90D10 : build == Build::v3527 ? 0x6E8ED10 : 0x6A51AE0;
-    const uintptr_t end = build == Build::v3576 ? 0x6EC4400 : build == Build::v3527 ? 0x6EC2400 : 0x6A82C80;
-    const uintptr_t image_limit = build == Build::v3576 ? kImageSize3576 : build == Build::v3527 ? 0x13EB2000 : 0x10000000;
-    std::array<bool, 1175> seen{};
+    // The singleton block (troc_mapping_*.json instance_range); 3576's moved by +0x2000, 3663's
+    // (troc_mapping_3576_3663.json) is 0x6F14E10..0x6F48840.
+    const uintptr_t begin = build == Build::v3663   ? 0x6F14E10
+                            : build == Build::v3576 ? 0x6E90D10
+                            : build == Build::v3527 ? 0x6E8ED10
+                                                    : 0x6A51AE0;
+    const uintptr_t end = build == Build::v3663   ? 0x6F48840
+                          : build == Build::v3576 ? 0x6EC4400
+                          : build == Build::v3527 ? 0x6EC2400
+                                                  : 0x6A82C80;
+    const uintptr_t image_limit = build == Build::v3663   ? kImageSize3663
+                                  : build == Build::v3576 ? kImageSize3576
+                                  : build == Build::v3527 ? 0x13EB2000
+                                                          : 0x10000000;
+    std::array<bool, kMaxCatalog> seen{};
     size_t count = 0;
     for (uintptr_t addr = base + begin; addr < base + end; addr += 8) {
         const auto vt = read<uintptr_t>(addr);
@@ -184,10 +213,31 @@ inline const ReaderProfile* reader_profile() noexcept {
         Build::v3576, "1.0.0.3576", 0x71C0100, 0x71AC2C0, 0x71CF140,
         0x5946C40, 0x5914D58, 0x59459F0, 0x591C7C0, 0x60CD660,
         0x70DC130, 0x60ED268, 0x430};
+    // Build 1.0.0.3663 (static, 2026-11-13; never run):
+    // - world 0x72451C0 (two AOB patterns); 65 sites read [[[world]+0x30]+0x50] (manager, controlled actor);
+    // - chunk origin 0x7231330: world_offset_sub at 0x39F74B1 (`mov rcx,[rbx+0x2D0]; ... vsubps xmm0,[rip->0x7231330];
+    //   vmovups [rcx+0x90],xmm0`; 229 references); static position 0x7253E60 (pattern write 0xA616C7, read 0xA615C6);
+    // - vtables by RTTI name (vtable_map_3576_3663.json): manager 0x59C2760, actor 0x5990BF0, control 0x59C1660,
+    //   status 0x5998B60;
+    // - physics 0x614A050 (no RTTI): the inner's constructor allocates 0x270 bytes (0x39EFF8F), calls 0x3CEB620 (jumps to
+    //   the protected 0x11B11940, which writes vptr 0x614A050 at 0x11B11958) and stores the result at inner+0x2D0
+    //   (0x39F0007); slot 1 0x3CEB8A0 -> 0x11B12170 (deleting destructor) writes the same vptr (0x11B12181).
+    //   NOTE: inner+0x2D0, not 3576's +0x2C0: 38 sites read [[x+0x140]+0x2D0], 1 [[x+0x140]+0x2C0] (player_reader.cpp
+    //   picks the offset per build). physics+0x60 is passed as the transform (0x3CEBB75 = 3576's 0x3C6E985 + 0x7D1F0);
+    // - camera slot 0x71602A8 and vtable 0x6169B58: the camera constructor 0x3EA36D0 (rdi = this, never reassigned)
+    //   writes vptr 0x6169B58 (0x3EA3721) and stores rdi at 0x71602A8 (0x3EA4AC3; the only other reference is the
+    //   pattern read 0x302CB37); slots 1/2 are the unique patterns 0x3C48340 / 0x3EB1120;
+    // - camera block 0x430: slot 11 (0x3EB3D80) writes the near plane at [[cam+0x430]+0x860] and slot 21 (0x3EAB810)
+    //   reads +0x430 / +0x438, as in 3576. The stat container offsets are 3527's (not re-derived; reads are bounded).
+    static constexpr ReaderProfile current3663{
+        Build::v3663, "1.0.0.3663", 0x72451C0, 0x7231330, 0x7253E60,
+        0x59C2760, 0x5990BF0, 0x59C1660, 0x5998B60, 0x614A050,
+        0x71602A8, 0x6169B58, 0x430};
     switch (current_build()) {
         case Build::v2976: return &old;
         case Build::v3527: return is_3549() ? &current3549 : &current;
         case Build::v3576: return &current3576;
+        case Build::v3663: return &current3663;
         default: return nullptr;
     }
 }

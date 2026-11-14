@@ -523,8 +523,13 @@ void refresh_local() noexcept {
     try {
         // Build 1.0.0.3576 (static, 2026-11-06; not yet run): no reader profile yet; world slot 0x71C0100
         // (core_globals_3576.json), ClientActorManager vtable 0x5946C40 (RTTI).
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): world slot 0x72451C0 (profile_s2.h rva3663), ClientActorManager
+        // vtable 0x59C2760 (RTTI).
         uintptr_t world_slot = 0, vt_mgr = 0;
-        if (game::current_build() == game::Build::v3576) {
+        if (game::current_build() == game::Build::v3663) {
+            world_slot = 0x72451C0;
+            vt_mgr = 0x59C2760;
+        } else if (game::current_build() == game::Build::v3576) {
             world_slot = 0x71C0100;
             vt_mgr = 0x5946C40;
         } else if (const auto* profile = game::reader_profile()) {
@@ -796,11 +801,12 @@ void install_remote_update_guard() {
     const uint32_t local = g_local.load();
     net::horse_diag_contain_remote(local);
     g_rug_on = true;
-    if (game::current_build() == game::Build::v3576) {
-        log::info("RemoteUpdateGuard ON for 3576: Update, PostUpdate, movement phase and action query at "
-                  "character_profile's 3576 addresses; local user 0x{:08X}. Missing selected action/playback defers "
+    if (game::current_build() == game::Build::v3576 || game::current_build() == game::Build::v3663) {
+        log::info("RemoteUpdateGuard ON for {}: Update, PostUpdate, movement phase and action query at "
+                  "character_profile's {} addresses; local user 0x{:08X}. Missing selected action/playback defers "
                   "remote movement; native action restore remains active",
-                  local);
+                  game::current_build() == game::Build::v3663 ? 3663 : 3576,
+                  game::current_build() == game::Build::v3663 ? 3663 : 3576, local);
         return;
     }
     if (game::current_build() == game::Build::v3527) {
@@ -824,14 +830,20 @@ DWORD WINAPI install_thread(LPVOID) {
     // Build 1.0.0.3576 (static, 2026-11-06): this module installs nothing of its own there (the probes stay off, as on
     // 3527); the layer guard and the remote update guard go through character_profile / remote_puppet / horse_diag,
     // which refuse 3576 until they are ported. Only the local user key is read (refresh_local).
-    if (build == game::Build::unsupported || !(game::legacy_layout() || build == game::Build::v3576)) {
+    // Build 1.0.0.3663 (static, 2026-11-13): the same; its only address is the world slot / actor manager vtable of
+    // refresh_local. The guards stay off until character_profile / remote_puppet / horse_diag admit 3663. The
+    // field-change controller P (3663: [world+0x60] grew by 0xF0, state +0x24C, manager +0x1A8, one more load state)
+    // is read only by the 2976 probes below (tick_wait_list / on_state, g_diag), which are forced off here.
+    if (build == game::Build::unsupported ||
+        !(game::legacy_layout() || build == game::Build::v3576 || build == game::Build::v3663)) {
         log::error("GuestDiag: unsupported game build; guest_actor_diag / guest_layer_guard stay off");
         return 0;
     }
-    if ((build == game::Build::v3527 || build == game::Build::v3576) && g_diag.exchange(false)) {
+    if ((build == game::Build::v3527 || build == game::Build::v3576 || build == game::Build::v3663) &&
+        g_diag.exchange(false)) {
         log::warn("GuestDiag: optional guest_actor_diag probes are not ported to build {} and stay off; required "
                   "guest guards remain enabled",
-                  build == game::Build::v3576 ? 3576 : 3527);
+                  build == game::Build::v3663 ? 3663 : build == game::Build::v3576 ? 3576 : 3527);
     }
     if (!read_sections()) {
         log::error("GuestDiag: the game's section table is unreadable; nothing is hooked");

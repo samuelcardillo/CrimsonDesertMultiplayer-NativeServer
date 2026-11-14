@@ -866,9 +866,12 @@ void end_tick(const troc::TrocLink& link) {
 
 // 3527's layout (3527, 3549 and 3576): the join stages below that 3527 requires, 3576 requires as well. A module of
 // those not ported to 3576 refuses it, and then the tunnel stays closed, as on 3527.
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the same join stages are required (its loading machine still waits
+// for the 2322's marker, guest.cpp read_preload_facts), so a stage not ported to 3663 keeps the tunnel closed there too.
+// This is about which stages are required, not about struct offsets (each module carries its own).
 bool layout_3527() noexcept {
     const auto b = game::current_build();
-    return b == game::Build::v3527 || b == game::Build::v3576;
+    return b == game::Build::v3527 || b == game::Build::v3576 || b == game::Build::v3663;
 }
 
 }  // namespace
@@ -902,10 +905,19 @@ bool install(const Options& opt) {
         const bool v3527 = game::current_build() == game::Build::v3527;
         const bool v3549 = game::is_3549();
         const bool v3576 = game::is_3576();
+        const bool v3663 = game::is_3663();
         host_save_configure({loaded_config().s2_host_save, loaded_config().s2_host_save_dir,
                              loaded_config().s2_host_save_keep,
-                             v3576 ? "1.0.0.3576" : v3549 ? "1.0.0.3549" : v3527 ? "1.0.0.3527" : "",
-                             v3576 ? "0x6AED2E85" : v3549 ? "0x6AEB7D59" : v3527 ? "0x6AEA07A6" : ""});
+                             v3663   ? "1.0.0.3663"
+                             : v3576 ? "1.0.0.3576"
+                             : v3549 ? "1.0.0.3549"
+                             : v3527 ? "1.0.0.3527"
+                                     : "",
+                             v3663   ? "0x6AF5D198"
+                             : v3576 ? "0x6AED2E85"
+                             : v3549 ? "0x6AEB7D59"
+                             : v3527 ? "0x6AEA07A6"
+                                     : ""});
     }
     if (writes && !save_hooks_install(opt.save_guard)) return false;
     if (opt.block_save_trocs) {

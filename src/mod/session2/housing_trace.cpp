@@ -65,6 +65,19 @@ constexpr Target kTargets[] = {
     {0xA65080, "ProximityTick", 4},
 };
 constexpr size_t kN = std::size(kTargets);
+// Build 1.0.0.3663 (static, 2026-11-13): NOT ported; housing_trace stays 3576-only. Found so far (see housing_redraw.cpp
+// for the evidence of the first three): Store2733 0x475BB0, RebuildActiveStage 0x480E90, RebuildCaller 0xA94860,
+// RecordIndexRebuild 0x1828F00 (the store's call with flags 3 or 4), the VHousingManager 0x5981808 slots (Mgr1 0x46E330,
+// Mgr4 0x4ACC20, Mgr5 0x4ACDC0, Mgr8 0x4ACF40, Mgr10 0x46F000, Mgr11 0x46FFB0, Mgr12 0x46ED60, Mgr13 0x470370, Mgr14
+// 0x470490, Mgr22 0x499140, Mgr23 0x499230, Mgr24 0x499970, Mgr26 0x4709D0, Mgr27 0x470E90, Mgr31 0x477B40, Mgr32
+// 0x47D770 (a byte 00 before it, not int3: this file's start check would skip it), Mgr33 0x480470, Mgr34 0x4909B0, Mgr35
+// 0x490FC0), EnterStage 0x47CDE0 (adds to +0xA8, sets +0xA0, then Mgr32), LeaveEditStage 0x47D220 (+0x440 after it as
+// in 3576: removes from +0xA8, +0xA0 = -1, then Mgr33), ClearAndBuild 0x47D390 (+0x5B0 as in 3576: the nearest active
+// stage, Mgr33 on the old, Mgr32 on the new), SyncStage 0x480B80 (bumps +0xA4, calls the sender 0xCD3220; Mgr33's last
+// call). In 3663 Mgr32 is a 0xF9-byte wrapper around 0x484F40 and no per-record PlaceObject call was found (inlined?);
+// ResetContext, PlaceObject, Validate, CommitEdit, EditAction, SetStageState, HouseList, HouseListCaller, ProximityTick
+// (0xA9A190 calls EnterStage / LeaveEditStage / ClearAndBuild: a candidate), Fn469970, Fn45CE80 and Fn453000 are not
+// resolved.
 
 struct Event {
     uint64_t ms = 0;

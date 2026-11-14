@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include "mod/game/actor_lookup.h"
+#include "mod/game/safe_memory.h"
 #include "mod/log.h"
 #include "mod/net/troc_sniffer.h"
 #include "mod/session2/child_hold.h"
@@ -34,6 +36,32 @@ hfl::KeyRing<64> g_user2_keys;  // keys user 2 sent a MoveActorReq for (it contr
 
 hfl::CadenceHist h_rider_ack, h_horse_ack, h_rider_req, h_horse_req;
 std::atomic<uint64_t> c_acks{0}, c_bad_size{0}, c_ridden{0}, c_other_parent{0}, c_horse_own{0};
+// Riders whose 0xB parent is a gimmick (type 7), not a horse: the helmsman at a ship's wheel (parent = the wheel mount)
+// or a character standing on a ship (parent = the hull). Never followed (both directions).
+std::atomic<uint64_t> c_gimmick_parent{0}, c_rev_gimmick_parent{0};
+
+// The parent's actor type on this PC's client (actor +0x88 -> info, +1 the type): 7 a gimmick, 5 a vehicle actor (a horse,
+// a mount, a ship's vehicle); 0 unknown (not loaded, unreadable, or a build where this layout was not checked).
+// Why: 2026-11-13 (build 3663, two copies), the host at its ship's wheel is a "rider on an 0xB parent" whose parent is the
+// wheel mount 0xB0100E5C; the synthetic 2697 of that "horse" (the rider's WORLD pose, parent -1, ~13 a second) reached
+// the guest, whose wheel 0xB0100E5D was then drawn 2.9 m up and 1.9 m back (its offset to the mount counted twice). The
+// same synthetic Acks of the wheel piece were seen on 3576 (docs/ESTADO-3527.md, "13-nov: BARCO", 224,000 in a night).
+constexpr uint32_t kActor_Info = 0x88;
+constexpr uint8_t kTypeGimmick = 7;
+std::atomic<uint64_t> g_type_cache{0};  // (key << 8) | type of the last parent looked up
+uint8_t parent_type(uint32_t key) noexcept {
+    if (!game::is_3576() && !game::is_3663()) return 0;  // actor +0x88 / info +1 checked on these (vehicle_follow)
+    const uint64_t c = g_type_cache.load(std::memory_order_relaxed);
+    if (c && static_cast<uint32_t>(c >> 8) == key) return static_cast<uint8_t>(c);
+    uint8_t type = 0;
+    if (const auto actor = game::find_actor(key)) {
+        if (const auto info = game::read_ptr(*actor + kActor_Info)) {
+            if (const auto t = game::read<uint8_t>(*info + 1)) type = *t;
+        }
+    }
+    if (type) g_type_cache.store(static_cast<uint64_t>(key) << 8 | type, std::memory_order_relaxed);
+    return type;
+}
 std::atomic<uint64_t> c_verdict[hfl::kVerdicts] = {};
 std::atomic<uint64_t> c_made{0}, c_push_failed{0}, c_build_failed{0};
 std::atomic<uint64_t> c_reqs{0}, c_req_ridden{0}, c_req_horse_own{0};
@@ -113,6 +141,10 @@ void horse_follow_on_out(uint16_t opcode, std::span<const uint8_t> packet, Horse
             }
             return;
         case Shape::Ridden: break;
+    }
+    if (parent_type(m.parent) == kTypeGimmick) {
+        c_gimmick_parent.fetch_add(1, std::memory_order_relaxed);
+        return;
     }
     c_ridden.fetch_add(1, std::memory_order_relaxed);
     if (const uint64_t g = g_rider_ack.gap(m.key, m.ts)) h_rider_ack.add(g);
@@ -316,6 +348,10 @@ size_t reverse(Mode mode, const hfl::Move& m, std::span<const uint8_t> copy, uin
         return 0;
     }
     if (m.shape != Shape::Ridden) return 0;
+    if (parent_type(m.parent) == kTypeGimmick) {
+        c_rev_gimmick_parent.fetch_add(1, std::memory_order_relaxed);
+        return 0;
+    }
     c_rev_acks.fetch_add(1, std::memory_order_relaxed);
     const uint32_t u2 = server_user2_player_key();
     const uint64_t now = GetTickCount64();
@@ -466,12 +502,14 @@ std::string horse_follow_describe() {
     const std::string gp = (g_guest_probe.load() ? " || " + guest_probe_describe() : std::string()) +
                            (rev.empty() ? std::string() : " || " + rev) + " || " + forward_describe();
     return std::format(
-        "HorseFollow [{}]: to user 2: Move Acks {} (bad size {}, rider on an 0xB parent {}, other parents {}) | "
+        "HorseFollow [{}]: to user 2: Move Acks {} (bad size {}, rider on an 0xB parent {}, other parents {}, on a gimmick "
+        "{} and from user 2 {}: not horses, skipped) | "
         "made {} (push refused {}, build failed {}) | verdicts: no world {}, user 2's horse {}, would make {} | "
         "last pair 0x{:08X} on 0x{:08X} | rider Ack cadence [{}] | its horse's own Acks {} [{}] || user 2's Move Reqs "
         "{} (riding {}, last 0x{:08X} on 0x{:08X}) | rider Req cadence [{}] | its horse's own Reqs {} [{}] (this "
         "direction reaches the host's client natively: NOT followed)",
-        hfl::mode_name(mode), c_acks.load(), c_bad_size.load(), c_ridden.load(), c_other_parent.load(), c_made.load(),
+        hfl::mode_name(mode), c_acks.load(), c_bad_size.load(), c_ridden.load(), c_other_parent.load(),
+        c_gimmick_parent.load(), c_rev_gimmick_parent.load(), c_made.load(),
         c_push_failed.load(), c_build_failed.load(), c_verdict[static_cast<size_t>(Verdict::NoWorld)].load(),
         c_verdict[static_cast<size_t>(Verdict::OwnHorse)].load(), c_verdict[static_cast<size_t>(Verdict::Probe)].load(),
         g_last_rider.load(), g_last_horse.load(), hist(h_rider_ack), c_horse_own.load(), hist(h_horse_ack),

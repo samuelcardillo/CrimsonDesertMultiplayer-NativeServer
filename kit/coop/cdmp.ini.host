@@ -43,6 +43,11 @@ piece4_test=0
 attack_probe=0
 
 [session2]
+; Ships (3663, 2026-11-14): the guest standing on the host's ship is drawn on the ship (without this the host sees a
+; guest who stands still left behind in the water while the ship sails). A ship the guest sails would be followed
+; here too (not tested).
+; probe = measure only; 0 = off.
+vehicle_follow=1
 ; The press-time interaction check (build 3549): a guest key; probe here logs the host's own presses.
 interact_gate=0
 interact_gate_errors=

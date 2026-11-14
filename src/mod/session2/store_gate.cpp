@@ -29,6 +29,13 @@ struct Pts {
 };
 constexpr Pts k3549{0x23C6600, 0x23C676B, 0x23C6A37, 0};
 constexpr Pts k3576{0x23C7350, 0x23C74BB, 0x23C7787, 0x71C0100};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the two points' arrays (kHasSceneBytes, kSameSceneBytes, the je's
+// rel32 included) are each unique in the code section, at +0x173 / +0x43F (3527 +0x16B / +0x437) of 0x2438BE0 (.pdata
+// 0x2438BE0-0x24392E3, head kFnHead); r13 = rcx the store component ([r13+8] the actor, [actor+0xA0] its user at
+// 0x2438D94 / 0x2438D9C), r12 = the requester's current scene ([rbx+0xA0] or [rbx+0x90] at 0x2438D18 / 0x2438D21) and
+// reloaded at 0x2438D94 right after the test, [rbp-0x31] its scene id (0x2438D3D), rbx the shopkeeper's (0x243900F),
+// rsi = r8 the shopkeeper actor (0x2438FF1); the world slot 0x72451C0.
+constexpr Pts k3663{0x2438BE0, 0x2438D53, 0x243901F, 0x72451C0};
 const Pts* g_p = &k3549;  // written once by store_gate_start
 
 constexpr uint8_t kFnHead[10] = {0x48, 0x89, 0x5C, 0x24, 0x10, 0x48, 0x89, 0x74, 0x24, 0x18};
@@ -169,13 +176,13 @@ void store_gate_start(const std::string& mode, bool guest) {
         return;
     }
     if (*m == gil::Mode::Off) return;
-    if (!game::is_3549() && !game::is_3576()) {
-        log::warn("StoreGate: store_gate is for builds 3549 and 3576 only; off");
+    if (!game::is_3549() && !game::is_3576() && !game::is_3663()) {
+        log::warn("StoreGate: store_gate is for builds 3549, 3576 and 3663 only; off");
         return;
     }
     if (g_started.exchange(true)) return;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    g_p = game::is_3576() ? &k3576 : &k3549;
+    g_p = game::is_3663() ? &k3663 : game::is_3576() ? &k3576 : &k3549;
     if (g_p->world_slot) {
         g_world_slot = g_p->world_slot;
     } else if (const auto* profile = game::reader_profile()) {

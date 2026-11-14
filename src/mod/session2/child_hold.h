@@ -10,6 +10,10 @@
 // its callers, StartActionReq::vf2), + 0xDD0 (the restore writer), + 0xC50 (the realm mark), all with 3527's bytes; TLS
 // realm +0x1EB and TransformSync sector +0x548 unchanged (child_hold.cpp, kHoldChecks3576). The publication gate and
 // the key retirement stay off there too.
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the same hooks and checks in the same functions, from 3527's sites
+// NotifyAppear +0x67B20, its callers +0x67A10, StartActionReq::vf2 +0x666E0, the restore writer +0x72750, the realm mark
+// +0x63280 (child_hold.cpp, kHoldChecks3663); three call rel32 are new; TLS realm +0x1EB and TransformSync sector +0x548
+// unchanged.
 // Option D, D-53 (docs/research/pendientes/companeros-publicacion.md §3): the
 // server does not publish a child of ANY user (pet, horse, companion; the
 // host's as well as user 2's) to the other users until that child has its

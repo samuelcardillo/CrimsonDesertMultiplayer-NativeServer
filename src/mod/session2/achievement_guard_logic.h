@@ -39,6 +39,17 @@ inline constexpr uint8_t kWayOutBytes3576[] = {0x49, 0x8B, 0xCF, 0xE8, 0x3A, 0x4
 static_assert(kPoint3576 - kUnlock3576 == kPoint - kUnlock && kWayOut3576 - kUnlock3576 == kWayOut - kUnlock);
 static_assert(sizeof kWayOutBytes3576 == sizeof kWayOutBytes);
 
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the vtable by RTTI (vtable_map_3576_3663.json); its vf2 0x19E9070
+// (3576 +0x65C70, .pdata 0x19E9070..0x19E9331, the same 0x2C1 bytes) has the same 27-byte head and the point's same 7
+// bytes at +0x33. The way out at +0x25E has the same instructions (masked match, the only one in the function); only
+// its two calls' rel32 differ (targets 0x3DB480 and 0x3E6F50).
+inline constexpr uintptr_t kVtSteamManager3663 = 0x5BF4138;
+inline constexpr uintptr_t kUnlock3663 = 0x19E9070, kPoint3663 = 0x19E90A3, kWayOut3663 = 0x19E92CE;
+inline constexpr uint8_t kWayOutBytes3663[] = {0x49, 0x8B, 0xCF, 0xE8, 0xAA, 0x21, 0x9F, 0xFE, 0x90, 0x48, 0x8B, 0xCE,
+                                               0xE8, 0x71, 0xDC, 0x9F, 0xFE, 0xB0, 0x01};
+static_assert(kPoint3663 - kUnlock3663 == kPoint - kUnlock && kWayOut3663 - kUnlock3663 == kWayOut - kUnlock);
+static_assert(sizeof kWayOutBytes3663 == sizeof kWayOutBytes);
+
 // Sticky: once this guest has played in a host's world, its game holds the host's progress until it is restarted.
 class Gate {
 public:

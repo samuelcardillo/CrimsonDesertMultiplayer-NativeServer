@@ -854,4 +854,44 @@ inline constexpr uintptr_t kFieldOwnerRead3576 = 0x29CCBA6;
 inline constexpr uintptr_t kServerExecute3576 = 0x2D535F0;
 inline constexpr uintptr_t kServerUpdate3576 = 0x2D52B80;
 
+// ---------------------------------------------------------------- build 1.0.0.3663 (static, 2026-11-13; never run)
+
+// Client: pa::ClientGimmickActorComponent 0x59C3768 (RTTI, vtable_map_3576_3663.json); its +0x748 holds the request
+// 0xA005C0 (kClientRequestHead identical). The second requester 0xA00AF0 (kClientRequest2Head3527 identical; callers
+// 0xA07FA6 / 0xA26342). The compares at the same +0x71 / +0x6F (0xA00631 / 0xA00B5F; kClientCheckBytes3527 /
+// kClientCheck2Bytes3527 identical, each followed by je +0x6E; the only branches to them land on their first byte,
+// 0xA0062D / 0xA00B5B). Both refusals read the global 0x71CFB84 (0xA00639 / 0xA00B68), as does the server's Update
+// refusal 0x2DB96E8 (327 RIP reads, an error-code global).
+inline constexpr uintptr_t kClientRequest3663 = 0xA005C0;
+inline constexpr uintptr_t kClientRequest23663 = 0xA00AF0;
+inline constexpr uintptr_t kClientCheck3663 = 0xA00631;   // cmp eax,[rsi+0x90] | je 0xA006A7
+inline constexpr uintptr_t kClientCheck23663 = 0xA00B5F;  // cmp eax,[r13+0x90] | je 0xA00BD6
+inline constexpr uintptr_t kClientGimmickVtbl3663 = 0x59C3768;
+inline constexpr uintptr_t kClientGimmickRequestSlot3663 = 0x59C3768 + 0x748;  // holds 0xA005C0
+inline constexpr uintptr_t kErrNotControllerGlobal3663 = 0x71CFB84;
+// Server (host). OnDemandEquipDockingGimmickSpawnReq 0x5F684D8 slot 2 = 0x2C4AE10 calls 0x2B70D60 at 0x2C4B244 (its only
+// caller); OnDemandDockingGimmickSpawnReq 0x5F68518 slot 2 = 0x2C4BAF0 calls 0x2B71A80 at 0x2C4BEFE (its only caller);
+// both spawns start with kDockHead. GimmickExecuteFrameEventReq 0x5F66718 slot 2 = 0x2CCE150 calls 0x2DBA110 at 0x2CCE43F
+// (kServerExecuteHead; test 0x2DBA15A cmp [r10+0x90],eax against [[rdx+0xA0]+0x60]); UpdateGimmickReq 0x5F66998 slot 2 =
+// 0x2CCBBD0 calls 0x2DB96A0 at 0x2CCBED9 (kServerUpdateHead3527; test 0x2DB96E0 against [[r8+0xA0]+0x60]).
+// The controller's write CHANGED: in 0x2A2E6C0 (+0xD7B; 3576 +0xCD1) the field is in rdi, not r13: the field-owner
+// read is `mov eax,[rdi+0x180] | test eax,eax | je +7` (0x2A2F431) and the write `mov [r14+0x90],eax` (0x2A2F43B, the
+// same 7-byte instruction) is followed by mov rax,[rsi] | mov r9,r14 | mov r8,rdi | lea rdx,[rbp+0x60] (20 bytes, once in
+// the code section); r14 the actor, rsi the descriptor as before; the block's head 0x2A2F3D2 (jne +0x5E). The only
+// branch to the write lands on its first byte (0x2A2F3DB).
+inline constexpr uintptr_t kDockEquip3663 = 0x2B70D60;
+inline constexpr uintptr_t kDockOther3663 = 0x2B71A80;
+inline constexpr uint8_t kDockEquipCall3663[5] = {0xE8, 0x17, 0x5B, 0xF2, 0xFF};
+inline constexpr uintptr_t kDockEquipCallSite3663 = 0x2C4B244;
+inline constexpr uintptr_t kControllerWrite3663 = 0x2A2F43B;
+inline constexpr uint8_t kControllerWriteBytes3663[20] = {0x41, 0x89, 0x86, 0x90, 0x00, 0x00, 0x00, 0x48, 0x8B, 0x06,
+                                                          0x4D, 0x8B, 0xCE, 0x4C, 0x8B, 0xC7, 0x48, 0x8D, 0x55, 0x60};
+inline constexpr uintptr_t kControllerBlock3663 = 0x2A2F3D2;
+inline constexpr uint8_t kControllerBlockBytes3663[16] = {0x41, 0x8B, 0x86, 0x90, 0x00, 0x00, 0x00, 0x85,
+                                                          0xC0, 0x75, 0x5E, 0x48, 0x8B, 0x46, 0x40, 0x48};
+inline constexpr uintptr_t kFieldOwnerRead3663 = 0x2A2F431;
+inline constexpr uint8_t kFieldOwnerReadBytes3663[10] = {0x8B, 0x87, 0x80, 0x01, 0x00, 0x00, 0x85, 0xC0, 0x74, 0x07};
+inline constexpr uintptr_t kServerExecute3663 = 0x2DBA110;
+inline constexpr uintptr_t kServerUpdate3663 = 0x2DB96A0;
+
 }  // namespace cdmp::session2::dgl

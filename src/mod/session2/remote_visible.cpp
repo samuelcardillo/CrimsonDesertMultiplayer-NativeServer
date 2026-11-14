@@ -42,6 +42,14 @@ struct Sites {
 constexpr Sites kSites3527{kSetter, kSetterRet, kSetterStore, kClanHide};
 constexpr Sites kSites3576{0x18CD090, 0x18CD375, 0x18CD131, 0x231ED5F};
 constexpr uintptr_t kWorldSlot3576 = 0x71C0100, kVtClientActor3576 = 0x5914D58;
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the setter is 0x1932980 (3527 + 0x66530; kSetterHead at its entry,
+// .pdata to 0x1932C98), with the flags store `mov [r14+0x3B8],rbx` at +0xA1 = 0x1932A21 (the only copy of those 7
+// bytes in the code section) and its `ret` at +0x2E5 = 0x1932C65 (after `pop rdi`, as on 3527); the clan's hide
+// 0x231E00F -> 0x238FBAF (+0x12F in 0x238FA80, as in 3527's 0x231DEE0; `mov r8b,1 ; mov edx,0x100000` then the call
+// to 0x1932980 at 0x238FBB8). World slot 0x72451C0; ClientChildOnlyInGameActor 0x5914D58 -> 0x5990BF0 (RTTI). The
+// world -> +0x30 -> +0x58 local user is read so at 0xAC86C5.
+constexpr Sites kSites3663{0x1932980, 0x1932C65, 0x1932A21, 0x238FBAF};
+constexpr uintptr_t kWorldSlot3663 = 0x72451C0, kVtClientActor3663 = 0x5990BF0;
 
 constexpr uint32_t kStatusActor = 0x08, kActorKey = 0x60, kActorUser = 0xA0;
 constexpr uint32_t kWorldManager = 0x30, kManagerUser = 0x58;
@@ -83,13 +91,16 @@ void on_status_flag(safetyhook::Context& ctx) {
 
 bool remote_visible_install() {
     const bool b3576 = game::current_build() == game::Build::v3576;
-    if (game::current_build() != game::Build::v3527 && !b3576) return true;
+    const bool b3663 = game::current_build() == game::Build::v3663;
+    if (game::current_build() != game::Build::v3527 && !b3576 && !b3663) return true;
     const auto* profile = game::reader_profile();
-    if (!profile && !b3576) return false;
+    if (!profile && !b3576 && !b3663) return false;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    g_sites = b3576 ? &kSites3576 : &kSites3527;
-    g_world_slot = g_base + (b3576 ? kWorldSlot3576 : profile->world_system);
-    g_vt_client_actor = g_base + (b3576 ? kVtClientActor3576 : profile->vt_controlled_actor);
+    g_sites = b3663 ? &kSites3663 : b3576 ? &kSites3576 : &kSites3527;
+    g_world_slot = g_base + (b3663 ? kWorldSlot3663 : b3576 ? kWorldSlot3576 : profile->world_system);
+    g_vt_client_actor = g_base + (b3663   ? kVtClientActor3663
+                                  : b3576 ? kVtClientActor3576
+                                          : profile->vt_controlled_actor);
     g_ret = g_base + g_sites->setter_ret;
     const auto matches = [](uintptr_t rva, const uint8_t* bytes, size_t n) {
         uint8_t actual[32]{};

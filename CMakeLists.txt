@@ -171,6 +171,7 @@ add_library(cdmp_mod SHARED
     src/mod/session2/docked_gimmicks.cpp
     src/mod/session2/interact_gate.cpp
     src/mod/session2/store_gate.cpp
+    src/mod/session2/vehicle_follow.cpp
     src/mod/session2/shop_ui_trace.cpp
     src/mod/session2/guest_shop_window.cpp
     src/mod/session2/housing_share.cpp
@@ -206,6 +207,7 @@ add_library(cdmp_mod SHARED
     src/mod/session2/focus_follow.cpp
     src/mod/session2/manager_probe.cpp
     src/mod/session2/pivot_guard.cpp
+    src/mod/session2/ride_null_guard.cpp
     src/mod/session2/seq_marker.cpp
     src/mod/session2/user2_funnels.cpp
     src/mod/session2/fast_travel.cpp
@@ -273,6 +275,18 @@ cdmp_strict(cdmp_probe)
 target_include_directories(cdmp_probe PRIVATE tools)
 target_link_libraries(cdmp_probe PRIVATE cdmp_common)
 
+# The players' launcher (docs/LAUNCHER.md): installs or updates the mod in the game folder, starts the game with or
+# without it and writes who to play with. Its own Dear ImGui window on Direct3D 11; no game code and no hooks.
+add_executable(cdmp_launcher WIN32
+    tools/launcher/main.cpp
+    tools/launcher/launcher_core.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_win32.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.cpp
+)
+set_source_files_properties(tools/launcher/main.cpp tools/launcher/launcher_core.cpp PROPERTIES COMPILE_OPTIONS /W4)
+target_include_directories(cdmp_launcher PRIVATE src tools/launcher)
+target_link_libraries(cdmp_launcher PRIVATE imgui d3d11 winhttp version shell32 ole32 advapi32)
+
 # Opt-in external diagnostic capture for failures that bypass in-process handlers.
 add_executable(cdmp_debug_watch EXCLUDE_FROM_ALL tools/porting/debug_watch.cpp)
 cdmp_strict(cdmp_debug_watch)
@@ -280,6 +294,13 @@ target_link_libraries(cdmp_debug_watch PRIVATE dbghelp)
 
 # Tests.
 enable_testing()
+# The launcher's rules and its work on files, against fake kit, game and data folders in %TEMP%.
+add_executable(cdmp_tests_launcher tests/launcher_tests.cpp tools/launcher/launcher_core.cpp)
+cdmp_strict(cdmp_tests_launcher)
+target_include_directories(cdmp_tests_launcher PRIVATE src tools/launcher)
+target_link_libraries(cdmp_tests_launcher PRIVATE winhttp version shell32 advapi32)
+target_compile_definitions(cdmp_tests_launcher PRIVATE CDMP_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
+add_test(NAME launcher COMMAND cdmp_tests_launcher)
 add_executable(cdmp_tests tests/tests.cpp)
 cdmp_strict(cdmp_tests)
 target_link_libraries(cdmp_tests PRIVATE cdmp_common)
@@ -411,6 +432,10 @@ add_executable(cdmp_tests_optd_housing_share tests/optd_housing_share_tests.cpp)
 cdmp_strict(cdmp_tests_optd_housing_share)
 target_include_directories(cdmp_tests_optd_housing_share PRIVATE src)
 add_test(NAME optd_housing_share COMMAND cdmp_tests_optd_housing_share)
+add_executable(cdmp_tests_optd_vehicle_follow tests/optd_vehicle_follow_tests.cpp)
+cdmp_strict(cdmp_tests_optd_vehicle_follow)
+target_include_directories(cdmp_tests_optd_vehicle_follow PRIVATE src)
+add_test(NAME optd_vehicle_follow COMMAND cdmp_tests_optd_vehicle_follow)
 
 add_executable(cdmp_tests_optd_achievement_guard tests/optd_achievement_guard_tests.cpp)
 cdmp_strict(cdmp_tests_optd_achievement_guard)

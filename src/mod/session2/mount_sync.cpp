@@ -112,8 +112,40 @@ constexpr Addrs kAddrs3576{0x23FDDC0, 0xB4DCF0, 0x23FEA20, 0xB4DD10, 0x750210, 0
                            kGateHead3527, sizeof kGateHead3527,
                            {0x48, 0x8D, 0x54, 0x24, 0x20, 0x49, 0x8B, 0xCF, 0xE8, 0x3D, 0x1F, 0xBD, 0x01, 0x45, 0x89, 0x26},
                            0x13C, 0x140, 0xD0, 0x5B3AA0, 0x98FC10};
+// Build 1.0.0.3663 (static, 2026-11-13; never run). 3663 is a recompile (some frames and struct offsets changed); every
+// address found again and every byte compared before hooking, as always:
+// - vtables by RTTI name (vtable_map_3576_3663.json): ClientVehicle 0x59C2910 slots 53/54 = the thunk 0xB84E80
+//   (`jmp 0x9B6C550`, protected) and 0xB84EA0 (kVf54, .pdata start); CommonVehicle 0x5D6D7A8 slot 53 = 0x246F6C0 (kEntry7,
+//   .pdata start); RideOn 0x59A2D08 / RideOff 0x59A2C58 slot 7 = 0x77C3A0 / 0x77D370 (kRideEnter); the three handlers
+//   are slot 2 of their Troc singletons' vtables (InteractionPreemptionStepSuccessAck 0x5A15598,
+//   InteractionDoStepSuccessAck 0x5A155D8, StartActionAck 0x5A177F8; troc_mapping_3576_3663.json): 0xD11830 / 0xD12300 /
+//   0xC9CA10 (kHandler). StartActionAck's handler is 3527's instruction for instruction (game::wire_build()).
+// - the RideOff thunk: vf53's `lea rcx,[rsp+48h]; ... mov byte [rsp+20h],0Eh; xor r9d,r9d; lea r8,[rsp+58h];
+//   mov rdx,[rbp-38h]; call` at 0x246F8C9 (+0x209; 3576 +0x20A) -> 0x2470330 (`jmp 0xD1BAF70`; 13 callers, as in
+//   3576). vf53 is recompiled (its frame moved 8 bytes); its head and that call's arguments are 3527's.
+// - gate (fix B) 0x258CAA0 (kGateHead3527, .pdata start; 3527's 0x251A350 + 0x72750, the application's own shift);
+//   its call site 0x976BD6 (the only match of 3527's array but for the call's rel32; it calls 0x258CAA0, return
+//   0x976BE3); the network mark 0x20DFF86 (the only match); the gate reads CC+0x80 / +0xA8.
+// - the mode-2 update 0x9A50D0 (kHoldEntry, .pdata start; the mode function 0x9A5310 moved by the same +0x2EDB0) and the
+//   action request 0xB852D0 (kActionReqBytes, .pdata start; 2 callers, one vf54's own at +0x333).
+// - vf178 (slot +0x178): 0x5DF1C0 of ClientActor / ClientNormalInGameActor / ClientChildOnlyInGameActor
+//   ([[0x72451C0]+0x30]+0x58 vs [this+0xA0], then [this+0x94]) and 0x9BE630 of ClientUserActor (`movzx eax,[rcx+94h]`).
+// - RideOff::Enter still writes the horse key at +0xD0 at its +0x223 (0x77D593, as 3576's); the controller's method
+//   byte +0x13C and table +0x140 are in remote_motion's 3663 gate bytes; CC+0xC8 = the controller and mc+0x60 = CC
+//   (the CC's constructor 0x96FB30, remote_interp.cpp); [actor+0x88]+1 type, actor+0x90 and vc+0xEB are in the 3663
+//   mode function (3527's bytes). NOT re-derived: the link (+0x08/+0x0C/+0x10/+0x14), the seat tables (vc+0x48/+0x88/
+//   +0xC8), CC+0x100 / +0x228 and the attach type +0x08, the hierarchy comps+0x1B8 (+0x18/+0x1C), TransformSync
+//   +0xA4/+0xB4/+0xC0 (its load reader 0x23DCEA0 is 3527's 0x236BF20 instruction for instruction).
+constexpr Addrs kAddrs3663{0x246F6C0, 0xB84E80, 0x2470330, 0xB84EA0, 0x77C3A0, 0x77D370, 0xD11830, 0xD12300, 0xC9CA10, 0x5613000,
+                           0x258CAA0, 0x976BE3, 0x976BD6, 0x20DFF86, 0x9A50D0, 0xB852D0,
+                           {0xE9, 0xCB, 0x76, 0xFE, 0x08},  // jmp 0x9B6C550
+                           {0xE9, 0x3B, 0xAC, 0xD4, 0x0A},  // jmp 0xD1BAF70
+                           kGateHead3527, sizeof kGateHead3527,
+                           {0x48, 0x8D, 0x54, 0x24, 0x20, 0x49, 0x8B, 0xCF, 0xE8, 0xBD, 0x5E, 0xC1, 0x01, 0x45, 0x89, 0x26},
+                           0x13C, 0x140, 0xD0, 0x5DF1C0, 0x9BE630};
 const Addrs& addrs() noexcept {
-    static const Addrs& a = game::current_build() == game::Build::v3576 ? kAddrs3576
+    static const Addrs& a = game::current_build() == game::Build::v3663 ? kAddrs3663
+                            : game::current_build() == game::Build::v3576 ? kAddrs3576
                             : game::is_3549()                           ? kAddrs3549
                             : game::current_build() == game::Build::v3527 ? kAddrs3527
                                                                           : kAddrs2976;
@@ -1376,7 +1408,7 @@ void do_detach(const msl::Txn& t) noexcept {
 
 // ---------------------------------------------------------------- 0xB57720 StartActionAck 2991 handler (self, res, pkt)
 
-// The native payload layout: 3576's is 3527's (game::wire_build()).
+// The native payload layout: 3576's and 3663's are 3527's (game::wire_build()).
 size_t ack_size() noexcept { return movement::payload_size(game::wire_build(), 2991); }
 
 bool guarded_rewrite(uintptr_t payload, rfl::Kind kind) noexcept {
@@ -2132,7 +2164,9 @@ void expire_tick() {
 DWORD WINAPI install_thread(LPVOID) {
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     std::vector<gad::Section> secs;
-    if ((!game::legacy_layout() && game::current_build() != game::Build::v3576) || !p8_exe_sections(g_base, secs)) {
+    if ((!game::legacy_layout() && game::current_build() != game::Build::v3576 &&
+         game::current_build() != game::Build::v3663) ||
+        !p8_exe_sections(g_base, secs)) {
         log::error("MountSync: unsupported game build or unreadable sections; nothing installed");
         return 0;
     }

@@ -85,6 +85,24 @@ constexpr HookSite kHooks3576[rip::kSites] = {
     {0x1387F42, {0x48, 0x63, 0x05, 0x8F, 0x23, 0xD8, 0x05}, Site::UpdRot, 0x4E8,
      "the delay read of updateInterpolateRotateData 0x1387720 (3576 0x1387ED0)"},
 };
+// Build 1.0.0.3663 (static, 2026-11-13; never run): in 0x13A6C00..0x13E6C00 only one global is read by four
+// `movsxd r64,[rip+X]`: 3527's four sites + 0x3EE50, at the same distances (0x48C / 0x722 / 0xB54), each at the same
+// offset in its function (0x13C5A50, 0x13C6160, 0x13C5EA0, 0x13C6570; .pdata starts), with the same registers (rdi the
+// buffer; set: now = rax+rbx after it, update: rcx = now before it) and the same instruction (only the RIP displacement
+// differs); all four read the delay 0x718EA48. Both thresholds `cmp r8,0x3E8` are at 3527's + 0x3EE50. The buffer
+// offsets: the CC's constructor 0x96FB30 (vptr 0x59C1660) builds the controller with 0x98CD80(mc, cc) and stores it at
+// CC+0xC8 (0x96FEA7); 0x98CD80 stores the CC at mc+0x60 (0x98D556) and initializes mc+0x430 and mc+0x4E8 with the same
+// call (0x98D1DA / 0x98D20A). The four functions read the buffer's +0x08 array, +0x10 count, 0xA0-byte samples, ts +0x98.
+constexpr HookSite kHooks3663[rip::kSites] = {
+    {0x13C5A8E, {0x4C, 0x63, 0x15, 0xB3, 0x8F, 0xDC, 0x05}, Site::SetPos, 0x430,
+     "the delay read of setInterpolatePositionData 0x1386C00 (3663 0x13C5A50)"},
+    {0x13C61B0, {0x4C, 0x63, 0x1D, 0x91, 0x88, 0xDC, 0x05}, Site::SetRot, 0x4E8,
+     "the delay read of setInterpolateRotateData 0x1387310 (3663 0x13C6160)"},
+    {0x13C5F1A, {0x48, 0x63, 0x05, 0x27, 0x8B, 0xDC, 0x05}, Site::UpdPos, 0x430,
+     "the delay read of updateInterpolatePositionData 0x1387050 (3663 0x13C5EA0)"},
+    {0x13C65E2, {0x48, 0x63, 0x05, 0x5F, 0x84, 0xDC, 0x05}, Site::UpdRot, 0x4E8,
+     "the delay read of updateInterpolateRotateData 0x1387720 (3663 0x13C6570)"},
+};
 const HookSite* g_sites = kHooks2976;
 constexpr uint32_t kHookLen = 7;
 uintptr_t g_delay_global = 0x6CB9548;  // GlobalVariableInt value (2976 object 0x6CB9510; 3527 0x71081C8), default 200
@@ -496,7 +514,8 @@ bool patch_threshold() {
 // The local player's controlled actor exists (ui_pause's check): the world is up.
 bool player_in_world() {
     uintptr_t world = 0, mgr = 0, vt = 0, actor = 0, avt = 0;
-    if (const auto* profile = game::reader_profile(); profile && game::layout_3527()) {
+    if (const auto* profile = game::reader_profile();
+        profile && (game::layout_3527() || game::current_build() == game::Build::v3663)) {
         return peek(g_base + profile->world_system, world) && world &&
                peek(world + g2976::kWorldSystem_ActorManager, mgr) && mgr && peek(mgr, vt) &&
                vt == g_base + profile->vt_actor_manager && peek(mgr + g2976::kActorManager_ControlledActor, actor) && actor &&
@@ -729,7 +748,8 @@ void summary() {
 DWORD WINAPI interp_thread(LPVOID) {
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     const auto build = game::current_build();
-    if (build == game::Build::unsupported || (!game::legacy_layout() && build != game::Build::v3576)) {
+    if (build == game::Build::unsupported ||
+        (!game::legacy_layout() && build != game::Build::v3576 && build != game::Build::v3663)) {
         log::error("RemoteInterp: unsupported game build; remote_interp stays off");
         return 0;
     }
@@ -747,6 +767,14 @@ DWORD WINAPI interp_thread(LPVOID) {
         g_threshold_sites[0] = 0x1387453;
         g_threshold_sites[1] = 0x1387B55;
         g_code_end = 0x5597000;
+    } else if (build == game::Build::v3663) {
+        // kHooks3663; the thresholds at 3527's + 0x3EE50 (0x13C5AF3, 0x13C61F5); the real code section is the first one,
+        // [0x1000, 0x5613000) (its flags: execute, not write).
+        g_sites = kHooks3663;
+        g_delay_global = 0x718EA48;
+        g_threshold_sites[0] = 0x13C5AF3;
+        g_threshold_sites[1] = 0x13C61F5;
+        g_code_end = 0x5613000;
     }
     if (!p8_exe_sections(g_base, g_secs)) {
         log::error("RemoteInterp: the game's section table is unreadable; remote_interp stays off");

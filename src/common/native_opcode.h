@@ -13,7 +13,9 @@ namespace cdmp::native_opcode {
 
 // v3576 (1.0.0.3576, 2026-11-06): the Troc catalogue is 3527's, message for message (all 1175 RTTI-named singletons
 // resolved, 0 opcode and 0 size changes: tools/porting/data/troc_mapping_3549_3576.json), so it shares kEntries3527.
-enum class Build : uint32_t { unsupported = 0, v2976 = 2976, v3527 = 3527, v3576 = 3576 };
+// v3663 (1.0.0.3663, 2026-11-13): the same 1175 messages renumbered (1066 of them; kinds and sizes unchanged) plus 4 new
+// ones (tools/porting/data/opcode_mapping_3576_3663.json): its own table, kEntries3663; logical IDs unchanged.
+enum class Build : uint32_t { unsupported = 0, v2976 = 2976, v3527 = 3527, v3576 = 3576, v3663 = 3663 };
 
 // Logical IDs preserve the 2976 catalog. Verified additions in 3527 use
 // 0x8000 | native ID; that namespace is unavailable to unknown messages.

@@ -209,6 +209,10 @@ struct GateOff {
 };
 constexpr GateOff kGate2976{kMgr_2A4, kMgr_288, kMgr_2A8, kMgr_2B0, kMgr_2B4, kMgr_2D4, kMgr_2CC};
 constexpr GateOff kGate3527{0x2E4, 0x2C8, 0x2E8, 0x2F0, 0x2F4, 0x314, 0x30C};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): all +8, read in the two helpers the live update calls after the resume
+// point (0xBE922A / 0xBE9236): 0xBE95D0 reads [+0x2F0] (0xBE95F9), the floats +0x2F8 / +0x2FC, [+0x2D0] and clears the byte
+// +0x2EC (0xBE9931, 3527's 0xBB19A4 on +0x2E4); 0xBE9990 the float +0x314 and the byte +0x31C.
+constexpr GateOff kGate3663{0x2EC, 0x2D0, 0x2F0, 0x2F8, 0x2FC, 0x31C, 0x314};
 
 // ---------------------------------------------------------------- build 1.0.0.3576 (static, 2026-11-06 evening; not yet run)
 //
@@ -237,6 +241,42 @@ constexpr uint8_t kLiveCallBytes3576[] = {0x40, 0x38, 0x2D, 0xC5, 0x0D, 0x77, 0x
                                           0x0C, 0xC5, 0xF8, 0x28, 0xCE, 0x48, 0x8B, 0xCF};  // 0x9A065C
 constexpr uint8_t kDtCallBytes3576[] = {0x48, 0x8B, 0xCF, 0xE8, 0x21, 0xC0, 0xFF, 0xFF};  // 0x9A0577
 
+// ---------------------------------------------------------------- build 1.0.0.3663 (static, 2026-11-13; never run)
+//
+// The frame 0x9CB630-0x9CB793 (+0x2F350 from 3527, the same size; kActorBytes3527 is an anchor of anchors_3663.json): the
+// point 0x9CB6D9 (movzx r8d,byte [r8+0x58]; its 16 bytes end inside the tick's rel32), vf48 0xAE0710 called at 0x9CB6C8,
+// the tick 0xBD8000 (3527's 16 bytes; it calls 0xBDA180 = 3527's 0xBA21F0 and 0xBDA9D0), the ClientField's vtable
+// 0x59C97C0 (RTTI) +0x40 = 0xAE06A0 (3527's bytes) / +0x48 = 0xAE0710. The native caller 0x9CF7C0 (3527's 0x9A0060,
+// changed by 6 bytes): 0x9CF7E5 vmovaps xmm6,xmm1 (dt) ... 0x9CF7FA call 0x9CB630; 0x9CF8D6 cmp byte [0x7195BE8],0 ;
+// jne ; vmovaps xmm1,xmm6 ; mov rcx,rdi ; call 0x9CB7A0 (= 3527's 0x99C450: actor / vf48 / mode != 2 ->
+// 0xBE6AB0 ; 0xBE7610 ; 0xBE83E0(M, xmm1)). The live update 0xBE83E0-0xBE929E (+0x37F90, 3527's size 0xEBE; kSkipTail /
+// kSkipCopy are anchors): skip 0xBE90BF (its global 0x7245210, the call 0x9CDC90), resume 0xBE924A, lea rsi to
+// 0x5B40000 at 0xBE8463 / 0xBE907E / 0xBE90AB, r13 written only at 0xBE8412 / 0xBE855C / 0xBE8597 / 0xBE889A /
+// 0xBE8901 (3527's places), the only branch to the point 0xBE8978. The manager's fields moved +8 (see kOff3663 /
+// kGate3663). No branch lands in the three patches (rel8 sweep, rel32 scan of both code sections).
+constexpr uintptr_t kPoint3663 = 0x9CB6D9, kTickRva3663 = 0xBD8000, kOwnerRva3663 = 0xAE06A0;
+constexpr uint8_t kPointBytes3663[] = {0x45, 0x0F, 0xB6, 0x40, 0x58, 0x48, 0x8B, 0x54,
+                                       0x24, 0x28, 0x48, 0x8B, 0xC8, 0xE8, 0x15, 0xC9};
+constexpr uint8_t kVf48Bytes3663[] = {0x48, 0x8B, 0xCB, 0xE8, 0x43, 0x50, 0x11, 0x00};  // 0x9CB6C5
+// The manager's fields +8 (0xBDA180: the vector count +0x1C8, the lists {+0x1D0, n +0x1D8} / {+0x1E0, n +0x1E8} /
+// {+0x1F0, n +0x1F8}, the ready byte +0x261; the mode byte [r8+0x58] at the point).
+constexpr Off kOff3663{0x59D57E8, 0x59C97C0, kOwnerRva3663, 0x58, 0x261, 0x1C8, 0x1D8, 0x1E8, 0x1F8};
+constexpr uintptr_t kLiveRva3663 = 0xBE83E0, kSkipPoint3663 = 0xBE90BF, kSkipResume3663 = 0xBE924A;
+constexpr uintptr_t kBaseVtable3663 = 0x5B40000, kLiveGateByte3663 = 0x7195BE8;
+constexpr uint8_t kSkipBytes3663[] = {0x48, 0x8D, 0x55, 0x18, 0x48, 0x8B, 0x0D, 0x46, 0xC1, 0x65,
+                                      0x06, 0x48, 0x8B, 0x49, 0x30, 0xE8, 0xBD, 0x4B, 0xDE, 0xFF};  // 0xBE90BF
+constexpr uint8_t kSkipTailBytes3663[] = {0x48, 0x89, 0x75, 0x18, 0x48, 0x8D, 0x4D, 0x18, 0xE8, 0x37, 0x01, 0xA7,
+                                          0x00, 0x90, 0x48, 0x8D, 0x4C, 0x24, 0x38, 0xE8, 0xBC, 0x83, 0x87, 0xFF};  // 0xBE923C
+constexpr uint8_t kSkipCopyBytes3663[] = {0x49, 0x8D, 0x55, 0x28, 0x48, 0x8D, 0x4C, 0x24, 0x38, 0xE8, 0x83, 0xA7, 0x8E, 0xFF};  // 0xBE893F
+constexpr uint8_t kSkipRsi1Bytes3663[] = {0x48, 0x8D, 0x35, 0x96, 0x7B, 0xF5, 0x04};  // 0xBE8463
+constexpr uint8_t kSkipRsi2Bytes3663[] = {0x48, 0x8D, 0x35, 0x7B, 0x6F, 0xF5, 0x04};  // 0xBE907E
+constexpr uint8_t kSkipRsi3Bytes3663[] = {0x48, 0x8D, 0x35, 0x4E, 0x6F, 0xF5, 0x04};  // 0xBE90AB
+constexpr uint8_t kLiveCallBytes3663[] = {0x40, 0x38, 0x2D, 0x0B, 0x63, 0x7C, 0x06, 0x75,
+                                          0x0C, 0xC5, 0xF8, 0x28, 0xCE, 0x48, 0x8B, 0xCF};  // 0x9CF8D6
+constexpr uint8_t kDtBytes3663[] = {0xC5, 0xF8, 0x28, 0xF1, 0x48, 0x8B, 0x54, 0xC2,
+                                    0x10, 0x0F, 0xB6, 0x5A, 0x09, 0xE8, 0xE9, 0x0A};  // 0x9CF7E5
+constexpr uint8_t kDtCallBytes3663[] = {0x48, 0x8B, 0xCF, 0xE8, 0x31, 0xBE, 0xFF, 0xFF};  // 0x9CF7F7 call 0x9CB630
+
 using TickFn = void(__fastcall*)(uintptr_t mgr, uintptr_t field, uint8_t mode);
 using LiveFn = void(__fastcall*)(uintptr_t mgr, float dt);
 using OwnerFn = uintptr_t(__fastcall*)(uintptr_t field);
@@ -245,8 +285,9 @@ constexpr size_t kSlots = 8;
 
 uintptr_t g_base = 0;
 // The build, its fields and its world slot: written by guest_seq_play_start before any hook or thread.
-bool g_3527 = false;  // 3527's layout (3527, 3549, 3576)
+bool g_3527 = false;  // 3527's layout (3527, 3549, 3576, 3663: the same frames and entry hook)
 bool g_3576 = false;  // 3576's addresses
+bool g_3663 = false;  // 3663's addresses (and kOff3663 / kGate3663)
 const Off* g_off = &kOff2976;
 const GateOff* g_gate = &kGate2976;
 uintptr_t g_live_gate_rva = kLiveGateByte, g_skip_resume = kSkipResume, g_base_vt_rva = kBaseVtable;
@@ -883,7 +924,7 @@ DWORD WINAPI install_thread(LPVOID) {
     IMAGE_NT_HEADERS64 nt{};
     std::vector<gad::Section> secs;
     if (g_base != off::kImageBase || !game::safe_read(g_base, &dos, sizeof dos) ||
-        !game::safe_read(g_base + dos.e_lfanew, &nt, sizeof nt) || !(game::legacy_layout() || g_3576) ||
+        !game::safe_read(g_base + dos.e_lfanew, &nt, sizeof nt) || !(game::legacy_layout() || g_3576 || g_3663) ||
         !p8_exe_sections(g_base, secs)) {
         log::error("GuestSeqPlay: unsupported game build or unreadable sections; nothing installed");
         return 0;
@@ -907,7 +948,12 @@ DWORD WINAPI install_thread(LPVOID) {
         {0x99C5BB, kActorBytes3527},   {0x99C5FC, kQSlotBytes3527}, {0x99C635, kVf48Bytes3576},
         {0x99C642, kModePtrBytes3527}, {kTickRva3576, kTickBytes3527}, {kOwnerRva3576, kOwnerBytes3527},
     };
-    const std::span<const Ctx> ctx = g_3576   ? std::span<const Ctx>(ctx3576)
+    const Ctx ctx3663[] = {
+        {0x9CB64B, kActorBytes3527},   {0x9CB68C, kQSlotBytes3527}, {0x9CB6C5, kVf48Bytes3663},
+        {0x9CB6D2, kModePtrBytes3527}, {kTickRva3663, kTickBytes3527}, {kOwnerRva3663, kOwnerBytes3527},
+    };
+    const std::span<const Ctx> ctx = g_3663   ? std::span<const Ctx>(ctx3663)
+                                     : g_3576 ? std::span<const Ctx>(ctx3576)
                                      : g_3527 ? std::span<const Ctx>(ctx3527)
                                               : std::span<const Ctx>(ctx2976);
     for (const Ctx& c : ctx) {
@@ -919,11 +965,14 @@ DWORD WINAPI install_thread(LPVOID) {
             return 0;
         }
     }
-    g_tick = reinterpret_cast<TickFn>(g_base + (g_3576 ? kTickRva3576 : g_3527 ? kTickRva3527 : kTickRva));
+    g_tick = reinterpret_cast<TickFn>(
+        g_base + (g_3663 ? kTickRva3663 : g_3576 ? kTickRva3576 : g_3527 ? kTickRva3527 : kTickRva));
     g_live_fn = reinterpret_cast<LiveFn>(g_base + g_live_rva);
     g_owner = reinterpret_cast<OwnerFn>(g_base + g_off->owner_rva);
     const bool hooked =
-        g_3576   ? p8_install_mid(g_base, secs, kPoint3576, kPatch, kPointBytes3576, on_frame, g_hook, "GuestSeqPlay",
+        g_3663   ? p8_install_mid(g_base, secs, kPoint3663, kPatch, kPointBytes3663, on_frame, g_hook, "GuestSeqPlay",
+                                  "the frame's sequencer tick 0x9CB6D9 (build 3663)")
+        : g_3576 ? p8_install_mid(g_base, secs, kPoint3576, kPatch, kPointBytes3576, on_frame, g_hook, "GuestSeqPlay",
                                   "the frame's sequencer tick 0x99C649 (build 3576)")
         : g_3527 ? p8_install_mid(g_base, secs, kPoint3527, kPatch, kPointBytes3527, on_frame, g_hook, "GuestSeqPlay",
                                   "the frame's sequencer tick 0x99C389 (build 3527)")
@@ -955,7 +1004,15 @@ DWORD WINAPI install_thread(LPVOID) {
             {0xBB0D91, kSkipR13Reload3527},      {0xBB08F3, kSkipRsi1Bytes3576}, {0xBB150E, kSkipRsi2Bytes3576},
             {0xBB153B, kSkipRsi3Bytes3576},
         };
-        const std::span<const Ctx> skip_ctx = g_3576   ? std::span<const Ctx>(skip3576)
+        const Ctx skip3663[] = {
+            {kLiveRva3663, kLiveBytes},          {0x9CF7E5, kDtBytes3663},       {0x9CF7F7, kDtCallBytes3663},
+            {0x9CF8D6, kLiveCallBytes3663},      {0xBE923C, kSkipTailBytes3663}, {0xBE893F, kSkipCopyBytes3663},
+            {0xBE8978, kSkipLoopBytes3527},      {0xBE8412, kSkipR13Bytes},      {0xBE889A, kSkipR13Reload3527},
+            {0xBE8901, kSkipR13Reload3527},      {0xBE8463, kSkipRsi1Bytes3663}, {0xBE907E, kSkipRsi2Bytes3663},
+            {0xBE90AB, kSkipRsi3Bytes3663},
+        };
+        const std::span<const Ctx> skip_ctx = g_3663   ? std::span<const Ctx>(skip3663)
+                                              : g_3576 ? std::span<const Ctx>(skip3576)
                                               : g_3527 ? std::span<const Ctx>(skip3527)
                                                        : std::span<const Ctx>(skip2976);
         bool ok = true;
@@ -967,18 +1024,21 @@ DWORD WINAPI install_thread(LPVOID) {
                 break;
             }
         }
-        const uintptr_t point = g_3576 ? kSkipPoint3576 : g_3527 ? kSkipPoint3527 : kSkipPoint;
-        const std::span<const uint8_t> point_bytes = g_3576   ? std::span<const uint8_t>(kSkipBytes3576)
+        const uintptr_t point = g_3663 ? kSkipPoint3663 : g_3576 ? kSkipPoint3576 : g_3527 ? kSkipPoint3527 : kSkipPoint;
+        const std::span<const uint8_t> point_bytes = g_3663   ? std::span<const uint8_t>(kSkipBytes3663)
+                                                     : g_3576 ? std::span<const uint8_t>(kSkipBytes3576)
                                                      : g_3527 ? std::span<const uint8_t>(kSkipBytes3527)
                                                               : std::span<const uint8_t>(kSkipBytes);
         if (ok && p8_install_mid(g_base, secs, point, kSkipPatch, point_bytes, on_skip, g_skip_hook, "GuestSeqPlay",
-                                 g_3576   ? "the live update's local-player skip 0xBB154F (3576)"
+                                 g_3663   ? "the live update's local-player skip 0xBE90BF (3663)"
+                                 : g_3576 ? "the live update's local-player skip 0xBB154F (3576)"
                                  : g_3527 ? "the live update's local-player skip 0xBB112F (3527 / 3549)"
                                           : "the live update's local-player skip 0xAA4B27")) {
             if (g_3527 && !p8_install_mid(g_base, secs, g_live_rva, kLiveEntryPatch3527, kLiveBytes, on_live_entry,
                                           g_live_entry_hook, "GuestSeqPlay",
-                                          g_3576 ? "the live update's entry 0xBB0870 (3576)"
-                                                 : "the live update's entry 0xBB0450 (3527 / 3549)")) {
+                                          g_3663   ? "the live update's entry 0xBE83E0 (3663)"
+                                          : g_3576 ? "the live update's entry 0xBB0870 (3576)"
+                                                   : "the live update's entry 0xBB0450 (3527 / 3549)")) {
                 g_skip_hook = {};  // no entry hook: no live call at all
                 skip_line = std::format("REFUSED: the entry hook of {} (see the line above)", g_live_name);
             } else {
@@ -1001,7 +1061,8 @@ DWORD WINAPI install_thread(LPVOID) {
               "ClientSequencerStageManager, vtable exe+0x{:X} checked, never M): 0xA953C0(X, Q, mode) when mode != 2, "
               "M+0x231 == 3, the field's vf40 != 0; X+0x231 = 3 once per routed 2322 (X at 2, +0x174 0, +0x1B0/+0x1C0 "
               "not empty){} | live skip hook: {} | guest_seq_route={}{}",
-              gsp::mode_name(mode), g_live.load() ? 1 : 0, g_3576 ? kPoint3576 : g_3527 ? kPoint3527 : kPoint, g_off->vt_mgr,
+              gsp::mode_name(mode), g_live.load() ? 1 : 0,
+              g_3663 ? kPoint3663 : g_3576 ? kPoint3576 : g_3527 ? kPoint3527 : kPoint, g_off->vt_mgr,
               g_live.load() ? "; 0xAA3E70(X, dt) when X is at 3, byte [0x6CC0218] == 0, the skip hook is in and X+0x2A4/"
                               "+0x288/+0x2A8/+0x2D4 are 0 and +0x2CC <= 0 (the local player's part and 0xAA5040/"
                               "0xAA5400 never run for X); the 2524 routed to X"
@@ -1016,8 +1077,19 @@ DWORD WINAPI install_thread(LPVOID) {
 
 void guest_seq_play_start(const std::string& mode, bool live, const std::string& route_mode) {
     g_3576 = game::current_build() == game::Build::v3576;
-    g_3527 = game::current_build() == game::Build::v3527 || g_3576;
-    if (g_3576) {
+    g_3663 = game::current_build() == game::Build::v3663;
+    g_3527 = game::current_build() == game::Build::v3527 || g_3576 || g_3663;
+    if (g_3663) {
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): see the 3663 block at the top.
+        g_off = &kOff3663;
+        g_world_slot = 0x72451C0;  // WorldSystem, profile_s2.h's rva3663()
+        g_gate = &kGate3663;
+        g_live_gate_rva = kLiveGateByte3663;
+        g_skip_resume = kSkipResume3663;
+        g_base_vt_rva = kBaseVtable3663;
+        g_live_rva = kLiveRva3663;
+        g_live_name = "0xBE83E0";
+    } else if (g_3576) {
         g_off = &kOff3576;
         g_world_slot = 0x71C0100;  // core_globals_3576.json (no reader profile for 3576 yet)
         g_gate = &kGate3527;       // the same fields (see the 3576 block at the top)

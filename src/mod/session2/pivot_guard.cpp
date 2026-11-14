@@ -51,14 +51,17 @@ bool code_is(uintptr_t rva, std::span<const uint8_t> expected) {
 
 DWORD WINAPI install_thread(void*) {
     const bool b3576 = game::current_build() == game::Build::v3576;
+    const bool b3663 = game::current_build() == game::Build::v3663;
     const auto* profile = game::reader_profile();
-    if (!b3576 && (!profile || game::current_build() != game::Build::v3527)) {
-        log::info("PivotGuard: only for builds 3527, 3549 and 3576, off");
+    if (!b3576 && !b3663 && (!profile || game::current_build() != game::Build::v3527)) {
+        log::info("PivotGuard: only for builds 3527, 3549, 3576 and 3663, off");
         return 0;
     }
     // 3576: the world slot 0x71C0100 (core_globals_3576.json; reader_profile() may have no 3576 entry yet).
-    const uintptr_t world_slot = b3576 ? 0x71C0100 : profile->world_system;
-    g_sites = b3576 ? &pvg::kSites3576 : &pvg::kSites3527;
+    // Build 1.0.0.3663 (static, 2026-11-13; never run): the world slot 0x72451C0 (core_globals_3663.json, two AOB
+    // patterns; 3195 RIP references in code).
+    const uintptr_t world_slot = b3663 ? 0x72451C0 : b3576 ? 0x71C0100 : profile->world_system;
+    g_sites = b3663 ? &pvg::kSites3663 : b3576 ? &pvg::kSites3576 : &pvg::kSites3527;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     uintptr_t world = 0;
     while (!game::safe_read(g_base + world_slot, &world, sizeof world) || !world) Sleep(500);

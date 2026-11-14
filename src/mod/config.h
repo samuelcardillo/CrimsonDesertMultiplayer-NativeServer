@@ -279,6 +279,9 @@ struct Config {
     // Host and guest, builds 3527 and 3549 (session2/pivot_guard.h): a scene's ChangePivot with no target skips, instead
     // of closing the game.
     bool s2_change_pivot_guard = true;
+    // Host and guest, build 3663 (session2/ride_null_guard.h): a riding character's update with no mount on this
+    // client goes on as if on foot, instead of closing the game (a join with the other player's ship out).
+    bool s2_ride_null_guard = true;
     // Host and guest, builds 3527 and 3549 (session2/focus_follow.h): each PC shows the character the other player
     // controls and hides the one left behind.
     bool s2_focus_follow = true;
@@ -718,6 +721,10 @@ struct Config {
     std::string s2_interact_gate_errors;
     std::string s2_interact_gate_pass = "3";
     std::string s2_interact_gate_types = "7";
+    // [session2] vehicle_follow = 0 | probe | 1 (vehicle_follow.h): the other player's ship drawn where its controller has
+    // it (build 3576). Either PC.
+    std::string s2_vehicle_follow = "0";
+    uint32_t s2_vehicle_follow_delay_ms = 300;
     // [session2] store_gate = 0 | probe | 1 (store_gate.h), both roles: the guest's buy/sell passes the shop-scene test.
     std::string s2_store_gate = "0";
     // [session2] guest_shop_branch = 0 | 1 (guest_shop_branch.h), guest: the shopkeepers' window on the guest.

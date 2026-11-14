@@ -25,7 +25,7 @@ namespace {
 constexpr uint64_t kLoggedTimes = 12;
 constexpr size_t kNameMax = 64;
 
-// The build's addresses (achievement_guard_logic.h): 3527/3549 and 3576.
+// The build's addresses (achievement_guard_logic.h): 3527/3549, 3576 and 3663.
 struct Addrs {
     uintptr_t world_system, vt_steam_manager, unlock, point, way_out;
     std::span<const uint8_t> way_out_bytes;
@@ -33,6 +33,9 @@ struct Addrs {
 // 3576: the world slot from core_globals_3576.json (reader_profile() is null on 3576).
 constexpr Addrs k3576{0x71C0100, agd::kVtSteamManager3576, agd::kUnlock3576, agd::kPoint3576, agd::kWayOut3576,
                       agd::kWayOutBytes3576};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the world slot 0x72451C0 (profile_s2.h; two AOB patterns).
+constexpr Addrs k3663{0x72451C0, agd::kVtSteamManager3663, agd::kUnlock3663, agd::kPoint3663, agd::kWayOut3663,
+                      agd::kWayOutBytes3663};
 
 SafetyHookMid g_hook;
 uintptr_t g_base = 0;
@@ -78,12 +81,14 @@ bool code_is(uintptr_t rva, std::span<const uint8_t> expected) {
 DWORD WINAPI install_thread(void*) {
     const auto* profile = game::reader_profile();
     Addrs a{};
-    if (game::current_build() == game::Build::v3576) {
+    if (game::current_build() == game::Build::v3663) {
+        a = k3663;
+    } else if (game::current_build() == game::Build::v3576) {
         a = k3576;
     } else if (profile && game::current_build() == game::Build::v3527) {
         a = {profile->world_system, agd::kVtSteamManager, agd::kUnlock, agd::kPoint, agd::kWayOut, agd::kWayOutBytes};
     } else {
-        log::info("AchievementGuard: only for builds 3527, 3549 and 3576, off");
+        log::info("AchievementGuard: only for builds 3527, 3549, 3576 and 3663, off");
         return 0;
     }
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));

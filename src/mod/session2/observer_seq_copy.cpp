@@ -511,9 +511,16 @@ void observer_seq_copy_configure(const std::string& mode, const std::string& onl
     for (uint32_t k : f.keys) list += std::format(" actor 0x{:08X}", k);
     {
         // 3576: the Troc catalogue did not change (troc_mapping_3549_3576.json: 0 size changes), so 3527's prefix.
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): renumbered catalogue, same layout of what this reads:
+        // the 2661 serializer 0x2D41C70 (writes 0x934 = 2356) emits u8 4 | u32 actor | the play data 0x26B31E0 (87
+        // bytes: 21 writes, the owner u32 first, then the u64 id) | per binding u32 | u32 | u8 | u8 | u8 (11): 3527's
+        // 92 + 11 n; the 2810 (0x2D42250, 0xA63): 17 bytes, the u64 id at +4; the 2981 (0x2D43070, 0xAC0): u8 | u32
+        // actor | u64 id | ...; the 2322 (0x2C7A9A0, 0xB7D): u32 actor; the 2174 (0x2C7A2B0, 0x93C): 17 + 0x30 n
+        // (0x26AB510). The 2005 / 2516 and the C>S Reqs' u64 @0 were not re-read (the session core's payloads).
         const game::Build b = game::current_build();
-        const size_t prefix =
-            b == game::Build::v3527 || b == game::Build::v3576 ? osq::kPreparePrefix3527 : osq::kPreparePrefix;
+        const size_t prefix = b == game::Build::v3527 || b == game::Build::v3576 || b == game::Build::v3663
+                                  ? osq::kPreparePrefix3527
+                                  : osq::kPreparePrefix;
         g_prepare_prefix.store(prefix);
         std::lock_guard lock(g_mu);
         g_ledger.set_prepare_prefix(prefix);

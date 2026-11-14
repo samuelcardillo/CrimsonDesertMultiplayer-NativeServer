@@ -65,6 +65,13 @@ const Addrs kAddrs3576{sls::kPeTimestamp3576, sls::kVtServerField3576, sls::kGat
                        sls::kDeleteEnd3576, sls::kRet28343576, sls::kRetOwnerLoad3576, sls::kRetLoader3576,
                        sls::kFrameSiteRva3576, sls::kFrameSite3527, sls::kCallSiteRva3576, sls::kCallSite3576,
                        sls::kFrameName3527, sls::kFrameType3527, sls::kFrameHash3527};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the 3527 signature and delete head at their new addresses, its own
+// frame site, call site and frame name offset (scene_level_share_logic.h).
+const Addrs kAddrs3663{sls::kPeTimestamp3663, sls::kVtServerField3663, sls::kGateFnBegin3663, sls::kGateFnEnd3663,
+                       sls::kGateRva3663, sls::kGateSigRva3663, sls::kGateSig3527, sls::kDeleteRva3663,
+                       sls::kDeleteEnd3663, sls::kRet28343663, sls::kRetOwnerLoad3663, sls::kRetLoader3663,
+                       sls::kFrameSiteRva3663, sls::kFrameSite3663, sls::kCallSiteRva3663, sls::kCallSite3663,
+                       sls::kFrameName3663, sls::kFrameType3663, sls::kFrameHash3663};
 // Chosen by scene_level_share_start, before the module's thread exists; the hooks read it (a plain pointer: no CRT in a
 // mid hook).
 const Addrs* g_ad = &kAddrs2976;
@@ -365,7 +372,7 @@ bool build_and_pdata(uint32_t begin, uint32_t end, std::string& why) {
         !game::safe_read(g_base + static_cast<uint32_t>(dos.e_lfanew), &nt, sizeof nt) ||
         nt.Signature != IMAGE_NT_SIGNATURE ||
         (nt.FileHeader.TimeDateStamp != g_ad->pe_timestamp && !(g_ad == &kAddrs3527 && game::is_3549()))) {
-        why = "ni 1.0.0.2976 ni 1.0.0.3527 ni 1.0.0.3549 ni 1.0.0.3576 (base/PE)";
+        why = "ni 1.0.0.2976 ni 1.0.0.3527 ni 1.0.0.3549 ni 1.0.0.3576 ni 1.0.0.3663 (base/PE)";
         return false;
     }
     const auto pd = nt.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION];
@@ -460,10 +467,15 @@ bool player_in_world() {
     const game::ReaderProfile* const p = game::reader_profile();  // the same values as g2976's in 2976
     // 3576 while reader_profile() is not ported there (docs/research/port-3576.md): world 0x71C0100, ClientActorManager
     // 0x5946C40 and ClientChildOnlyInGameActor 0x5914D58 by RTTI; the +0x30 / +0x50 offsets as on 3527.
+    // 3663 likewise (static, 2026-11-13; never run): world 0x72451C0 (core_globals_3663.json), ClientActorManager
+    // 0x59C2760 and ClientChildOnlyInGameActor 0x5990BF0 by RTTI (vtable_map_3576_3663.json); world+0x30 -> +0x50 is
+    // read so at 0x3EE4C0 / 0x3EE4C4.
     const bool b3576 = !p && game::current_build() == game::Build::v3576;
-    if (!p && !b3576) return false;
-    const uintptr_t world_slot = p ? p->world_system : 0x71C0100, vt_mgr = p ? p->vt_actor_manager : 0x5946C40,
-                    vt_actor = p ? p->vt_controlled_actor : 0x5914D58;
+    const bool b3663 = !p && game::current_build() == game::Build::v3663;
+    if (!p && !b3576 && !b3663) return false;
+    const uintptr_t world_slot = p ? p->world_system : b3663 ? 0x72451C0 : 0x71C0100,
+                    vt_mgr = p ? p->vt_actor_manager : b3663 ? 0x59C2760 : 0x5946C40,
+                    vt_actor = p ? p->vt_controlled_actor : b3663 ? 0x5990BF0 : 0x5914D58;
     return rd(g_base + world_slot, world) && world && rd(world + g2976::kWorldSystem_ActorManager, mgr) &&
            mgr && rd(mgr, vt) && vt == g_base + vt_mgr &&
            rd(mgr + g2976::kActorManager_ControlledActor, actor) && actor && rd(actor, avt) &&
@@ -505,7 +517,8 @@ void refresh_keys() {
     g_live.store(live, std::memory_order_relaxed);
     // user2_stages samples the field once a second; one unreadable sample is not a departure: out only after 2 s of
     // readings out (or at once when user 2 is gone).
-    const bool current = game::current_build() == game::Build::v3527 || game::current_build() == game::Build::v3576;
+    const bool current = game::current_build() == game::Build::v3527 || game::current_build() == game::Build::v3576 ||
+                         game::current_build() == game::Build::v3663;
     const bool raw_in_field = live && (current ? user2_in_host_field_3527(host_key) : user2_stages_user2_in_host_field());
     g_out_of_field = raw_in_field ? 0 : g_out_of_field + 1;
     const bool in_field = live && (raw_in_field || (g_was_in_field && g_out_of_field < 20));
@@ -776,7 +789,8 @@ DWORD WINAPI module_thread(LPVOID) {
                                                : "solo mide [would keep]")
                 : std::string("REFUSED"),
               hooked ? "enganchado" : "SIN GANCHO: A nunca actua y B no sabe quien provoca (llama siempre al original)",
-              game::current_build() == game::Build::v3527 || game::current_build() == game::Build::v3576
+              game::current_build() == game::Build::v3527 || game::current_build() == game::Build::v3576 ||
+                      game::current_build() == game::Build::v3663
                   ? " | el campo del usuario 2 se lee aqui (user2_stages no esta portado a 3527 / 3576)"
                   : " | el usuario 2 cuenta como 'en el campo del anfitrion' solo con user2_stages activo (si no, su "
                     "conjunto nunca protege nada)");
@@ -802,6 +816,7 @@ void scene_level_share_start(const std::string& raw, bool guest) {
     if (g_started.exchange(true)) return;
     if (game::current_build() == game::Build::v3527) g_ad = &kAddrs3527;
     if (game::current_build() == game::Build::v3576) g_ad = &kAddrs3576;
+    if (game::current_build() == game::Build::v3663) g_ad = &kAddrs3663;
     g_mode.store(static_cast<uint8_t>(p.mode));
     g_ingress_on.store(true, std::memory_order_release);
     log::info("SceneLevelShare ON (scene_level_share={}): A = listo tambien para el usuario 2 en 0x{:X}, B = no borrar "

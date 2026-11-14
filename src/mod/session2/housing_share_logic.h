@@ -14,6 +14,12 @@
 //
 // Wire: logical opcodes (2976 ids; the ones added in 3527 are 0x8000 + native). The owner character key is in the
 // first 8 bytes of the payload (after a kind / flags byte or at 0).
+// Build 1.0.0.3663 (static, 2026-11-13; never run): 3663 renumbered the natives, not these ids. The sniffer's tap and
+// the server's out path hand this module logical packets (native_opcode::decode_copy / decode_packet) and the guest
+// re-encodes what server_push_extra queues, so nothing here changes. Every id below is in kEntries3663 with the same
+// message name as in 3527 (3663 natives: 35245 -> 2182, 2733 -> 2965, 2500 -> 2836, 2408 -> 2943, 2623 -> 2739,
+// 2344 -> 2669, ...). The 3663 client's 2733 handler (0xCF7740) still reads [flags u8][key u32][stage u32] and then
+// 160-byte records (the count is (size - 9) / 160).
 
 #include <array>
 #include <cstddef>

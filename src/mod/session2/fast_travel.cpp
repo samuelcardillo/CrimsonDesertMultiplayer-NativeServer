@@ -83,8 +83,10 @@ Reading read_user2() {
     r.where = ftl::where_is(owner_ok, r.owner, r.host_key, r.user2_key);
     const uintptr_t base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     // pa::ServerSequencerStageManager by RTTI; 3576 (static, 2026-11-06; not yet run): vtable_map_3549_3576.json.
+    // Build 1.0.0.3663 (static, 2026-11-13; never run): 0x5F5A758 by RTTI (vtable_map_3576_3663.json). The line only.
     const auto build = game::current_build();
-    const uintptr_t seq_vt = build == game::Build::v3576   ? uintptr_t{0x5EE0B88}
+    const uintptr_t seq_vt = build == game::Build::v3663   ? uintptr_t{0x5F5A758}
+                             : build == game::Build::v3576 ? uintptr_t{0x5EE0B88}
                              : build == game::Build::v3527 ? uintptr_t{0x5EDE980}
                              : build == game::Build::v2976 ? kVtServerSequencerStageManager
                                                            : 0;

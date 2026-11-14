@@ -232,6 +232,11 @@ inline constexpr uint8_t kCtxLookupBytes3576[] = {0x4D, 0x8B, 0x45, 0x20, 0x48, 
 inline constexpr uintptr_t kVtClientField3576 = 0x594DB40;    // pa::ClientField (vtable_map_3549_3576.json)
 inline constexpr uintptr_t kVtClientStageMgr3576 = 0x5959438;  // pa::ClientSequencerStageManager
 
+// Build 1.0.0.3663 (static, 2026-11-13): guest_x_interaction.cpp holds its own table (kPoints3663: the function at
+// 0x235EB60, R's out slot +0x8E0, the manager's map at +0x138/+0x13C/+0x148/+0x150, every offset +8 from 3527's;
+// pa::ClientField 0x59C97C0, pa::ClientSequencerStageManager 0x59D57E8). Nothing else here is build-specific: the
+// other users of this header (shop_probe, shop_trade_probe, user2_shops) are 2976-only and keep kLayout2976.
+
 // RTTI vtables (build 2976).
 inline constexpr uintptr_t kVtClientField = 0x55BCEA0;    // pa::ClientField (vf48 0x9A5BE0)
 inline constexpr uintptr_t kVtServerField = 0x5B29A60;    // pa::ServerField (vf48 0x2B00CE0)

@@ -23,6 +23,13 @@ constexpr uintptr_t kVtClan = 0x594D250;  // ClientMercenaryClanActorComponent: 
 // be null on 3576). Offsets unchanged: the focus routine 0x23144B0 -> 0x2315200 still stores clan+0x118 (0x23154AC)
 // and tests Status+0x369; Status' setter 0x18CD090 keeps +0x3B8 / +0x3C0.
 constexpr uintptr_t kVtClan3576 = 0x594F340, kVtStatus3576 = 0x591C7C0, kWorldSlot3576 = 0x71C0100;
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the clan vtable 0x594F340 -> 0x59CAFB8 by RTTI (slot 23 =
+// 0x2385E20, 3527's vf23 + 0x71A50), Status 0x591C7C0 -> 0x5998B60 (RTTI), world slot 0x72451C0. The focus routine
+// 0x23144B0 -> 0x2385F00 (+0x71A50) still stores clan+0x118 (0x23861AC), tests Status+0x369 (0x2385F3C) and reads
+// +0x3B8 / +0x3C0 (0x23860F7 / 0x23860F1); Status' setter 0x1932980 keeps the +0x3B8 store (remote_visible.cpp). The
+// clan component is still at components +0x110: the client component factory 0x9C3100 builds it (vtable store at
+// 0x9C33A0) and registers it with index 0x22 (0x9C33FB), stored at table + index * 8 (0x2297192).
+constexpr uintptr_t kVtClan3663 = 0x59CAFB8, kVtStatus3663 = 0x5998B60, kWorldSlot3663 = 0x72451C0;
 constexpr uint32_t kWorldManager = 0x30, kManagerUser = 0x58, kUserMain = 0xD0;
 constexpr uint32_t kActorKey = 0x60, kActorComps = 0x68, kActorInfo = 0x88, kInfoType = 0x01, kActorUser = 0xA0;
 constexpr uint32_t kCompsStatus = 0x20, kCompsClan = 0x110, kClanFocus = 0x118;
@@ -195,17 +202,18 @@ void focus_follow_start(bool enabled, bool guest) {
         return;
     }
     const bool b3576 = game::current_build() == game::Build::v3576;
-    if (game::current_build() != game::Build::v3527 && !b3576) {
-        log::info("FocusFollow: only for builds 3527, 3549 and 3576, off");
+    const bool b3663 = game::current_build() == game::Build::v3663;
+    if (game::current_build() != game::Build::v3527 && !b3576 && !b3663) {
+        log::info("FocusFollow: only for builds 3527, 3549, 3576 and 3663, off");
         return;
     }
     const auto* profile = game::reader_profile();
-    if (!profile && !b3576) return;
+    if (!profile && !b3576 && !b3663) return;
     g_guest = guest;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    g_world_slot = g_base + (b3576 ? kWorldSlot3576 : profile->world_system);
-    g_vt_status = g_base + (b3576 ? kVtStatus3576 : profile->vt_status);
-    g_vt_clan = g_base + (b3576 ? kVtClan3576 : kVtClan);
+    g_world_slot = g_base + (b3663 ? kWorldSlot3663 : b3576 ? kWorldSlot3576 : profile->world_system);
+    g_vt_status = g_base + (b3663 ? kVtStatus3663 : b3576 ? kVtStatus3576 : profile->vt_status);
+    g_vt_clan = g_base + (b3663 ? kVtClan3663 : b3576 ? kVtClan3576 : kVtClan);
     g_on.store(true, std::memory_order_release);
     if (const HANDLE t = CreateThread(nullptr, 0, sender_thread, nullptr, 0, nullptr)) {
         CloseHandle(t);

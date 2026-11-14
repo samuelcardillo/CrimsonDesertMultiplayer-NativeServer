@@ -66,6 +66,32 @@ const Points kPoints3576{isl::kPointA3576, isl::kPointR3576, isl::kPointF3576, i
                          isl::kBytesF3527, isl::kCtxABytes3527, isl::kCtxLookupBytes3576, isl::kRbpMgrUsed3527,
                          isl::kVtClientField3576, isl::kVtClientStageMgr3576, isl::kLayout3527,
                          "A 0x22EE3D9, R 0x22EE465, F 0x22EE6F9 (build 3576)"};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the same function at 0x235EB60 (.pdata 0x235EB60-0x235EFC6,
+// 0x466 B; rcx = the entry (r13), [rcx+0x20] & 0x1FFFFFFF tested first, rdx = J (r15), no push in the body):
+// - A 0x235EC69 (+0x109 as in 3527): kBytesA3527, unique in the code section; ctx A 0x235EC5E: kCtxABytes3527 (the
+//   field [rsp+0x48], call [rax+0x48]); then vf40, the lock of [rdi+8] (0x3E5370 at 0x235ECA0), the lookup and the
+//   dead check 0x21C8FD0 with rcx = [rbp+0x8F8] (0x235ED1A): RAX := X still reaches all three;
+// - ctx lookup 0x235ECA6: mov r8,[r13+0x20] ; lea rdx,[rbp+0x8E0] ; mov rcx,rdi ; call 0x21C5750 (the out slot is
+//   now +0x8E0, its own array below);
+// - R 0x235ECF5 lea rcx,[rbp+0x8E0] (7 B): where both paths after the lookup join (je targets 0x235ECCA, 0x235ECEF),
+//   rsi = the instance taken from the lookup's handle or 0, [rbp+0x8F8] the manager used;
+// - F 0x235EF99 (+0x439): kBytesF3527 (mov [rsp+0x70],rdi ; lea rcx,[rsp+0x70]), every path but the two early
+//   returns reaches it with BL = the result (0x235EEF3 / 0x235EEF7 / 0x235EF0A, and 0x235EBCA), movzx eax,bl after;
+// - the lookup 0x21C5750 walks the manager at +0x13C count, +0x138 buckets, +0x148 bucket array, +0x150 elements
+//   (every offset +8 from 3527's), the same 0x100-B buckets of {hash, index} pairs from +8, element +8 the id, +0x10
+//   the instance, instance +0x15 dead; the hash 0x15864E0 is the same lookup3 (lea ebx,[rdx-0x2145E233]);
+// - the vtables by RTTI name (vtable_map_3576_3663.json): pa::ClientField 0x59C97C0, pa::ClientSequencerStageManager
+//   0x59D57E8 (42 slots, 3576 41; only its address is compared).
+// X's chain (kMgr_Actor, kComps_Seq, kSeqComp_Mgr) is 3576's, not re-derived (36 sites in 3663 read
+// [[[r+0x68]+0xA8]+0x18]; the manager's vtable has no reference in normal code to confirm it from).
+constexpr isl::MgrLayout kLayout3663{0x138, 0x13C, 0x148, 0x150};
+constexpr uint8_t kBytesR3663[] = {0x48, 0x8D, 0x8D, 0xE0, 0x08, 0x00, 0x00};
+constexpr uint8_t kCtxLookupBytes3663[] = {0x4D, 0x8B, 0x45, 0x20, 0x48, 0x8D, 0x95, 0xE0, 0x08, 0x00, 0x00,
+                                           0x48, 0x8B, 0xCF, 0xE8, 0x97, 0x6A, 0xE6, 0xFF};
+const Points kPoints3663{0x235EC69, 0x235ECF5, 0x235EF99, 0x235EC5E, 0x235ECA6,
+                         isl::kPatchA3527, isl::kPatchR3527, isl::kPatchF3527, isl::kBytesA3527, kBytesR3663,
+                         isl::kBytesF3527, isl::kCtxABytes3527, kCtxLookupBytes3663, isl::kRbpMgrUsed3527,
+                         0x59C97C0, 0x59D57E8, kLayout3663, "A 0x235EC69, R 0x235ECF5, F 0x235EF99 (build 3663)"};
 const Points* g_pts = &kPoints2976;
 
 uintptr_t g_base = 0;
@@ -461,14 +487,19 @@ DWORD WINAPI install_thread(LPVOID) {
     const game::Build build = game::current_build();
     if (build == game::Build::v3527) g_pts = &kPoints3527;
     if (build == game::Build::v3576) g_pts = &kPoints3576;
-    if (g_base != off::kImageBase || !(game::legacy_layout() || build == game::Build::v3576) || !game::safe_read(g_base, &dos, sizeof dos) ||
+    if (build == game::Build::v3663) g_pts = &kPoints3663;
+    if (g_base != off::kImageBase ||
+        !(game::legacy_layout() || build == game::Build::v3576 || build == game::Build::v3663) ||
+        !game::safe_read(g_base, &dos, sizeof dos) ||
         !game::safe_read(g_base + dos.e_lfanew, &nt, sizeof nt) || !p8_exe_sections(g_base, secs)) {
         log::error("GuestXInter: unsupported game build or unreadable sections; nothing installed");
         return 0;
     }
     const game::ReaderProfile* profile = game::reader_profile();
-    // 3576: 0x71C0100 (core_globals_3576.json; no reader profile for 3576 yet).
+    // 3576: 0x71C0100 (core_globals_3576.json; no reader profile for 3576 yet). 3663: 0x72451C0 (two AOB patterns,
+    // docs/research/port-3663.md).
     const uintptr_t world_slot = build == game::Build::v3576                ? uintptr_t{0x71C0100}
+                                 : build == game::Build::v3663              ? uintptr_t{0x72451C0}
                                  : build == game::Build::v3527 && profile ? profile->world_system
                                                                           : off::kWorldSystemSlot;
     for (int i = 0; i < 1200; ++i) {  // WorldSystem (up to 10 minutes), as the other guest modules

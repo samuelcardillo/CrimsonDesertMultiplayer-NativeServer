@@ -62,8 +62,17 @@ const Addrs kAddrs3576{tbl::kCodeEnd3576,
                        tbl::kClientRemoteCatchVtbl3576, tbl::kMainThreadId3576,
                        tbl::kControl_F63527, tbl::kStateBase3527, tbl::kState_Dir3527,
                        tbl::kApplyCallBytes3527, tbl::kSetBendCallBytes3576, tbl::kTickJumpBytes3576};
+// Build 1.0.0.3663 (static, 2026-11-13; never run): tree_bend_logic.h's 3663 table; 3527's data offsets (f6 +0xFA, the
+// slot state +0xA4C, the state's +0x3C0 / +0x3C8, all read again in 3663's code there).
+const Addrs kAddrs3663{tbl::kCodeEnd3663,
+                       tbl::kVf23663, tbl::kVf2Slot3663, tbl::kApply3663, tbl::kApplyCall3663, tbl::kSetBend3663,
+                       tbl::kSetBendCall3663, tbl::kTick3663, tbl::kTickJump3663, tbl::kGetTarget3663, tbl::kFindTree3663,
+                       tbl::kClientRemoteCatchVtbl3663, tbl::kMainThreadId3663,
+                       tbl::kControl_F63527, tbl::kStateBase3527, tbl::kState_Dir3527,
+                       tbl::kApplyCallBytes3663, tbl::kSetBendCallBytes3663, tbl::kTickJumpBytes3663};
 const Addrs& addrs() noexcept {
-    static const Addrs& a = game::current_build() == game::Build::v3576   ? kAddrs3576
+    static const Addrs& a = game::current_build() == game::Build::v3663   ? kAddrs3663
+                            : game::current_build() == game::Build::v3576 ? kAddrs3576
                             : game::current_build() == game::Build::v3527 ? kAddrs3527
                                                                           : kAddrs2976;
     return a;
@@ -647,7 +656,8 @@ bool install_hooks() {
 
 bool build_ok() {
     const game::Build b = game::current_build();
-    return g_base == g2976::kImageBase && (b == game::Build::v2976 || b == game::Build::v3527 || b == game::Build::v3576);
+    return g_base == g2976::kImageBase && (b == game::Build::v2976 || b == game::Build::v3527 ||
+                                           b == game::Build::v3576 || b == game::Build::v3663);
 }
 
 std::string ctl_text(uint8_t ctl) {
@@ -1092,7 +1102,8 @@ void tree_bend_start(const std::string& raw, bool guest) {
     if (g_started.exchange(true)) return;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
     if (!build_ok()) {
-        log::error("TreeBend: unsupported game build (not 1.0.0.2976, 1.0.0.3527 or 1.0.0.3576); tree_bend stays off");
+        log::error("TreeBend: unsupported game build (not 1.0.0.2976, 1.0.0.3527, 1.0.0.3576 or 1.0.0.3663); tree_bend "
+                   "stays off");
         return;
     }
     g_guest.store(guest);

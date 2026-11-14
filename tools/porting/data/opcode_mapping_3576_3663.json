@@ -1,0 +1,7209 @@
+{
+  "source_build": "1.0.0.2976",
+  "target_build": "1.0.0.3527",
+  "sha256": "8be67178d9b9a149c361a731051665e0ba4d441e250ae1dfe645bd6e524345c8",
+  "timestamp": "0x6AF5D198",
+  "stats": {
+    "classes": 1179,
+    "resolved": 1179,
+    "unresolved": 0,
+    "changed_opcodes": 1066
+  },
+  "instance_range": {
+    "begin": "0x6F14E10",
+    "end_exclusive": "0x6F48840",
+    "stride": 144
+  },
+  "opcode_mapping": [
+    {
+      "name": "AITeleportFailAck",
+      "old": 3150,
+      "new": 2861,
+      "kind": 1
+    },
+    {
+      "name": "AITeleportReq",
+      "old": 3040,
+      "new": 2236,
+      "kind": 4
+    },
+    {
+      "name": "AccelerateInstalledObjectGrowthAck",
+      "old": 3127,
+      "new": 2129,
+      "kind": 1
+    },
+    {
+      "name": "AcceptJoinGuildMemberAck",
+      "old": 2466,
+      "new": 2476,
+      "kind": 1
+    },
+    {
+      "name": "AcceptJoinGuildMemberReq",
+      "old": 2815,
+      "new": 2839,
+      "kind": 4
+    },
+    {
+      "name": "AccompanyMercenaryAck",
+      "old": 2893,
+      "new": 2177,
+      "kind": 1
+    },
+    {
+      "name": "AcquireKnowledgeReq",
+      "old": 2285,
+      "new": 2096,
+      "kind": 4
+    },
+    {
+      "name": "ActivateContentsPhaseGamePlayTriggerInfoAck",
+      "old": 2306,
+      "new": 2416,
+      "kind": 1
+    },
+    {
+      "name": "ActivateContentsPhaseGamePlayTriggerInfoListAck",
+      "old": 2159,
+      "new": 2786,
+      "kind": 1
+    },
+    {
+      "name": "ActivateMiniGameReq",
+      "old": 2507,
+      "new": 2359,
+      "kind": 4
+    },
+    {
+      "name": "ActivateSpawningPoolReq",
+      "old": 3061,
+      "new": 2898,
+      "kind": 4
+    },
+    {
+      "name": "ActorGarbageCollectionRepeatTimer",
+      "old": 2010,
+      "new": 2010,
+      "kind": 2147483646
+    },
+    {
+      "name": "ActorListOnClosedRoadAck",
+      "old": 2830,
+      "new": 3031,
+      "kind": 1
+    },
+    {
+      "name": "ActorLoadDataAck",
+      "old": 2005,
+      "new": 2005,
+      "kind": 1
+    },
+    {
+      "name": "AddAttackImpulseCountReq",
+      "old": 3098,
+      "new": 2716,
+      "kind": 4
+    },
+    {
+      "name": "AddCombinationChildAck",
+      "old": 2993,
+      "new": 2299,
+      "kind": 1
+    },
+    {
+      "name": "AddDonationItemCountToCampListAck",
+      "old": 2870,
+      "new": 2639,
+      "kind": 1
+    },
+    {
+      "name": "AddExcutedGameAdviceKeyAck",
+      "old": 2455,
+      "new": 2342,
+      "kind": 1
+    },
+    {
+      "name": "AddExcutedGameAdviceKeyReq",
+      "old": 2784,
+      "new": 2348,
+      "kind": 4
+    },
+    {
+      "name": "AddExperienceAck",
+      "old": 3152,
+      "new": 2404,
+      "kind": 1
+    },
+    {
+      "name": "AddExperienceByGmReq",
+      "old": 2467,
+      "new": 2295,
+      "kind": 4
+    },
+    {
+      "name": "AddFollowLearnableKnowledgeAck",
+      "old": 2739,
+      "new": 2381,
+      "kind": 1
+    },
+    {
+      "name": "AddGimmickSplineTransformReq",
+      "old": 2403,
+      "new": 2702,
+      "kind": 4
+    },
+    {
+      "name": "AddHousingGimmickAck",
+      "old": 2894,
+      "new": 2110,
+      "kind": 1
+    },
+    {
+      "name": "AddHousingPlacedFieldGimmickSaveKeyListAck",
+      "old": 2938,
+      "new": 2380,
+      "kind": 1
+    },
+    {
+      "name": "AddHyosiMercenaryReq",
+      "old": 2859,
+      "new": 2512,
+      "kind": 4
+    },
+    {
+      "name": "AddItemToInventoryAck",
+      "old": 3110,
+      "new": 2210,
+      "kind": 1
+    },
+    {
+      "name": "AddKnowledgeLearnStackReq",
+      "old": 2608,
+      "new": 2721,
+      "kind": 4
+    },
+    {
+      "name": "AddMinusItemReq",
+      "old": 2536,
+      "new": 2213,
+      "kind": 4
+    },
+    {
+      "name": "AddQuestPatchItemListAck",
+      "old": 2650,
+      "new": 2247,
+      "kind": 1
+    },
+    {
+      "name": "AddReaminSkillPointByGmAck",
+      "old": 2624,
+      "new": 2362,
+      "kind": 1
+    },
+    {
+      "name": "AddSocketItemToEquipSlotAck",
+      "old": 2242,
+      "new": 2239,
+      "kind": 1
+    },
+    {
+      "name": "AddSocketItemToEquipSlotReq",
+      "old": 2811,
+      "new": 2353,
+      "kind": 4
+    },
+    {
+      "name": "AddSocketItemToInventoryAck",
+      "old": 2182,
+      "new": 2870,
+      "kind": 1
+    },
+    {
+      "name": "AddSocketItemToInventoryReq",
+      "old": 2770,
+      "new": 2768,
+      "kind": 4
+    },
+    {
+      "name": "AddStageRandomRateAck",
+      "old": 2355,
+      "new": 3036,
+      "kind": 1
+    },
+    {
+      "name": "AddSubLevelExperienceAck",
+      "old": 2995,
+      "new": 2454,
+      "kind": 1
+    },
+    {
+      "name": "AddTestPlayStageListReq",
+      "old": 2670,
+      "new": 2173,
+      "kind": 4
+    },
+    {
+      "name": "AddVisualEquipItemAck",
+      "old": 2538,
+      "new": 3085,
+      "kind": 1
+    },
+    {
+      "name": "AggroRelationListReq",
+      "old": 2102,
+      "new": 2593,
+      "kind": 4
+    },
+    {
+      "name": "AiControlChangeCheatReq",
+      "old": 2940,
+      "new": 2132,
+      "kind": 4
+    },
+    {
+      "name": "AiEventAck",
+      "old": 2391,
+      "new": 2963,
+      "kind": 1
+    },
+    {
+      "name": "AlertHistoryListAck",
+      "old": 2382,
+      "new": 2172,
+      "kind": 1
+    },
+    {
+      "name": "ApplyActionRestrictionAck",
+      "old": 3059,
+      "new": 2183,
+      "kind": 1
+    },
+    {
+      "name": "ApplyBuffAck",
+      "old": 2677,
+      "new": 2148,
+      "kind": 1
+    },
+    {
+      "name": "ApplyMiniGameReq",
+      "old": 2129,
+      "new": 3033,
+      "kind": 4
+    },
+    {
+      "name": "ApplyPuzzleSavePresetAck",
+      "old": 2718,
+      "new": 2143,
+      "kind": 1
+    },
+    {
+      "name": "ApplySkillFromCollideObjectReq",
+      "old": 3147,
+      "new": 2846,
+      "kind": 4
+    },
+    {
+      "name": "AquireItemNodeIdAck",
+      "old": 2937,
+      "new": 2332,
+      "kind": 1
+    },
+    {
+      "name": "AttachActorToProjectileAck",
+      "old": 2866,
+      "new": 2871,
+      "kind": 1
+    },
+    {
+      "name": "AttachDockingChildActorAck",
+      "old": 2347,
+      "new": 2471,
+      "kind": 1
+    },
+    {
+      "name": "AttachDockingChildActorReq",
+      "old": 2763,
+      "new": 2732,
+      "kind": 4
+    },
+    {
+      "name": "AttachLinkVehicleAck",
+      "old": 3142,
+      "new": 2894,
+      "kind": 1
+    },
+    {
+      "name": "AttachLinkVehicleReq",
+      "old": 2744,
+      "new": 2237,
+      "kind": 4
+    },
+    {
+      "name": "AttackByCollisionReq",
+      "old": 2150,
+      "new": 2315,
+      "kind": 4
+    },
+    {
+      "name": "AttackGameEventAck",
+      "old": 2974,
+      "new": 2606,
+      "kind": 1
+    },
+    {
+      "name": "AttackResultBackgroundOnlyReq",
+      "old": 2240,
+      "new": 2866,
+      "kind": 4
+    },
+    {
+      "name": "AutoCreateItemRepeatTimer",
+      "old": 2019,
+      "new": 2019,
+      "kind": 4
+    },
+    {
+      "name": "AutoEquipItemReq",
+      "old": 2914,
+      "new": 2906,
+      "kind": 4
+    },
+    {
+      "name": "AutoPickUpItemToTargetFailAck",
+      "old": 3160,
+      "new": 2974,
+      "kind": 1
+    },
+    {
+      "name": "AutoSpawnRoadReq",
+      "old": 2530,
+      "new": 3063,
+      "kind": 4
+    },
+    {
+      "name": "BankHistoryListAck",
+      "old": 2712,
+      "new": 2406,
+      "kind": 1
+    },
+    {
+      "name": "BoundFinishSpawnItemResultAck",
+      "old": 2588,
+      "new": 2410,
+      "kind": 1
+    },
+    {
+      "name": "BreakSceneObjectAck",
+      "old": 2954,
+      "new": 3040,
+      "kind": 1
+    },
+    {
+      "name": "BreakSceneObjectReq",
+      "old": 2301,
+      "new": 2857,
+      "kind": 4
+    },
+    {
+      "name": "BuffTriggerInOutReq",
+      "old": 2592,
+      "new": 2266,
+      "kind": 4
+    },
+    {
+      "name": "BuyRestorationGimmickReq",
+      "old": 2175,
+      "new": 3143,
+      "kind": 4
+    },
+    {
+      "name": "BuyStockFromStoreReq",
+      "old": 2531,
+      "new": 2468,
+      "kind": 4
+    },
+    {
+      "name": "CallAIEventFromAIFunctionReq",
+      "old": 2353,
+      "new": 2788,
+      "kind": 4
+    },
+    {
+      "name": "CallHyosiByQuickSlotReq",
+      "old": 3069,
+      "new": 2439,
+      "kind": 4
+    },
+    {
+      "name": "CallHyosiCoolTimeCompleteAck",
+      "old": 2621,
+      "new": 3014,
+      "kind": 1
+    },
+    {
+      "name": "CallHyosiCoolTimeCompleteNak",
+      "old": 2254,
+      "new": 3056,
+      "kind": 1
+    },
+    {
+      "name": "CallHyosiCoolTimeCompleteReq",
+      "old": 2872,
+      "new": 2709,
+      "kind": 4
+    },
+    {
+      "name": "CallMercenaryCoolTimeCompleteAck",
+      "old": 2487,
+      "new": 2603,
+      "kind": 1
+    },
+    {
+      "name": "CallMercenaryCoolTimeCompleteNak",
+      "old": 3020,
+      "new": 2624,
+      "kind": 1
+    },
+    {
+      "name": "CallMercenaryCoolTimeCompleteReq",
+      "old": 2416,
+      "new": 2307,
+      "kind": 4
+    },
+    {
+      "name": "CallMercenarySpawnDurationRepeatTimer",
+      "old": 2020,
+      "new": 2020,
+      "kind": 4
+    },
+    {
+      "name": "CallSpecialVehicleByQuickSlotReq",
+      "old": 3036,
+      "new": 2122,
+      "kind": 4
+    },
+    {
+      "name": "CallVehicleMercenaryAck",
+      "old": 2720,
+      "new": 2908,
+      "kind": 1
+    },
+    {
+      "name": "CancelDeleteCharacterAck",
+      "old": 3093,
+      "new": 3103,
+      "kind": 1
+    },
+    {
+      "name": "CancelDeleteCharacterReq",
+      "old": 2822,
+      "new": 2306,
+      "kind": 4
+    },
+    {
+      "name": "CancelDiscoverLevelSceneObjectAck",
+      "old": 2610,
+      "new": 2418,
+      "kind": 1
+    },
+    {
+      "name": "CancelDiscoverLevelSceneObjectReq",
+      "old": 2591,
+      "new": 3010,
+      "kind": 4
+    },
+    {
+      "name": "CancelFactionOperationAck",
+      "old": 2132,
+      "new": 2652,
+      "kind": 1
+    },
+    {
+      "name": "CancelFactionOperationReq",
+      "old": 2910,
+      "new": 2905,
+      "kind": 4
+    },
+    {
+      "name": "CancelFollowLearnAcquiringAck",
+      "old": 2968,
+      "new": 2109,
+      "kind": 1
+    },
+    {
+      "name": "CancelKnowledgeLearnDelayAck",
+      "old": 3099,
+      "new": 2771,
+      "kind": 1
+    },
+    {
+      "name": "CancelKnowledgeLearnDelayReq",
+      "old": 2430,
+      "new": 2549,
+      "kind": 4
+    },
+    {
+      "name": "CatchActionResultAck",
+      "old": 2308,
+      "new": 2562,
+      "kind": 1
+    },
+    {
+      "name": "CatchBySummonReq",
+      "old": 2217,
+      "new": 2733,
+      "kind": 4
+    },
+    {
+      "name": "CatchNak",
+      "old": 2782,
+      "new": 2590,
+      "kind": 1
+    },
+    {
+      "name": "ChallengeDiscoverActorReq",
+      "old": 2567,
+      "new": 2679,
+      "kind": 4
+    },
+    {
+      "name": "ChangAIChartForFocusActorChangedReq",
+      "old": 2840,
+      "new": 2127,
+      "kind": 4
+    },
+    {
+      "name": "ChangeAIStateAck",
+      "old": 3047,
+      "new": 2499,
+      "kind": 1
+    },
+    {
+      "name": "ChangeAIStateReq",
+      "old": 2394,
+      "new": 2766,
+      "kind": 4
+    },
+    {
+      "name": "ChangeAIValueReq",
+      "old": 2964,
+      "new": 2832,
+      "kind": 4
+    },
+    {
+      "name": "ChangeActionSessionIDAck",
+      "old": 2157,
+      "new": 2385,
+      "kind": 1
+    },
+    {
+      "name": "ChangeAdditionalSubLevelAck",
+      "old": 2857,
+      "new": 2252,
+      "kind": 1
+    },
+    {
+      "name": "ChangeAggroRelationValidTickReq",
+      "old": 3133,
+      "new": 3071,
+      "kind": 4
+    },
+    {
+      "name": "ChangeAiControlAck",
+      "old": 2660,
+      "new": 2152,
+      "kind": 1
+    },
+    {
+      "name": "ChangeBankInfomationReq",
+      "old": 2183,
+      "new": 2165,
+      "kind": 4
+    },
+    {
+      "name": "ChangeBankInformationAck",
+      "old": 2156,
+      "new": 2378,
+      "kind": 1
+    },
+    {
+      "name": "ChangeBattleStateReq",
+      "old": 2453,
+      "new": 2704,
+      "kind": 4
+    },
+    {
+      "name": "ChangeCharacterNameAck",
+      "old": 2512,
+      "new": 2684,
+      "kind": 1
+    },
+    {
+      "name": "ChangeCustomHouseOwnerGamePlayTriggerInfoAck",
+      "old": 2528,
+      "new": 2856,
+      "kind": 1
+    },
+    {
+      "name": "ChangeDockingSocketByFrameEventAck",
+      "old": 2907,
+      "new": 2155,
+      "kind": 1
+    },
+    {
+      "name": "ChangeDrowningStateReq",
+      "old": 2703,
+      "new": 2119,
+      "kind": 4
+    },
+    {
+      "name": "ChangeElementalAreaShapeAck",
+      "old": 3000,
+      "new": 2793,
+      "kind": 1
+    },
+    {
+      "name": "ChangeEquipByQuickSlotOnceTimer",
+      "old": 2061,
+      "new": 2061,
+      "kind": 2147483646
+    },
+    {
+      "name": "ChangeFactionNodeProtectedReq",
+      "old": 2579,
+      "new": 2572,
+      "kind": 4
+    },
+    {
+      "name": "ChangeFocusActorAck",
+      "old": 2921,
+      "new": 2853,
+      "kind": 1
+    },
+    {
+      "name": "ChangeFocusActorReq",
+      "old": 2526,
+      "new": 3159,
+      "kind": 4
+    },
+    {
+      "name": "ChangeFormationKeyAllMemberAck",
+      "old": 2188,
+      "new": 2744,
+      "kind": 1
+    },
+    {
+      "name": "ChangeFormationKeyAllMemberReq",
+      "old": 2433,
+      "new": 2126,
+      "kind": 4
+    },
+    {
+      "name": "ChangeGameDifficultyReq",
+      "old": 3080,
+      "new": 2635,
+      "kind": 4
+    },
+    {
+      "name": "ChangeGameLevelStateAck",
+      "old": 3081,
+      "new": 2669,
+      "kind": 1
+    },
+    {
+      "name": "ChangeGameLevelStateByCheatReq",
+      "old": 2571,
+      "new": 3137,
+      "kind": 4
+    },
+    {
+      "name": "ChangeGamePlayTriggerStateAck",
+      "old": 2638,
+      "new": 2542,
+      "kind": 1
+    },
+    {
+      "name": "ChangeHiredMercenaryWithSummonForCheatReq",
+      "old": 2793,
+      "new": 2794,
+      "kind": 4
+    },
+    {
+      "name": "ChangeHouseAck",
+      "old": 2999,
+      "new": 2423,
+      "kind": 1
+    },
+    {
+      "name": "ChangeHouseNak",
+      "old": 2772,
+      "new": 2942,
+      "kind": 1
+    },
+    {
+      "name": "ChangeHouseOwnerCharacterAck",
+      "old": 2658,
+      "new": 3025,
+      "kind": 1
+    },
+    {
+      "name": "ChangeHouseOwnerCharacterReq",
+      "old": 2785,
+      "new": 3051,
+      "kind": 4
+    },
+    {
+      "name": "ChangeHouseReq",
+      "old": 2981,
+      "new": 2258,
+      "kind": 4
+    },
+    {
+      "name": "ChangeHousingObjectOwnerGamePlayTriggerInfoAck",
+      "old": 2238,
+      "new": 3094,
+      "kind": 1
+    },
+    {
+      "name": "ChangeInventoryItemListSortTypeAck",
+      "old": 3148,
+      "new": 2811,
+      "kind": 1
+    },
+    {
+      "name": "ChangeInventoryItemListSortTypeReq",
+      "old": 2478,
+      "new": 2722,
+      "kind": 4
+    },
+    {
+      "name": "ChangeMainMercenaryAck",
+      "old": 3016,
+      "new": 2226,
+      "kind": 1
+    },
+    {
+      "name": "ChangeManagementNameReq",
+      "old": 2447,
+      "new": 2457,
+      "kind": 4
+    },
+    {
+      "name": "ChangeMercenaryDecoEquipmentAck",
+      "old": 2883,
+      "new": 2864,
+      "kind": 1
+    },
+    {
+      "name": "ChangeMercenaryDecoEquipmentReq",
+      "old": 2239,
+      "new": 2553,
+      "kind": 4
+    },
+    {
+      "name": "ChangeMercenaryFactionInfoAck",
+      "old": 2422,
+      "new": 2725,
+      "kind": 1
+    },
+    {
+      "name": "ChangeMercenaryNameAck",
+      "old": 2389,
+      "new": 2412,
+      "kind": 1
+    },
+    {
+      "name": "ChangeMercenaryNameReq",
+      "old": 2152,
+      "new": 2376,
+      "kind": 4
+    },
+    {
+      "name": "ChangeMercenaryStateProperThreadOnceTimer",
+      "old": 2032,
+      "new": 2032,
+      "kind": 2147483646
+    },
+    {
+      "name": "ChangeMoveSessionIDAck",
+      "old": 2897,
+      "new": 3013,
+      "kind": 1
+    },
+    {
+      "name": "ChangeNPCScheduleMiseensceneAck",
+      "old": 2616,
+      "new": 3099,
+      "kind": 1
+    },
+    {
+      "name": "ChangePlayerbleCharacterAck",
+      "old": 3006,
+      "new": 2157,
+      "kind": 1
+    },
+    {
+      "name": "ChangePlayerbleCharacterFailAck",
+      "old": 2832,
+      "new": 2604,
+      "kind": 1
+    },
+    {
+      "name": "ChangePlayerbleCharacterReq",
+      "old": 2758,
+      "new": 3060,
+      "kind": 4
+    },
+    {
+      "name": "ChangeRideSeatAck",
+      "old": 2130,
+      "new": 2860,
+      "kind": 1
+    },
+    {
+      "name": "ChangeSequencerPivotReq",
+      "old": 2869,
+      "new": 2563,
+      "kind": 4
+    },
+    {
+      "name": "ChangeSkillFromCollideObjectReq",
+      "old": 2209,
+      "new": 2571,
+      "kind": 4
+    },
+    {
+      "name": "ChangeSummoneeToIndependentByInitTriggerReq",
+      "old": 2476,
+      "new": 2360,
+      "kind": 4
+    },
+    {
+      "name": "ChangeUseItemReserveSlotAck",
+      "old": 2451,
+      "new": 2124,
+      "kind": 1
+    },
+    {
+      "name": "ChangeUseItemReserveSlotReq",
+      "old": 2291,
+      "new": 2879,
+      "kind": 4
+    },
+    {
+      "name": "ChangeVehiclePhysicsStateAck",
+      "old": 2729,
+      "new": 2283,
+      "kind": 1
+    },
+    {
+      "name": "ChangeVehiclePhysicsStateReq",
+      "old": 2247,
+      "new": 2220,
+      "kind": 4
+    },
+    {
+      "name": "ChangeWantedCrimeTypeAck",
+      "old": 2135,
+      "new": 2683,
+      "kind": 1
+    },
+    {
+      "name": "ChangeWantedCrimeTypeReq",
+      "old": 3118,
+      "new": 2099,
+      "kind": 4
+    },
+    {
+      "name": "ChangeWantedStateAck",
+      "old": 2324,
+      "new": 2120,
+      "kind": 1
+    },
+    {
+      "name": "ChangeWantedStateReq",
+      "old": 2580,
+      "new": 2235,
+      "kind": 4
+    },
+    {
+      "name": "ChangeWildStateAck",
+      "old": 2790,
+      "new": 2592,
+      "kind": 1
+    },
+    {
+      "name": "ChangedAutoSpawnCloseFilterStateAck",
+      "old": 3050,
+      "new": 2641,
+      "kind": 1
+    },
+    {
+      "name": "ChangedEquipByQuickSlotAck",
+      "old": 2440,
+      "new": 2273,
+      "kind": 1
+    },
+    {
+      "name": "ChangedEvadeProjectileStageAck",
+      "old": 2884,
+      "new": 2461,
+      "kind": 1
+    },
+    {
+      "name": "ChangedReportActivatedReq",
+      "old": 2143,
+      "new": 2141,
+      "kind": 4
+    },
+    {
+      "name": "CharacterCustomizationAck",
+      "old": 2101,
+      "new": 2357,
+      "kind": 1
+    },
+    {
+      "name": "CharacterDataDefinedRegenerateStatAck",
+      "old": 2189,
+      "new": 2633,
+      "kind": 1
+    },
+    {
+      "name": "CharacterDataDefinedStatAck",
+      "old": 2100,
+      "new": 3087,
+      "kind": 1
+    },
+    {
+      "name": "CharacterLobbyDataAck",
+      "old": 3082,
+      "new": 2896,
+      "kind": 1
+    },
+    {
+      "name": "CharacterPresetSpawnGimmickByCheatReq",
+      "old": 2597,
+      "new": 2169,
+      "kind": 4
+    },
+    {
+      "name": "CharacterPresetSpawnNPCAck",
+      "old": 2809,
+      "new": 2978,
+      "kind": 1
+    },
+    {
+      "name": "CharacterPresetSpawnNPCReq",
+      "old": 2516,
+      "new": 3067,
+      "kind": 4
+    },
+    {
+      "name": "CharacterPresetSpawnPCAck",
+      "old": 3022,
+      "new": 2818,
+      "kind": 1
+    },
+    {
+      "name": "CharacterPresetSpawnPCReq",
+      "old": 3123,
+      "new": 3086,
+      "kind": 4
+    },
+    {
+      "name": "CharacterStatAck",
+      "old": 2229,
+      "new": 2246,
+      "kind": 1
+    },
+    {
+      "name": "CharacterViewModeEquipDevAck",
+      "old": 2844,
+      "new": 2555,
+      "kind": 1
+    },
+    {
+      "name": "CheatDirectPlayReq",
+      "old": 2679,
+      "new": 3092,
+      "kind": 4
+    },
+    {
+      "name": "CheckChangeAnimationSpeedRepeatTimer",
+      "old": 2016,
+      "new": 2016,
+      "kind": 4
+    },
+    {
+      "name": "CheckDismountLogoutReq",
+      "old": 2219,
+      "new": 2298,
+      "kind": 4
+    },
+    {
+      "name": "CleanUpToDbRepeatTimer",
+      "old": 2009,
+      "new": 2009,
+      "kind": 4
+    },
+    {
+      "name": "ClearAlertHistoryListReq",
+      "old": 2475,
+      "new": 2868,
+      "kind": 4
+    },
+    {
+      "name": "ClearAllyGroupDataAck",
+      "old": 2259,
+      "new": 3121,
+      "kind": 1
+    },
+    {
+      "name": "ClearAttackComboAck",
+      "old": 3129,
+      "new": 2197,
+      "kind": 1
+    },
+    {
+      "name": "ClearCharacterLobbyDataForSinglePlayAck",
+      "old": 2468,
+      "new": 2282,
+      "kind": 1
+    },
+    {
+      "name": "ClearCombinationChildAck",
+      "old": 2415,
+      "new": 2351,
+      "kind": 1
+    },
+    {
+      "name": "ClearCombinationChildReq",
+      "old": 2343,
+      "new": 3124,
+      "kind": 4
+    },
+    {
+      "name": "ClearEnableContentsPhaseUIReq",
+      "old": 2958,
+      "new": 2655,
+      "kind": 4
+    },
+    {
+      "name": "ClearHousingSyncDataAck",
+      "old": 2583,
+      "new": 2700,
+      "kind": 1
+    },
+    {
+      "name": "ClearInteractionsForHideTargetReq",
+      "old": 3046,
+      "new": 2694,
+      "kind": 4
+    },
+    {
+      "name": "ClearInventoryItemNewMarkAck",
+      "old": 2889,
+      "new": 2715,
+      "kind": 1
+    },
+    {
+      "name": "ClearInventoryItemNewMarkReq",
+      "old": 2680,
+      "new": 2429,
+      "kind": 4
+    },
+    {
+      "name": "ClearItemExchangeEventSelectedItemReq",
+      "old": 2813,
+      "new": 3138,
+      "kind": 4
+    },
+    {
+      "name": "ClearKillerActorDataAck",
+      "old": 2413,
+      "new": 2147,
+      "kind": 1
+    },
+    {
+      "name": "ClearKillerActorDataReq",
+      "old": 2655,
+      "new": 2651,
+      "kind": 4
+    },
+    {
+      "name": "ClearKnowledgeNewMarkReq",
+      "old": 2515,
+      "new": 2957,
+      "kind": 4
+    },
+    {
+      "name": "ClearQuestDialogReq",
+      "old": 2147,
+      "new": 2775,
+      "kind": 4
+    },
+    {
+      "name": "ClearSkillUnlockMarkReq",
+      "old": 2161,
+      "new": 2626,
+      "kind": 4
+    },
+    {
+      "name": "ClearUseItemReserveSlotAck",
+      "old": 3025,
+      "new": 2582,
+      "kind": 1
+    },
+    {
+      "name": "ClearWantedAck",
+      "old": 3155,
+      "new": 2640,
+      "kind": 1
+    },
+    {
+      "name": "ClearWantedReq",
+      "old": 3108,
+      "new": 2188,
+      "kind": 4
+    },
+    {
+      "name": "ClientCacheAck",
+      "old": 2191,
+      "new": 2339,
+      "kind": 1
+    },
+    {
+      "name": "ClientCacheReq",
+      "old": 2984,
+      "new": 2876,
+      "kind": 4
+    },
+    {
+      "name": "ClosePartyAck",
+      "old": 2709,
+      "new": 2254,
+      "kind": 1
+    },
+    {
+      "name": "CollectSceneObjectTransformReq",
+      "old": 2890,
+      "new": 2168,
+      "kind": 4
+    },
+    {
+      "name": "CompleteCalculateSummonAfterRegistReq",
+      "old": 2843,
+      "new": 2396,
+      "kind": 4
+    },
+    {
+      "name": "CompleteChallengeAck",
+      "old": 2111,
+      "new": 2513,
+      "kind": 1
+    },
+    {
+      "name": "CompleteDiscoverTimerLevelSceneObjectReq",
+      "old": 3001,
+      "new": 2695,
+      "kind": 4
+    },
+    {
+      "name": "CompleteKnowledgeLearnDelayReq",
+      "old": 2483,
+      "new": 2144,
+      "kind": 4
+    },
+    {
+      "name": "CompleteQuestByCheatAck",
+      "old": 3156,
+      "new": 2814,
+      "kind": 1
+    },
+    {
+      "name": "CompleteQuestByCheatReq",
+      "old": 3041,
+      "new": 2889,
+      "kind": 4
+    },
+    {
+      "name": "CompleteQuestGaugeAck",
+      "old": 2485,
+      "new": 2838,
+      "kind": 1
+    },
+    {
+      "name": "CompleteSequencerAITaskReq",
+      "old": 2428,
+      "new": 2137,
+      "kind": 4
+    },
+    {
+      "name": "ConfirmHousingPlacementReq",
+      "old": 2685,
+      "new": 2625,
+      "kind": 4
+    },
+    {
+      "name": "ConnectCryptogramToServerAck",
+      "old": 2874,
+      "new": 2128,
+      "kind": 1
+    },
+    {
+      "name": "ConnectCryptogramToServerReq",
+      "old": 2493,
+      "new": 2401,
+      "kind": 2147483646
+    },
+    {
+      "name": "ConnectFactionNodeBuffAck",
+      "old": 2825,
+      "new": 2464,
+      "kind": 1
+    },
+    {
+      "name": "ConnectToServerAck",
+      "old": 1002,
+      "new": 1002,
+      "kind": 1
+    },
+    {
+      "name": "ConvertEquipItemToActorOnceTimer",
+      "old": 2027,
+      "new": 2027,
+      "kind": 2147483646
+    },
+    {
+      "name": "CreateActivityGroupObstacleReq",
+      "old": 2930,
+      "new": 2843,
+      "kind": 4
+    },
+    {
+      "name": "CreateAndJoinRoomOnceTimer",
+      "old": 2030,
+      "new": 2030,
+      "kind": 2147483646
+    },
+    {
+      "name": "CreateBreakableBigDebrisBodyNavigationObstacleReq",
+      "old": 2364,
+      "new": 3070,
+      "kind": 4
+    },
+    {
+      "name": "CreateCharacterAck",
+      "old": 2977,
+      "new": 2649,
+      "kind": 1
+    },
+    {
+      "name": "CreateCharacterReq",
+      "old": 2824,
+      "new": 2533,
+      "kind": 4
+    },
+    {
+      "name": "CreateFactionSpawnStageAck",
+      "old": 2208,
+      "new": 3130,
+      "kind": 1
+    },
+    {
+      "name": "CreateFieldGamePlayManagerAck",
+      "old": 2224,
+      "new": 2756,
+      "kind": 1
+    },
+    {
+      "name": "CreateFormationGroupAck",
+      "old": 2118,
+      "new": 3034,
+      "kind": 1
+    },
+    {
+      "name": "CreateFormationGroupReq",
+      "old": 2672,
+      "new": 2923,
+      "kind": 4
+    },
+    {
+      "name": "CreateGuildAck",
+      "old": 2503,
+      "new": 2671,
+      "kind": 1
+    },
+    {
+      "name": "CreateGuildReq",
+      "old": 2502,
+      "new": 2472,
+      "kind": 4
+    },
+    {
+      "name": "CreateItemAndEquipXXXOnceTimer",
+      "old": 2081,
+      "new": 2081,
+      "kind": 2147483646
+    },
+    {
+      "name": "CreateItemFromTrItemValueCheatReq",
+      "old": 2682,
+      "new": 2611,
+      "kind": 4
+    },
+    {
+      "name": "CreateNPCScheduleSceneObjectAck",
+      "old": 2514,
+      "new": 2935,
+      "kind": 1
+    },
+    {
+      "name": "CreateNPCScheduleStageAck",
+      "old": 2989,
+      "new": 2224,
+      "kind": 1
+    },
+    {
+      "name": "CreateOrChangePinMarkerAck",
+      "old": 2647,
+      "new": 2267,
+      "kind": 1
+    },
+    {
+      "name": "CreateOrChangePinMarkerReq",
+      "old": 2479,
+      "new": 2675,
+      "kind": 4
+    },
+    {
+      "name": "CreateOrChangeSelfDestinationReq",
+      "old": 2663,
+      "new": 2285,
+      "kind": 4
+    },
+    {
+      "name": "CreatePreemptedTeleportPositionObstacleReq",
+      "old": 2200,
+      "new": 2156,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileAck",
+      "old": 2737,
+      "new": 3166,
+      "kind": 1
+    },
+    {
+      "name": "CreateProjectileByWeatherReq",
+      "old": 2633,
+      "new": 2761,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileFromAlwaysOnReq",
+      "old": 2802,
+      "new": 2791,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileFromEditorReq",
+      "old": 2525,
+      "new": 2164,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileFromFrameEventReq",
+      "old": 2644,
+      "new": 3144,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileFromGimmickEventReq",
+      "old": 3154,
+      "new": 2904,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileFromSequencerReq",
+      "old": 2432,
+      "new": 3024,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileFromServerRequestAck",
+      "old": 2613,
+      "new": 2912,
+      "kind": 1
+    },
+    {
+      "name": "CreateProjectileFromServerRequestReq",
+      "old": 2972,
+      "new": 3075,
+      "kind": 4
+    },
+    {
+      "name": "CreateProjectileItemReq",
+      "old": 2734,
+      "new": 2976,
+      "kind": 4
+    },
+    {
+      "name": "CreateRoomAck",
+      "old": 2949,
+      "new": 3046,
+      "kind": 1
+    },
+    {
+      "name": "CreateTornadoThrowingProjectileReq",
+      "old": 2850,
+      "new": 2207,
+      "kind": 4
+    },
+    {
+      "name": "CurrentScheduleDataAck",
+      "old": 2315,
+      "new": 2250,
+      "kind": 1
+    },
+    {
+      "name": "CurrentScheduleDataReq",
+      "old": 3076,
+      "new": 2566,
+      "kind": 4
+    },
+    {
+      "name": "CurrentTargetChangeReq",
+      "old": 2820,
+      "new": 2918,
+      "kind": 4
+    },
+    {
+      "name": "CurrentTargetChangedAck",
+      "old": 2609,
+      "new": 2859,
+      "kind": 1
+    },
+    {
+      "name": "DataDefinedRegenerateValueAck",
+      "old": 2305,
+      "new": 2108,
+      "kind": 1
+    },
+    {
+      "name": "DeactivateLargeScalePlacementAutoSpawnReq",
+      "old": 2372,
+      "new": 2274,
+      "kind": 4
+    },
+    {
+      "name": "DeactivateMeshGroupAutoSpawnReq",
+      "old": 2646,
+      "new": 2884,
+      "kind": 4
+    },
+    {
+      "name": "DeactivateMiniGameReq",
+      "old": 2612,
+      "new": 2584,
+      "kind": 4
+    },
+    {
+      "name": "DeactivateMiseensceneScheduleEvadeObstacleAck",
+      "old": 2297,
+      "new": 2509,
+      "kind": 1
+    },
+    {
+      "name": "DeactivatePoolSpawnByLevelNameReq",
+      "old": 2780,
+      "new": 2600,
+      "kind": 4
+    },
+    {
+      "name": "DeactivatePoolSpawnReq",
+      "old": 2797,
+      "new": 2729,
+      "kind": 4
+    },
+    {
+      "name": "DeadActorHideAck",
+      "old": 2888,
+      "new": 2190,
+      "kind": 1
+    },
+    {
+      "name": "DeleteCharacterAck",
+      "old": 2407,
+      "new": 3108,
+      "kind": 1
+    },
+    {
+      "name": "DeleteCharacterReq",
+      "old": 2925,
+      "new": 3111,
+      "kind": 4
+    },
+    {
+      "name": "DeleteFactionMovingGroupDataAck",
+      "old": 2256,
+      "new": 2855,
+      "kind": 1
+    },
+    {
+      "name": "DeleteFactionSpawnStageAck",
+      "old": 2230,
+      "new": 2693,
+      "kind": 1
+    },
+    {
+      "name": "DeleteItemCheatReq",
+      "old": 2509,
+      "new": 2261,
+      "kind": 4
+    },
+    {
+      "name": "DeleteItemFromInventoryOnceTimer",
+      "old": 2060,
+      "new": 2060,
+      "kind": 2147483646
+    },
+    {
+      "name": "DeleteMercenaryAck",
+      "old": 2886,
+      "new": 3105,
+      "kind": 1
+    },
+    {
+      "name": "DeleteNPCScheduleStageAck",
+      "old": 2796,
+      "new": 2338,
+      "kind": 1
+    },
+    {
+      "name": "DeletePartyMemberAck",
+      "old": 2323,
+      "new": 2450,
+      "kind": 1
+    },
+    {
+      "name": "DeleteSaveDataAck",
+      "old": 2176,
+      "new": 2107,
+      "kind": 1
+    },
+    {
+      "name": "DeleteSaveDataReq",
+      "old": 2289,
+      "new": 3091,
+      "kind": 4
+    },
+    {
+      "name": "DeleteSequencerAck",
+      "old": 2292,
+      "new": 2659,
+      "kind": 1
+    },
+    {
+      "name": "DeleteSequencerOnceTimer",
+      "old": 2059,
+      "new": 2059,
+      "kind": 2147483646
+    },
+    {
+      "name": "DeleteSequencerReq",
+      "old": 2178,
+      "new": 2678,
+      "kind": 4
+    },
+    {
+      "name": "DeleteStageOceanLevelCandidatePostionReq",
+      "old": 2445,
+      "new": 2123,
+      "kind": 4
+    },
+    {
+      "name": "DestroyActivityGroupObstacleReq",
+      "old": 2903,
+      "new": 2530,
+      "kind": 4
+    },
+    {
+      "name": "DestroyAllFieldCheatReq",
+      "old": 2895,
+      "new": 2591,
+      "kind": 4
+    },
+    {
+      "name": "DestroyGuildAck",
+      "old": 2542,
+      "new": 2774,
+      "kind": 1
+    },
+    {
+      "name": "DestroyGuildReq",
+      "old": 3018,
+      "new": 2993,
+      "kind": 4
+    },
+    {
+      "name": "DestroyNPCScheduleSceneObjectAck",
+      "old": 2935,
+      "new": 2940,
+      "kind": 1
+    },
+    {
+      "name": "DestroyPreemptedTeleportPositionObstacleReq",
+      "old": 2441,
+      "new": 2911,
+      "kind": 4
+    },
+    {
+      "name": "DestroySyncSceneObjectDataOnceTimer",
+      "old": 2079,
+      "new": 2079,
+      "kind": 2147483646
+    },
+    {
+      "name": "DetachAllLinkVehicleAck",
+      "old": 2622,
+      "new": 2949,
+      "kind": 1
+    },
+    {
+      "name": "DetachAllLinkVehicleReq",
+      "old": 2864,
+      "new": 2229,
+      "kind": 4
+    },
+    {
+      "name": "DetachFromDockingParentActorAck",
+      "old": 2992,
+      "new": 2783,
+      "kind": 1
+    },
+    {
+      "name": "DetachFromDockingParentActorReq",
+      "old": 2871,
+      "new": 3093,
+      "kind": 4
+    },
+    {
+      "name": "DetachFromStageAck",
+      "old": 2318,
+      "new": 3044,
+      "kind": 1
+    },
+    {
+      "name": "DetachGimmickAllFromAttachParentAck",
+      "old": 2214,
+      "new": 3059,
+      "kind": 1
+    },
+    {
+      "name": "DetachLinkVehicleAck",
+      "old": 2700,
+      "new": 3115,
+      "kind": 1
+    },
+    {
+      "name": "DetachLinkVehicleReq",
+      "old": 2359,
+      "new": 2195,
+      "kind": 4
+    },
+    {
+      "name": "DieByRunOutFatalReq",
+      "old": 3051,
+      "new": 2349,
+      "kind": 4
+    },
+    {
+      "name": "DisableDebuffActionRestrictionReq",
+      "old": 2671,
+      "new": 2583,
+      "kind": 4
+    },
+    {
+      "name": "DisableFollowLearnTargetAck",
+      "old": 2513,
+      "new": 2841,
+      "kind": 1
+    },
+    {
+      "name": "DisableFollowLearnTargetReq",
+      "old": 3014,
+      "new": 2263,
+      "kind": 4
+    },
+    {
+      "name": "DisableSpecialModeAck",
+      "old": 2701,
+      "new": 2545,
+      "kind": 1
+    },
+    {
+      "name": "DisableSpecialModeReq",
+      "old": 2523,
+      "new": 3153,
+      "kind": 4
+    },
+    {
+      "name": "DisbandMecenaryGoToSafeAreaOnceTimer",
+      "old": 2080,
+      "new": 2080,
+      "kind": 2147483646
+    },
+    {
+      "name": "DisbandMercenaryAck",
+      "old": 2598,
+      "new": 2485,
+      "kind": 1
+    },
+    {
+      "name": "DisbandMercenaryFailAck",
+      "old": 2131,
+      "new": 2718,
+      "kind": 1
+    },
+    {
+      "name": "DisbandMercenaryReq",
+      "old": 2691,
+      "new": 2587,
+      "kind": 4
+    },
+    {
+      "name": "DiscardHousingGimmickAck",
+      "old": 2629,
+      "new": 2490,
+      "kind": 1
+    },
+    {
+      "name": "DiscardHousingItemReq",
+      "old": 3044,
+      "new": 3132,
+      "kind": 4
+    },
+    {
+      "name": "DiscardItemAck",
+      "old": 2947,
+      "new": 3113,
+      "kind": 1
+    },
+    {
+      "name": "DiscardItemNak",
+      "old": 2470,
+      "new": 3161,
+      "kind": 1
+    },
+    {
+      "name": "DiscardItemReq",
+      "old": 2626,
+      "new": 2417,
+      "kind": 4
+    },
+    {
+      "name": "DisconnectToServerAck",
+      "old": 1004,
+      "new": 1004,
+      "kind": 1
+    },
+    {
+      "name": "DoFrameEventReq",
+      "old": 3030,
+      "new": 2460,
+      "kind": 4
+    },
+    {
+      "name": "DoTeleportAck",
+      "old": 3052,
+      "new": 2379,
+      "kind": 1
+    },
+    {
+      "name": "DockingByCreatePlatformPotalFrameEventAck",
+      "old": 3019,
+      "new": 2805,
+      "kind": 1
+    },
+    {
+      "name": "DockingFrameEventFailAck",
+      "old": 2460,
+      "new": 2833,
+      "kind": 1
+    },
+    {
+      "name": "DockingFrameEventSuccessAck",
+      "old": 2127,
+      "new": 2520,
+      "kind": 1
+    },
+    {
+      "name": "DockingPreemptionReq",
+      "old": 2892,
+      "new": 2952,
+      "kind": 4
+    },
+    {
+      "name": "DockingPreemptionResultAck",
+      "old": 2426,
+      "new": 3028,
+      "kind": 1
+    },
+    {
+      "name": "DonateMoneyOnceTimer",
+      "old": 2088,
+      "new": 2088,
+      "kind": 2147483646
+    },
+    {
+      "name": "DonateToFactionReq",
+      "old": 2110,
+      "new": 2835,
+      "kind": 4
+    },
+    {
+      "name": "DropItemOnGimmickBreakOnceTimer",
+      "old": 2086,
+      "new": 2086,
+      "kind": 2147483646
+    },
+    {
+      "name": "DyeItemByInventoryAck",
+      "old": 2911,
+      "new": 3150,
+      "kind": 1
+    },
+    {
+      "name": "DyeItemByInventoryReq",
+      "old": 2330,
+      "new": 3052,
+      "kind": 4
+    },
+    {
+      "name": "DyeItemListByEquipSlotAck",
+      "old": 3042,
+      "new": 2463,
+      "kind": 1
+    },
+    {
+      "name": "DyeItemListByEquipSlotReq",
+      "old": 2765,
+      "new": 2487,
+      "kind": 4
+    },
+    {
+      "name": "DyeMercenaryItemAck",
+      "old": 2140,
+      "new": 3079,
+      "kind": 1
+    },
+    {
+      "name": "DyeMercenaryItemReq",
+      "old": 2338,
+      "new": 2255,
+      "kind": 4
+    },
+    {
+      "name": "EchoActionSessionIDReq",
+      "old": 2518,
+      "new": 2690,
+      "kind": 4
+    },
+    {
+      "name": "EchoMoveSessionIDReq",
+      "old": 2731,
+      "new": 2638,
+      "kind": 4
+    },
+    {
+      "name": "ElementalMaterialFuelAck",
+      "old": 2177,
+      "new": 2759,
+      "kind": 1
+    },
+    {
+      "name": "ElementalMaterialStateChangeReq",
+      "old": 2750,
+      "new": 2264,
+      "kind": 4
+    },
+    {
+      "name": "EnableFollowLearnTargetAck",
+      "old": 2511,
+      "new": 2618,
+      "kind": 1
+    },
+    {
+      "name": "EnableSpecialModeAck",
+      "old": 3126,
+      "new": 2551,
+      "kind": 1
+    },
+    {
+      "name": "EnableSpecialModeReq",
+      "old": 2172,
+      "new": 3058,
+      "kind": 4
+    },
+    {
+      "name": "EntitlementDataListAck",
+      "old": 3062,
+      "new": 2175,
+      "kind": 1
+    },
+    {
+      "name": "EquipItemAck",
+      "old": 2804,
+      "new": 2561,
+      "kind": 1
+    },
+    {
+      "name": "EquipItemOnlyAck",
+      "old": 2540,
+      "new": 2139,
+      "kind": 1
+    },
+    {
+      "name": "EquipItemReq",
+      "old": 2171,
+      "new": 2880,
+      "kind": 4
+    },
+    {
+      "name": "EquipmentListOnLoginAck",
+      "old": 2317,
+      "new": 2312,
+      "kind": 1
+    },
+    {
+      "name": "EraseNotNoticeChallengeMissionAck",
+      "old": 3055,
+      "new": 2575,
+      "kind": 1
+    },
+    {
+      "name": "EraseNotNoticeChallengeMissionReq",
+      "old": 2226,
+      "new": 2289,
+      "kind": 4
+    },
+    {
+      "name": "EscapeFailAck",
+      "old": 2572,
+      "new": 2620,
+      "kind": 1
+    },
+    {
+      "name": "ExchangeItemFromBankReq",
+      "old": 2113,
+      "new": 2270,
+      "kind": 4
+    },
+    {
+      "name": "ExchangeTradeItemReq",
+      "old": 2213,
+      "new": 2840,
+      "kind": 4
+    },
+    {
+      "name": "ExecuteDelayedGimmickEventHandlerReq",
+      "old": 3005,
+      "new": 2770,
+      "kind": 4
+    },
+    {
+      "name": "ExecutedGameAdviceInfoKeyListAck",
+      "old": 2747,
+      "new": 2154,
+      "kind": 1
+    },
+    {
+      "name": "ExitManagementOnceTimer",
+      "old": 2091,
+      "new": 2091,
+      "kind": 2147483646
+    },
+    {
+      "name": "ExtractEnchantedInventoryItemAck",
+      "old": 2657,
+      "new": 2525,
+      "kind": 1
+    },
+    {
+      "name": "ExtractEnchantedInventoryItemReq",
+      "old": 2950,
+      "new": 2241,
+      "kind": 4
+    },
+    {
+      "name": "FactionGimmickEventReq",
+      "old": 2547,
+      "new": 2705,
+      "kind": 4
+    },
+    {
+      "name": "FactionManagementActorUpdateAck",
+      "old": 2335,
+      "new": 2755,
+      "kind": 1
+    },
+    {
+      "name": "FactionManagementBuffUpdateAck",
+      "old": 3114,
+      "new": 2336,
+      "kind": 1
+    },
+    {
+      "name": "FactionManagementConnectActorUpdateAck",
+      "old": 2716,
+      "new": 2352,
+      "kind": 1
+    },
+    {
+      "name": "FactionManagementDisconnectActorUpdateAck",
+      "old": 2373,
+      "new": 3109,
+      "kind": 1
+    },
+    {
+      "name": "FactionManagementOrderCompleteOnceTimer",
+      "old": 2090,
+      "new": 2090,
+      "kind": 2147483646
+    },
+    {
+      "name": "FactionManagementUpdateAck",
+      "old": 2397,
+      "new": 2171,
+      "kind": 1
+    },
+    {
+      "name": "FailEquipItemAck",
+      "old": 2166,
+      "new": 2522,
+      "kind": 1
+    },
+    {
+      "name": "FeedToActorOnceTimer",
+      "old": 2077,
+      "new": 2077,
+      "kind": 2147483646
+    },
+    {
+      "name": "FieldChangeMoveModeAck",
+      "old": 2816,
+      "new": 2287,
+      "kind": 1
+    },
+    {
+      "name": "FireAndProcessBagDockingOnceTimer",
+      "old": 2089,
+      "new": 2089,
+      "kind": 2147483646
+    },
+    {
+      "name": "FireAndPushCharacterRewardToInventoryReq",
+      "old": 2575,
+      "new": 2529,
+      "kind": 4
+    },
+    {
+      "name": "FireAndPushToInventoryReq",
+      "old": 2108,
+      "new": 2956,
+      "kind": 4
+    },
+    {
+      "name": "FireMercenaryReq",
+      "old": 2375,
+      "new": 2112,
+      "kind": 4
+    },
+    {
+      "name": "FlushPendingSaveDataOnceTimer",
+      "old": 2075,
+      "new": 2075,
+      "kind": 2147483646
+    },
+    {
+      "name": "FogDataAck",
+      "old": 2196,
+      "new": 2932,
+      "kind": 1
+    },
+    {
+      "name": "FollowLearnReadyKnowledgeListAck",
+      "old": 2838,
+      "new": 2393,
+      "kind": 1
+    },
+    {
+      "name": "FollowLearnedKnowledgeDataListAck",
+      "old": 2757,
+      "new": 2310,
+      "kind": 1
+    },
+    {
+      "name": "ForceApplySkillForDebugReq",
+      "old": 2377,
+      "new": 2328,
+      "kind": 4
+    },
+    {
+      "name": "ForceFieldAffectStartEndReq",
+      "old": 2625,
+      "new": 2979,
+      "kind": 4
+    },
+    {
+      "name": "ForcePlayStageDevReq",
+      "old": 3056,
+      "new": 2781,
+      "kind": 4
+    },
+    {
+      "name": "ForcePlayStageSequencerDevReq",
+      "old": 2145,
+      "new": 2430,
+      "kind": 4
+    },
+    {
+      "name": "ForceReleaseCatchReq",
+      "old": 2867,
+      "new": 3078,
+      "kind": 4
+    },
+    {
+      "name": "ForceReleaseCatchResultAck",
+      "old": 2614,
+      "new": 2934,
+      "kind": 1
+    },
+    {
+      "name": "FrameEventCallHyosiReq",
+      "old": 3012,
+      "new": 2501,
+      "kind": 4
+    },
+    {
+      "name": "FrameEventCallMercenaryReq",
+      "old": 2643,
+      "new": 3151,
+      "kind": 4
+    },
+    {
+      "name": "FrameEventRegistMercenaryReq",
+      "old": 2138,
+      "new": 2927,
+      "kind": 4
+    },
+    {
+      "name": "FriendlyDataListAck",
+      "old": 2437,
+      "new": 2757,
+      "kind": 1
+    },
+    {
+      "name": "GameEventGetLostDropItemAck",
+      "old": 2594,
+      "new": 2218,
+      "kind": 1
+    },
+    {
+      "name": "GameEventLostMissionImportantActorAck",
+      "old": 2556,
+      "new": 2685,
+      "kind": 1
+    },
+    {
+      "name": "GameLoadingStartReq",
+      "old": 2294,
+      "new": 2350,
+      "kind": 4
+    },
+    {
+      "name": "GameOperationDataReq",
+      "old": 3003,
+      "new": 2848,
+      "kind": 4
+    },
+    {
+      "name": "GameOptionDataAck",
+      "old": 2519,
+      "new": 2573,
+      "kind": 1
+    },
+    {
+      "name": "GameOptionDataReq",
+      "old": 2851,
+      "new": 2335,
+      "kind": 4
+    },
+    {
+      "name": "GamePlayOnceTimerProcessRepeatTimer",
+      "old": 1023,
+      "new": 1023,
+      "kind": 2147483646
+    },
+    {
+      "name": "GamePlaySaveDataRepeatTimer",
+      "old": 2011,
+      "new": 2011,
+      "kind": 4
+    },
+    {
+      "name": "GamePlayTriggerInOutReq",
+      "old": 2276,
+      "new": 2424,
+      "kind": 4
+    },
+    {
+      "name": "GamePlayTriggerInfoEnterReq",
+      "old": 2849,
+      "new": 3119,
+      "kind": 4
+    },
+    {
+      "name": "GetSkillRefundCountAck",
+      "old": 2543,
+      "new": 3122,
+      "kind": 1
+    },
+    {
+      "name": "GetSkillRefundCountReq",
+      "old": 3116,
+      "new": 2432,
+      "kind": 4
+    },
+    {
+      "name": "GimmickBranchStateReq",
+      "old": 2165,
+      "new": 2806,
+      "kind": 4
+    },
+    {
+      "name": "GimmickCatcherUpdateAck",
+      "old": 2896,
+      "new": 2824,
+      "kind": 1
+    },
+    {
+      "name": "GimmickCatcherUpdateReq",
+      "old": 2881,
+      "new": 2325,
+      "kind": 4
+    },
+    {
+      "name": "GimmickCaughtByFocusActorReq",
+      "old": 3075,
+      "new": 2466,
+      "kind": 4
+    },
+    {
+      "name": "GimmickDropEquipItemToTargetOnceTimer",
+      "old": 2093,
+      "new": 2093,
+      "kind": 2147483646
+    },
+    {
+      "name": "GimmickExecuteFrameEventReq",
+      "old": 2155,
+      "new": 2996,
+      "kind": 4
+    },
+    {
+      "name": "GimmickExecuteSummonCharacterFrameEventReq",
+      "old": 2969,
+      "new": 2594,
+      "kind": 4
+    },
+    {
+      "name": "GimmickExecuteSummonTerrainRegionAutoSpawnReq",
+      "old": 2268,
+      "new": 2809,
+      "kind": 4
+    },
+    {
+      "name": "GimmickJammedByOtherGimmickReq",
+      "old": 2645,
+      "new": 2556,
+      "kind": 4
+    },
+    {
+      "name": "GimmickLogoutLevelQuickRespawnGimmickReq",
+      "old": 2908,
+      "new": 2271,
+      "kind": 4
+    },
+    {
+      "name": "GimmickLogoutSelfByBreakReq",
+      "old": 2829,
+      "new": 2708,
+      "kind": 4
+    },
+    {
+      "name": "GimmickLogoutSelfByConcurrentSummonCompleteReq",
+      "old": 2865,
+      "new": 2212,
+      "kind": 4
+    },
+    {
+      "name": "GimmickSaveSearchDataAck",
+      "old": 2873,
+      "new": 2433,
+      "kind": 1
+    },
+    {
+      "name": "GlobalGameEventRepeatTimer",
+      "old": 2012,
+      "new": 2012,
+      "kind": 4
+    },
+    {
+      "name": "GlobalGameEventUpdateAck",
+      "old": 2411,
+      "new": 2103,
+      "kind": 1
+    },
+    {
+      "name": "GlobalGameEventUpdateVisitNpcTagListAck",
+      "old": 2956,
+      "new": 2842,
+      "kind": 1
+    },
+    {
+      "name": "GlobalGameEventVaryTradeItemPriceAck",
+      "old": 3087,
+      "new": 2451,
+      "kind": 1
+    },
+    {
+      "name": "HandleGameEventOnceTimer",
+      "old": 2057,
+      "new": 2057,
+      "kind": 2147483646
+    },
+    {
+      "name": "HeartbeatReq",
+      "old": 1008,
+      "new": 1008,
+      "kind": 2147483646
+    },
+    {
+      "name": "HeartbeatToParentRepeatTimer",
+      "old": 1019,
+      "new": 1019,
+      "kind": 2147483646
+    },
+    {
+      "name": "HideInventoryByUseItemAck",
+      "old": 3064,
+      "new": 2663,
+      "kind": 1
+    },
+    {
+      "name": "HireMercenaryFromInventoryReq",
+      "old": 2975,
+      "new": 2256,
+      "kind": 4
+    },
+    {
+      "name": "HireMercenaryToTargetReq",
+      "old": 2659,
+      "new": 2569,
+      "kind": 4
+    },
+    {
+      "name": "IncreaseWantedPriceAck",
+      "old": 2249,
+      "new": 2550,
+      "kind": 1
+    },
+    {
+      "name": "InitializeNPCScheduleAck",
+      "old": 2769,
+      "new": 2272,
+      "kind": 1
+    },
+    {
+      "name": "InitializeNpcNameSaveIndexAck",
+      "old": 2868,
+      "new": 2845,
+      "kind": 1
+    },
+    {
+      "name": "InteractionDoStepDoInteractionOnceTimer",
+      "old": 2066,
+      "new": 2066,
+      "kind": 2147483646
+    },
+    {
+      "name": "InteractionDoStepDoInteractionSuccessAck",
+      "old": 2980,
+      "new": 2160,
+      "kind": 1
+    },
+    {
+      "name": "InteractionDoStepReq",
+      "old": 3073,
+      "new": 2304,
+      "kind": 4
+    },
+    {
+      "name": "InteractionDoStepSuccessAck",
+      "old": 2794,
+      "new": 2363,
+      "kind": 1
+    },
+    {
+      "name": "InteractionPreemptionStepFailAck",
+      "old": 3100,
+      "new": 2946,
+      "kind": 1
+    },
+    {
+      "name": "InteractionPreemptionStepReq",
+      "old": 3008,
+      "new": 2642,
+      "kind": 4
+    },
+    {
+      "name": "InteractionPreemptionStepSuccessAck",
+      "old": 2120,
+      "new": 2308,
+      "kind": 1
+    },
+    {
+      "name": "InteractionResetAck",
+      "old": 2369,
+      "new": 2930,
+      "kind": 1
+    },
+    {
+      "name": "InteractionResetReq",
+      "old": 2887,
+      "new": 2751,
+      "kind": 4
+    },
+    {
+      "name": "InteractionRewardOnceTimer",
+      "old": 2044,
+      "new": 2044,
+      "kind": 2147483646
+    },
+    {
+      "name": "InvalidateCrimeRecordAck",
+      "old": 2408,
+      "new": 2398,
+      "kind": 1
+    },
+    {
+      "name": "InvalidateCrimeRecordReq",
+      "old": 2599,
+      "new": 2251,
+      "kind": 4
+    },
+    {
+      "name": "InvitePartyMemberReq",
+      "old": 2649,
+      "new": 2741,
+      "kind": 4
+    },
+    {
+      "name": "IsRemoteCatchEffectStartStateReq",
+      "old": 2814,
+      "new": 3133,
+      "kind": 4
+    },
+    {
+      "name": "ItemCatchFromInventoryOnceTimer",
+      "old": 2040,
+      "new": 2040,
+      "kind": 2147483646
+    },
+    {
+      "name": "ItemChangedInventoryDataListAck",
+      "old": 2280,
+      "new": 2355,
+      "kind": 1
+    },
+    {
+      "name": "ItemExchangeByMultiChangeInfoReq",
+      "old": 3011,
+      "new": 3077,
+      "kind": 4
+    },
+    {
+      "name": "ItemExchangeWithSelectedItemListReq",
+      "old": 2115,
+      "new": 2493,
+      "kind": 4
+    },
+    {
+      "name": "ItemSequencerEndAck",
+      "old": 2545,
+      "new": 2847,
+      "kind": 1
+    },
+    {
+      "name": "JoinGuildAck",
+      "old": 2508,
+      "new": 2578,
+      "kind": 1
+    },
+    {
+      "name": "JoinGuildReq",
+      "old": 2574,
+      "new": 2507,
+      "kind": 4
+    },
+    {
+      "name": "JoinMiniGameAck",
+      "old": 2560,
+      "new": 2920,
+      "kind": 1
+    },
+    {
+      "name": "JoinMiniGameReq",
+      "old": 2151,
+      "new": 2204,
+      "kind": 4
+    },
+    {
+      "name": "JoinPartyAck",
+      "old": 2456,
+      "new": 2531,
+      "kind": 1
+    },
+    {
+      "name": "JoinPartyOfNak",
+      "old": 2632,
+      "new": 2734,
+      "kind": 1
+    },
+    {
+      "name": "JoinPartyOfReq",
+      "old": 3034,
+      "new": 2280,
+      "kind": 4
+    },
+    {
+      "name": "JoinRoomAck",
+      "old": 2705,
+      "new": 2982,
+      "kind": 1
+    },
+    {
+      "name": "JoinRoomOnceTimer",
+      "old": 2031,
+      "new": 2031,
+      "kind": 2147483646
+    },
+    {
+      "name": "JournalDataListAck",
+      "old": 2529,
+      "new": 2581,
+      "kind": 1
+    },
+    {
+      "name": "KickGuildMemberAck",
+      "old": 2290,
+      "new": 2892,
+      "kind": 1
+    },
+    {
+      "name": "KickGuildMemberReq",
+      "old": 2759,
+      "new": 3009,
+      "kind": 4
+    },
+    {
+      "name": "KillActorByRunOutFatalRepeatTimer",
+      "old": 2007,
+      "new": 2007,
+      "kind": 2147483646
+    },
+    {
+      "name": "KillCheatReq",
+      "old": 2210,
+      "new": 2322,
+      "kind": 4
+    },
+    {
+      "name": "KillExceededFishInPondRepeatTimer",
+      "old": 2021,
+      "new": 2021,
+      "kind": 4
+    },
+    {
+      "name": "KillJammedTargetAck",
+      "old": 3037,
+      "new": 2186,
+      "kind": 1
+    },
+    {
+      "name": "KillJammedTargetReq",
+      "old": 3138,
+      "new": 2279,
+      "kind": 4
+    },
+    {
+      "name": "KillSelfOnceTimer",
+      "old": 2041,
+      "new": 2041,
+      "kind": 2147483646
+    },
+    {
+      "name": "KillWitnessAck",
+      "old": 2578,
+      "new": 3123,
+      "kind": 1
+    },
+    {
+      "name": "LargeScalePlacementAutoSpawnReq",
+      "old": 2295,
+      "new": 3015,
+      "kind": 4
+    },
+    {
+      "name": "LearnFollowingKnowledgeOnceTimer",
+      "old": 2070,
+      "new": 2070,
+      "kind": 2147483646
+    },
+    {
+      "name": "LearnKnowledgeByCheatReq",
+      "old": 2986,
+      "new": 2309,
+      "kind": 4
+    },
+    {
+      "name": "LearnKnowledgeGroupByCheatReq",
+      "old": 2848,
+      "new": 2735,
+      "kind": 4
+    },
+    {
+      "name": "LearnKnowledgeListAck",
+      "old": 2517,
+      "new": 2231,
+      "kind": 1
+    },
+    {
+      "name": "LearnSkillReq",
+      "old": 2919,
+      "new": 2151,
+      "kind": 4
+    },
+    {
+      "name": "LeaveFormationGroupAck",
+      "old": 2891,
+      "new": 2629,
+      "kind": 1
+    },
+    {
+      "name": "LeaveFormationGroupReq",
+      "old": 2405,
+      "new": 2415,
+      "kind": 4
+    },
+    {
+      "name": "LeaveGuildAck",
+      "old": 2800,
+      "new": 3162,
+      "kind": 1
+    },
+    {
+      "name": "LeaveGuildReq",
+      "old": 2484,
+      "new": 2449,
+      "kind": 4
+    },
+    {
+      "name": "LeaveMiniGameAck",
+      "old": 2961,
+      "new": 2784,
+      "kind": 1
+    },
+    {
+      "name": "LeaveMiniGameReq",
+      "old": 2379,
+      "new": 2443,
+      "kind": 4
+    },
+    {
+      "name": "LeavePartySelfReq",
+      "old": 2153,
+      "new": 2161,
+      "kind": 4
+    },
+    {
+      "name": "LeaveRoomAck",
+      "old": 2170,
+      "new": 2170,
+      "kind": 1
+    },
+    {
+      "name": "LetterBoxEnterReq",
+      "old": 2278,
+      "new": 2955,
+      "kind": 4
+    },
+    {
+      "name": "LetterBoxExitReq",
+      "old": 2681,
+      "new": 2634,
+      "kind": 4
+    },
+    {
+      "name": "LevelGimmickMapIconUpdatedAck",
+      "old": 2444,
+      "new": 2597,
+      "kind": 1
+    },
+    {
+      "name": "LevelUpByGmAck",
+      "old": 2846,
+      "new": 2482,
+      "kind": 1
+    },
+    {
+      "name": "LevelUpByGmReq",
+      "old": 2570,
+      "new": 2386,
+      "kind": 4
+    },
+    {
+      "name": "ListServerInformationAck",
+      "old": 2463,
+      "new": 2133,
+      "kind": 1
+    },
+    {
+      "name": "ListServerInformationReq",
+      "old": 2707,
+      "new": 2677,
+      "kind": 2
+    },
+    {
+      "name": "LivingTogetherCharacterCustomizationAck",
+      "old": 2710,
+      "new": 3118,
+      "kind": 1
+    },
+    {
+      "name": "LoadMercenaryStatReq",
+      "old": 2778,
+      "new": 2243,
+      "kind": 4
+    },
+    {
+      "name": "LoadingCompleteAck",
+      "old": 2190,
+      "new": 2891,
+      "kind": 1
+    },
+    {
+      "name": "LoadingCompleteReq",
+      "old": 2167,
+      "new": 2789,
+      "kind": 4
+    },
+    {
+      "name": "LoadingFieldDataAck",
+      "old": 2399,
+      "new": 2286,
+      "kind": 1
+    },
+    {
+      "name": "LoginCharacterToFieldServerReq",
+      "old": 2733,
+      "new": 3081,
+      "kind": 4
+    },
+    {
+      "name": "LoginCharacterToGameReq",
+      "old": 2715,
+      "new": 2140,
+      "kind": 4
+    },
+    {
+      "name": "LoginUserToAuthenticationServerAck",
+      "old": 2501,
+      "new": 2535,
+      "kind": 1
+    },
+    {
+      "name": "LoginUserToAuthenticationServerReq",
+      "old": 2863,
+      "new": 2219,
+      "kind": 2
+    },
+    {
+      "name": "LoginUserToFieldServerReq",
+      "old": 2535,
+      "new": 2554,
+      "kind": 4
+    },
+    {
+      "name": "LogoutActorByAIWatchdogReq",
+      "old": 2768,
+      "new": 2820,
+      "kind": 4
+    },
+    {
+      "name": "LogoutAllActorOnceTimer",
+      "old": 2068,
+      "new": 2068,
+      "kind": 2147483646
+    },
+    {
+      "name": "LogoutAttackDebugActorForDebugReq",
+      "old": 3033,
+      "new": 2782,
+      "kind": 4
+    },
+    {
+      "name": "LogoutAutoSpawnActorForDebugReq",
+      "old": 2661,
+      "new": 2455,
+      "kind": 4
+    },
+    {
+      "name": "LogoutCharacterToFieldServerAck",
+      "old": 2623,
+      "new": 3116,
+      "kind": 1
+    },
+    {
+      "name": "LogoutCharacterToFieldServerReq",
+      "old": 2687,
+      "new": 2777,
+      "kind": 4
+    },
+    {
+      "name": "LogoutReservedActorLogoutReq",
+      "old": 2194,
+      "new": 2446,
+      "kind": 4
+    },
+    {
+      "name": "LogoutSessionToServerAck",
+      "old": 2002,
+      "new": 2002,
+      "kind": 1
+    },
+    {
+      "name": "LogoutSessionToServerReq",
+      "old": 2001,
+      "new": 2001,
+      "kind": 2147483646
+    },
+    {
+      "name": "LogoutUserToServerAck",
+      "old": 2003,
+      "new": 2003,
+      "kind": 1
+    },
+    {
+      "name": "LogoutUserToServerTranReq",
+      "old": 9998,
+      "new": 9998,
+      "kind": 4
+    },
+    {
+      "name": "LookItemReq",
+      "old": 2730,
+      "new": 2245,
+      "kind": 4
+    },
+    {
+      "name": "LootDropCharacterRewardListAck",
+      "old": 2414,
+      "new": 2106,
+      "kind": 1
+    },
+    {
+      "name": "LootingDropFromDeadBodyReq",
+      "old": 2491,
+      "new": 2382,
+      "kind": 4
+    },
+    {
+      "name": "LossVehicleInventoryItemByMoveForceOnceTimer",
+      "old": 2078,
+      "new": 2078,
+      "kind": 2147483646
+    },
+    {
+      "name": "MainPlayerDataEndAck",
+      "old": 3145,
+      "new": 2508,
+      "kind": 1
+    },
+    {
+      "name": "MainPlayerDataStartAck",
+      "old": 2524,
+      "new": 2844,
+      "kind": 1
+    },
+    {
+      "name": "MainUserDataEndAck",
+      "old": 2348,
+      "new": 2192,
+      "kind": 1
+    },
+    {
+      "name": "MainUserDataStartAck",
+      "old": 3048,
+      "new": 2420,
+      "kind": 1
+    },
+    {
+      "name": "ManagementForCheatReq",
+      "old": 2424,
+      "new": 2297,
+      "kind": 4
+    },
+    {
+      "name": "ManagementLoadLevelReq",
+      "old": 2218,
+      "new": 2656,
+      "kind": 4
+    },
+    {
+      "name": "ManagementOpenReq",
+      "old": 2203,
+      "new": 2202,
+      "kind": 4
+    },
+    {
+      "name": "ManagementPushNeedsItemAck",
+      "old": 2788,
+      "new": 2831,
+      "kind": 1
+    },
+    {
+      "name": "ManagementRemoveActorAck",
+      "old": 3158,
+      "new": 2636,
+      "kind": 1
+    },
+    {
+      "name": "ManagementRentAck",
+      "old": 2412,
+      "new": 2292,
+      "kind": 1
+    },
+    {
+      "name": "ManagementRentReq",
+      "old": 2160,
+      "new": 2138,
+      "kind": 4
+    },
+    {
+      "name": "ManagementRewardedLevelUpdateAck",
+      "old": 2216,
+      "new": 2795,
+      "kind": 1
+    },
+    {
+      "name": "ManagementSetWorkerAck",
+      "old": 2281,
+      "new": 2354,
+      "kind": 1
+    },
+    {
+      "name": "ManagementSetWorkerReq",
+      "old": 3105,
+      "new": 2317,
+      "kind": 4
+    },
+    {
+      "name": "ManagementUpdateWorkerAck",
+      "old": 2252,
+      "new": 3066,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryBlockedAbilityAck",
+      "old": 2991,
+      "new": 2223,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryDataListAck",
+      "old": 2618,
+      "new": 2502,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryDeadAck",
+      "old": 2486,
+      "new": 2950,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryEquipItemAck",
+      "old": 2743,
+      "new": 2275,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryEquipItemReq",
+      "old": 3015,
+      "new": 2878,
+      "kind": 4
+    },
+    {
+      "name": "MercenaryEquipmentListAck",
+      "old": 2856,
+      "new": 2740,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryInventoryItemListAck",
+      "old": 2419,
+      "new": 2131,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryPrivateDataAck",
+      "old": 3130,
+      "new": 2115,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryUnequipItemAck",
+      "old": 2480,
+      "new": 2945,
+      "kind": 1
+    },
+    {
+      "name": "MercenaryUnequipItemReq",
+      "old": 3058,
+      "new": 2452,
+      "kind": 4
+    },
+    {
+      "name": "MeshGroupAutoSpawnReq",
+      "old": 2492,
+      "new": 2648,
+      "kind": 4
+    },
+    {
+      "name": "MiniGameRecordListAck",
+      "old": 2742,
+      "new": 2560,
+      "kind": 1
+    },
+    {
+      "name": "MiniGameResultReq",
+      "old": 2454,
+      "new": 2885,
+      "kind": 4
+    },
+    {
+      "name": "MinusItemDataListAck",
+      "old": 2998,
+      "new": 3065,
+      "kind": 1
+    },
+    {
+      "name": "MissionGaugeRatioUpdateAck",
+      "old": 2764,
+      "new": 2205,
+      "kind": 1
+    },
+    {
+      "name": "MissionTriggerInOutReq",
+      "old": 2899,
+      "new": 3106,
+      "kind": 4
+    },
+    {
+      "name": "MotionTypeChangeToDynamicReq",
+      "old": 2387,
+      "new": 3165,
+      "kind": 4
+    },
+    {
+      "name": "MoveActorAck",
+      "old": 3094,
+      "new": 3008,
+      "kind": 1
+    },
+    {
+      "name": "MoveActorReq",
+      "old": 2833,
+      "new": 2790,
+      "kind": 4
+    },
+    {
+      "name": "MoveFieldAck",
+      "old": 2653,
+      "new": 2364,
+      "kind": 1
+    },
+    {
+      "name": "MoveFieldCheatReq",
+      "old": 2126,
+      "new": 2647,
+      "kind": 4
+    },
+    {
+      "name": "MoveFieldCompleteAck",
+      "old": 2340,
+      "new": 2268,
+      "kind": 1
+    },
+    {
+      "name": "MoveFieldCompletePostAck",
+      "old": 3029,
+      "new": 2792,
+      "kind": 1
+    },
+    {
+      "name": "MoveFieldCompleteReq",
+      "old": 2471,
+      "new": 2723,
+      "kind": 4
+    },
+    {
+      "name": "MoveFieldOnceTimer",
+      "old": 2029,
+      "new": 2029,
+      "kind": 2147483646
+    },
+    {
+      "name": "MoveForceAck",
+      "old": 2641,
+      "new": 2803,
+      "kind": 1
+    },
+    {
+      "name": "MoveForceNak",
+      "old": 2590,
+      "new": 2816,
+      "kind": 1
+    },
+    {
+      "name": "MoveItemInventoryToOtherInventoryReq",
+      "old": 3111,
+      "new": 3104,
+      "kind": 4
+    },
+    {
+      "name": "MoveItemInventoryToVehicleReq",
+      "old": 3119,
+      "new": 2516,
+      "kind": 4
+    },
+    {
+      "name": "MoveItemVehicleToInventoryReq",
+      "old": 2983,
+      "new": 2825,
+      "kind": 4
+    },
+    {
+      "name": "MovePlayerByCheatReq",
+      "old": 2917,
+      "new": 2526,
+      "kind": 4
+    },
+    {
+      "name": "MoveSubLevelAck",
+      "old": 2586,
+      "new": 2936,
+      "kind": 1
+    },
+    {
+      "name": "MoveSubLevelReq",
+      "old": 2510,
+      "new": 2622,
+      "kind": 4
+    },
+    {
+      "name": "Nak",
+      "old": 1013,
+      "new": 1013,
+      "kind": 1
+    },
+    {
+      "name": "NewGameStartAck",
+      "old": 2915,
+      "new": 3152,
+      "kind": 1
+    },
+    {
+      "name": "NewGameStartReq",
+      "old": 2668,
+      "new": 2688,
+      "kind": 4
+    },
+    {
+      "name": "NormalLearnKnowledgeListAck",
+      "old": 2711,
+      "new": 2613,
+      "kind": 1
+    },
+    {
+      "name": "NotNoticeChallengeMissionKeyListAck",
+      "old": 3027,
+      "new": 2726,
+      "kind": 1
+    },
+    {
+      "name": "NotifyFamilyStateTranReq",
+      "old": 9996,
+      "new": 9996,
+      "kind": 2
+    },
+    {
+      "name": "NotifyHandleDeadAck",
+      "old": 2985,
+      "new": 2316,
+      "kind": 1
+    },
+    {
+      "name": "NotifyHandleFatalAck",
+      "old": 2225,
+      "new": 2863,
+      "kind": 1
+    },
+    {
+      "name": "NotifyHandleReviveAck",
+      "old": 3043,
+      "new": 3163,
+      "kind": 1
+    },
+    {
+      "name": "NotifyQuestSaveDataAck",
+      "old": 3140,
+      "new": 2290,
+      "kind": 1
+    },
+    {
+      "name": "NotifyStageChartConnectSuccessAck",
+      "old": 2192,
+      "new": 2536,
+      "kind": 1
+    },
+    {
+      "name": "NotifyStageChartSummonFailAck",
+      "old": 2385,
+      "new": 2469,
+      "kind": 1
+    },
+    {
+      "name": "NotifySummonCharacterAck",
+      "old": 2334,
+      "new": 3096,
+      "kind": 1
+    },
+    {
+      "name": "NotifySummonCharacterPhaseAck",
+      "old": 2684,
+      "new": 3030,
+      "kind": 1
+    },
+    {
+      "name": "NpcMaritalStateAck",
+      "old": 2786,
+      "new": 2780,
+      "kind": 1
+    },
+    {
+      "name": "NpcPushInventoryOnceTimer",
+      "old": 2053,
+      "new": 2053,
+      "kind": 2147483646
+    },
+    {
+      "name": "OnAirFinishProjectileReq",
+      "old": 2988,
+      "new": 2518,
+      "kind": 4
+    },
+    {
+      "name": "OnBoundFinishProjectileReq",
+      "old": 2675,
+      "new": 2682,
+      "kind": 4
+    },
+    {
+      "name": "OnBoundProjectileReq",
+      "old": 2948,
+      "new": 3012,
+      "kind": 4
+    },
+    {
+      "name": "OnClosedRoadLogoutReq",
+      "old": 3095,
+      "new": 2888,
+      "kind": 4
+    },
+    {
+      "name": "OnConnectToServerReq",
+      "old": 1005,
+      "new": 1005,
+      "kind": 2147483646
+    },
+    {
+      "name": "OnCreateManagementNeedsItemAck",
+      "old": 3151,
+      "new": 2834,
+      "kind": 1
+    },
+    {
+      "name": "OnDeflectionProjectileReq",
+      "old": 2573,
+      "new": 2769,
+      "kind": 4
+    },
+    {
+      "name": "OnDemandDockingGimmickSpawnReq",
+      "old": 2333,
+      "new": 2419,
+      "kind": 4
+    },
+    {
+      "name": "OnDemandDockingGimmickUnspawnReq",
+      "old": 2378,
+      "new": 2660,
+      "kind": 4
+    },
+    {
+      "name": "OnDemandEquipDockingGimmickSpawnReq",
+      "old": 2288,
+      "new": 2445,
+      "kind": 4
+    },
+    {
+      "name": "OnDemandEquipDockingGimmickUnspawnReq",
+      "old": 2746,
+      "new": 2754,
+      "kind": 4
+    },
+    {
+      "name": "OnDisconnectToServerReq",
+      "old": 1006,
+      "new": 1006,
+      "kind": 2147483646
+    },
+    {
+      "name": "OnFailedToCreateProjectileReq",
+      "old": 2201,
+      "new": 2178,
+      "kind": 4
+    },
+    {
+      "name": "OnHitEventSuccessAck",
+      "old": 2799,
+      "new": 2291,
+      "kind": 1
+    },
+    {
+      "name": "OnHitGroundProjectileReq",
+      "old": 3103,
+      "new": 2746,
+      "kind": 4
+    },
+    {
+      "name": "OnHitProjectileReq",
+      "old": 2860,
+      "new": 2118,
+      "kind": 4
+    },
+    {
+      "name": "OnHitWaterProjectileReq",
+      "old": 2577,
+      "new": 3097,
+      "kind": 4
+    },
+    {
+      "name": "OnLogoutXxxToServerReq",
+      "old": 2004,
+      "new": 2004,
+      "kind": 2147483646
+    },
+    {
+      "name": "OnPostBuffDamagedAck",
+      "old": 2994,
+      "new": 2521,
+      "kind": 1
+    },
+    {
+      "name": "OnReflectProjectileReq",
+      "old": 2537,
+      "new": 2676,
+      "kind": 4
+    },
+    {
+      "name": "OnTimerProjectileReq",
+      "old": 3104,
+      "new": 2196,
+      "kind": 4
+    },
+    {
+      "name": "OnceTimer_DelayCallAIEvent",
+      "old": 2037,
+      "new": 2037,
+      "kind": 2147483646
+    },
+    {
+      "name": "OnceTimer_UpdateServerAIChart",
+      "old": 2036,
+      "new": 2036,
+      "kind": 2147483646
+    },
+    {
+      "name": "OpenPartyAck",
+      "old": 2149,
+      "new": 3001,
+      "kind": 1
+    },
+    {
+      "name": "OpenPartyReq",
+      "old": 3125,
+      "new": 2992,
+      "kind": 4
+    },
+    {
+      "name": "OperationEndAck",
+      "old": 2114,
+      "new": 2113,
+      "kind": 1
+    },
+    {
+      "name": "OperationEndReq",
+      "old": 3002,
+      "new": 2707,
+      "kind": 4
+    },
+    {
+      "name": "OperationReadyForCompleteAck",
+      "old": 2762,
+      "new": 2893,
+      "kind": 1
+    },
+    {
+      "name": "OperationStartAck",
+      "old": 2215,
+      "new": 2248,
+      "kind": 1
+    },
+    {
+      "name": "OperationStartReq",
+      "old": 2602,
+      "new": 2933,
+      "kind": 4
+    },
+    {
+      "name": "OperationStateChangedAck",
+      "old": 2761,
+      "new": 2444,
+      "kind": 1
+    },
+    {
+      "name": "OtherEquipItemAck",
+      "old": 3136,
+      "new": 2426,
+      "kind": 1
+    },
+    {
+      "name": "OtherUnequipItemAck",
+      "old": 2651,
+      "new": 2565,
+      "kind": 1
+    },
+    {
+      "name": "OverriedOwnershipStateTypeyAck",
+      "old": 3146,
+      "new": 2850,
+      "kind": 1
+    },
+    {
+      "name": "PendGameEventListRefreshAck",
+      "old": 2726,
+      "new": 2753,
+      "kind": 1
+    },
+    {
+      "name": "PendGameEventListReq",
+      "old": 2695,
+      "new": 2541,
+      "kind": 4
+    },
+    {
+      "name": "PlaceHousingItemAck",
+      "old": 2179,
+      "new": 2739,
+      "kind": 1
+    },
+    {
+      "name": "PlaceHousingItemNak",
+      "old": 2738,
+      "new": 2500,
+      "kind": 1
+    },
+    {
+      "name": "PlaceHousingItemReq",
+      "old": 2550,
+      "new": 2400,
+      "kind": 4
+    },
+    {
+      "name": "PlayAllPreLoadSequencerAck",
+      "old": 2384,
+      "new": 2941,
+      "kind": 1
+    },
+    {
+      "name": "PlayerLookAtGimmickReq",
+      "old": 2607,
+      "new": 2628,
+      "kind": 4
+    },
+    {
+      "name": "PopSocketItemToEquipSlotAck",
+      "old": 2584,
+      "new": 2377,
+      "kind": 1
+    },
+    {
+      "name": "PopSocketItemToEquipSlotReq",
+      "old": 2233,
+      "new": 3110,
+      "kind": 4
+    },
+    {
+      "name": "PopSocketItemToInventoryAck",
+      "old": 2474,
+      "new": 2917,
+      "kind": 1
+    },
+    {
+      "name": "PopSocketItemToInventoryReq",
+      "old": 2287,
+      "new": 2970,
+      "kind": 4
+    },
+    {
+      "name": "PostProcessAttackResult_AttackTargetAck",
+      "old": 2791,
+      "new": 2519,
+      "kind": 1
+    },
+    {
+      "name": "PostProcessAttackResult_AttackTarget_SkillAck",
+      "old": 2329,
+      "new": 3090,
+      "kind": 1
+    },
+    {
+      "name": "PostProcessAttackResult_AttackerAck",
+      "old": 2181,
+      "new": 2537,
+      "kind": 1
+    },
+    {
+      "name": "PreLoadSequencerReq",
+      "old": 2939,
+      "new": 2372,
+      "kind": 4
+    },
+    {
+      "name": "PreemptActionPointAck",
+      "old": 3057,
+      "new": 2527,
+      "kind": 1
+    },
+    {
+      "name": "PreemptActionPointReq",
+      "old": 2648,
+      "new": 2829,
+      "kind": 4
+    },
+    {
+      "name": "PrepareEntitlementConsumeAck",
+      "old": 2398,
+      "new": 2643,
+      "kind": 1
+    },
+    {
+      "name": "PrepareEntitlementConsumeReq",
+      "old": 3106,
+      "new": 2999,
+      "kind": 4
+    },
+    {
+      "name": "PrepareSequencerAck",
+      "old": 2380,
+      "new": 2356,
+      "kind": 1
+    },
+    {
+      "name": "PrivateActorMoveAck",
+      "old": 2253,
+      "new": 2211,
+      "kind": 1
+    },
+    {
+      "name": "ProcessAfterBeginFrameEventReq",
+      "old": 2410,
+      "new": 2990,
+      "kind": 4
+    },
+    {
+      "name": "ProcessCallHyosiOnceTimer",
+      "old": 2034,
+      "new": 2034,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessCallMercenaryOnceTimer",
+      "old": 2033,
+      "new": 2033,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessConsumeSpawnerMercenaryOnceTimer",
+      "old": 2084,
+      "new": 2084,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessDropByDeadBodyVehicleOnceTimer",
+      "old": 2071,
+      "new": 2071,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessDropDefaultMercenaryOnceTimer",
+      "old": 2065,
+      "new": 2065,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessFallReq",
+      "old": 3107,
+      "new": 3002,
+      "kind": 4
+    },
+    {
+      "name": "ProcessFireMercenaryOnceTimer",
+      "old": 2035,
+      "new": 2035,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessGrowMercenaryByInteractionOnceTimer",
+      "old": 2085,
+      "new": 2085,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessLootingDeadDropOnceTimer",
+      "old": 2026,
+      "new": 2026,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessPickUpItemOnceTimer",
+      "old": 2062,
+      "new": 2062,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessRegistMercenaryOnceTimer",
+      "old": 2064,
+      "new": 2064,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessSubLevelIncreaseExperienceOnceTimer",
+      "old": 2069,
+      "new": 2069,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessUnspawnMercenaryOnceTimer",
+      "old": 2063,
+      "new": 2063,
+      "kind": 2147483646
+    },
+    {
+      "name": "ProcessUseItemOpenUIAck",
+      "old": 2960,
+      "new": 3029,
+      "kind": 1
+    },
+    {
+      "name": "PropagateNodeAck",
+      "old": 2489,
+      "new": 2901,
+      "kind": 1
+    },
+    {
+      "name": "PropagateNodeReq",
+      "old": 2141,
+      "new": 2749,
+      "kind": 4
+    },
+    {
+      "name": "PushAlertHistoryReq",
+      "old": 2236,
+      "new": 2459,
+      "kind": 4
+    },
+    {
+      "name": "PushCharacterToEquipmentOnceTimer",
+      "old": 2055,
+      "new": 2055,
+      "kind": 2147483646
+    },
+    {
+      "name": "PushCharacterToInventoryOnceTimer",
+      "old": 2052,
+      "new": 2052,
+      "kind": 2147483646
+    },
+    {
+      "name": "PushCharacterToInventoryReq",
+      "old": 2702,
+      "new": 2653,
+      "kind": 4
+    },
+    {
+      "name": "PushEntitlementItemReq",
+      "old": 2429,
+      "new": 2488,
+      "kind": 4
+    },
+    {
+      "name": "PushHousingObjectToInventoryAck",
+      "old": 2260,
+      "new": 2101,
+      "kind": 1
+    },
+    {
+      "name": "PushHousingObjectToInventoryNak",
+      "old": 2982,
+      "new": 2467,
+      "kind": 1
+    },
+    {
+      "name": "PushHousingObjectToInventoryReq",
+      "old": 2728,
+      "new": 2822,
+      "kind": 4
+    },
+    {
+      "name": "PushKnowledgeByGimmickEventHandlerOnceTimer",
+      "old": 2051,
+      "new": 2051,
+      "kind": 2147483646
+    },
+    {
+      "name": "PushKnowledgeOnceTimer",
+      "old": 2043,
+      "new": 2043,
+      "kind": 2147483646
+    },
+    {
+      "name": "PushMiniGameRewardReq",
+      "old": 2807,
+      "new": 3148,
+      "kind": 4
+    },
+    {
+      "name": "PushRewardFromCurrentNPCActivityTaskReq",
+      "old": 2267,
+      "new": 2221,
+      "kind": 4
+    },
+    {
+      "name": "PushRewardToPlayerOnceTimer",
+      "old": 2067,
+      "new": 2067,
+      "kind": 2147483646
+    },
+    {
+      "name": "PushSocketItemToEquipSlotAck",
+      "old": 2933,
+      "new": 2329,
+      "kind": 1
+    },
+    {
+      "name": "PushSocketItemToEquipSlotReq",
+      "old": 2488,
+      "new": 3021,
+      "kind": 4
+    },
+    {
+      "name": "PushSocketItemToInventoryAck",
+      "old": 2124,
+      "new": 2249,
+      "kind": 1
+    },
+    {
+      "name": "PushSocketItemToInventoryReq",
+      "old": 2220,
+      "new": 2621,
+      "kind": 4
+    },
+    {
+      "name": "PushTargetHousingGimmickToInventoryReq",
+      "old": 2721,
+      "new": 2823,
+      "kind": 4
+    },
+    {
+      "name": "PushTargetToInventoryByFrameEventFailAck",
+      "old": 2439,
+      "new": 2995,
+      "kind": 1
+    },
+    {
+      "name": "QuestDialogEndReq",
+      "old": 2223,
+      "new": 3142,
+      "kind": 4
+    },
+    {
+      "name": "QuestDialogInterrogationAnswerCompleteReq",
+      "old": 2882,
+      "new": 2260,
+      "kind": 4
+    },
+    {
+      "name": "QuickReviveMercenaryAck",
+      "old": 3013,
+      "new": 2117,
+      "kind": 1
+    },
+    {
+      "name": "QuickReviveMercenaryReq",
+      "old": 2365,
+      "new": 3125,
+      "kind": 4
+    },
+    {
+      "name": "ReadyBossRushAck",
+      "old": 2789,
+      "new": 2540,
+      "kind": 1
+    },
+    {
+      "name": "ReadyBossRushReq",
+      "old": 2827,
+      "new": 3076,
+      "kind": 4
+    },
+    {
+      "name": "RecallAllHousingGimmickAck",
+      "old": 2184,
+      "new": 2199,
+      "kind": 1
+    },
+    {
+      "name": "RecallAllHousingGimmickReq",
+      "old": 2168,
+      "new": 3147,
+      "kind": 4
+    },
+    {
+      "name": "RecoverEquipDockingGimmickItemCoolTimeAck",
+      "old": 2204,
+      "new": 2931,
+      "kind": 1
+    },
+    {
+      "name": "RecoverLostImportantItemListOnLoginAck",
+      "old": 3132,
+      "new": 2657,
+      "kind": 1
+    },
+    {
+      "name": "RecoveryActorForMiniGameReq",
+      "old": 2812,
+      "new": 2162,
+      "kind": 4
+    },
+    {
+      "name": "RecoveryMercenaryAck",
+      "old": 2109,
+      "new": 2785,
+      "kind": 1
+    },
+    {
+      "name": "RecoveryMercenaryReq",
+      "old": 2299,
+      "new": 2837,
+      "kind": 4
+    },
+    {
+      "name": "RefreshEnableItemAck",
+      "old": 2137,
+      "new": 2852,
+      "kind": 1
+    },
+    {
+      "name": "RefreshEnableItemReq",
+      "old": 2725,
+      "new": 2293,
+      "kind": 4
+    },
+    {
+      "name": "RefreshKnowledgeSkillNewMarkAck",
+      "old": 3039,
+      "new": 2919,
+      "kind": 1
+    },
+    {
+      "name": "RefreshMercenaryDataAck",
+      "old": 2164,
+      "new": 2902,
+      "kind": 1
+    },
+    {
+      "name": "RefreshMiniGameBanDataAck",
+      "old": 3144,
+      "new": 2631,
+      "kind": 1
+    },
+    {
+      "name": "RefreshServerInformationTranReq",
+      "old": 9997,
+      "new": 9997,
+      "kind": 2
+    },
+    {
+      "name": "RefreshSkillPointAck",
+      "old": 3122,
+      "new": 2570,
+      "kind": 1
+    },
+    {
+      "name": "RefreshSoldItemListReq",
+      "old": 2637,
+      "new": 2098,
+      "kind": 4
+    },
+    {
+      "name": "RefreshUIFilterGroupDataListAck",
+      "old": 2656,
+      "new": 3088,
+      "kind": 1
+    },
+    {
+      "name": "RefreshUIFilterGroupDataReq",
+      "old": 2269,
+      "new": 3054,
+      "kind": 4
+    },
+    {
+      "name": "RegionInOutReq",
+      "old": 2539,
+      "new": 3140,
+      "kind": 4
+    },
+    {
+      "name": "RegistNotNoticeChallengeMissionAck",
+      "old": 2855,
+      "new": 3043,
+      "kind": 1
+    },
+    {
+      "name": "RegistNotNoticeChallengeMissionReq",
+      "old": 2922,
+      "new": 2986,
+      "kind": 4
+    },
+    {
+      "name": "RegistPlayGuideListAck",
+      "old": 2367,
+      "new": 2494,
+      "kind": 1
+    },
+    {
+      "name": "RegistPlayGuideListReq",
+      "old": 2314,
+      "new": 2135,
+      "kind": 4
+    },
+    {
+      "name": "RegistQuestGaugeAck",
+      "old": 3038,
+      "new": 3131,
+      "kind": 1
+    },
+    {
+      "name": "RegisterGlobalStageSequencerReq",
+      "old": 2255,
+      "new": 2817,
+      "kind": 4
+    },
+    {
+      "name": "RegisterLoadGimmickFromActorImpulseNak",
+      "old": 2717,
+      "new": 2975,
+      "kind": 1
+    },
+    {
+      "name": "RegisterLoadGimmickFromActorImpulseReq",
+      "old": 2311,
+      "new": 2230,
+      "kind": 4
+    },
+    {
+      "name": "RegisterLoadGimmickFromStageGimmickEventNak",
+      "old": 2302,
+      "new": 2826,
+      "kind": 1
+    },
+    {
+      "name": "RegisterLoadGimmickFromStageGimmickEventReq",
+      "old": 2327,
+      "new": 3089,
+      "kind": 4
+    },
+    {
+      "name": "RegisterSpawnDistanceByExternalReq",
+      "old": 2303,
+      "new": 2438,
+      "kind": 4
+    },
+    {
+      "name": "RegisterVisitZoneAck",
+      "old": 2564,
+      "new": 2510,
+      "kind": 1
+    },
+    {
+      "name": "RegisterVisitZoneReq",
+      "old": 2879,
+      "new": 2435,
+      "kind": 4
+    },
+    {
+      "name": "ReleaseActionPointReq",
+      "old": 2199,
+      "new": 3007,
+      "kind": 4
+    },
+    {
+      "name": "ReleaseActionRestrictionAck",
+      "old": 3120,
+      "new": 2897,
+      "kind": 1
+    },
+    {
+      "name": "ReleaseBreakableBigDebrisBodyNavigationObstacleReq",
+      "old": 2842,
+      "new": 2577,
+      "kind": 4
+    },
+    {
+      "name": "ReleaseCatchResultAck",
+      "old": 2237,
+      "new": 2538,
+      "kind": 1
+    },
+    {
+      "name": "ReleaseRemoteCatchResultAck",
+      "old": 2464,
+      "new": 3041,
+      "kind": 1
+    },
+    {
+      "name": "ReloadGimmickCheatAck",
+      "old": 2257,
+      "new": 2667,
+      "kind": 1
+    },
+    {
+      "name": "ReloadStageStartReq",
+      "old": 3074,
+      "new": 3018,
+      "kind": 4
+    },
+    {
+      "name": "RemoteCatchResultAck",
+      "old": 2395,
+      "new": 2701,
+      "kind": 1
+    },
+    {
+      "name": "RemoteCatchSealInReq",
+      "old": 2722,
+      "new": 3022,
+      "kind": 4
+    },
+    {
+      "name": "RemoteCatchSealOutReq",
+      "old": 2134,
+      "new": 2697,
+      "kind": 4
+    },
+    {
+      "name": "RemoteCatchTransmutationResultAck",
+      "old": 2117,
+      "new": 2673,
+      "kind": 1
+    },
+    {
+      "name": "RemoveActorAck",
+      "old": 3067,
+      "new": 3037,
+      "kind": 1
+    },
+    {
+      "name": "RemoveAllConstraintsReq",
+      "old": 2603,
+      "new": 3064,
+      "kind": 4
+    },
+    {
+      "name": "RemoveExperienceAck",
+      "old": 2781,
+      "new": 2998,
+      "kind": 1
+    },
+    {
+      "name": "RemoveHousingGimmickAck",
+      "old": 2158,
+      "new": 2988,
+      "kind": 1
+    },
+    {
+      "name": "RemoveHousingPlacedFieldGimmickSaveKeyListAck",
+      "old": 2805,
+      "new": 3139,
+      "kind": 1
+    },
+    {
+      "name": "RemoveHyosiMercenaryReq",
+      "old": 2472,
+      "new": 2598,
+      "kind": 4
+    },
+    {
+      "name": "RemoveItemToInventoryAck",
+      "old": 2421,
+      "new": 2232,
+      "kind": 1
+    },
+    {
+      "name": "RemoveItemToInventoryReq",
+      "old": 2331,
+      "new": 2146,
+      "kind": 4
+    },
+    {
+      "name": "RemoveKnowledgeAck",
+      "old": 2678,
+      "new": 2437,
+      "kind": 1
+    },
+    {
+      "name": "RemoveKnowledgeByCheatReq",
+      "old": 2370,
+      "new": 2340,
+      "kind": 4
+    },
+    {
+      "name": "RemoveLootableAck",
+      "old": 3066,
+      "new": 2347,
+      "kind": 1
+    },
+    {
+      "name": "RemovePendGameEventListReq",
+      "old": 2581,
+      "new": 2991,
+      "kind": 4
+    },
+    {
+      "name": "RemovePinMarkerAck",
+      "old": 2376,
+      "new": 2579,
+      "kind": 1
+    },
+    {
+      "name": "RemovePinMarkerReq",
+      "old": 2346,
+      "new": 2994,
+      "kind": 4
+    },
+    {
+      "name": "RemoveProjectileAck",
+      "old": 3112,
+      "new": 3157,
+      "kind": 1
+    },
+    {
+      "name": "RemoveProjectileReq",
+      "old": 2549,
+      "new": 2320,
+      "kind": 4
+    },
+    {
+      "name": "RemoveTerrainRegionVoxelSpawnAck",
+      "old": 2273,
+      "new": 3017,
+      "kind": 1
+    },
+    {
+      "name": "RemoveVisualEqiupItemAck",
+      "old": 2861,
+      "new": 2758,
+      "kind": 1
+    },
+    {
+      "name": "ReorderItemFromStoreReq",
+      "old": 2402,
+      "new": 2142,
+      "kind": 4
+    },
+    {
+      "name": "RepairItemAllReq",
+      "old": 3089,
+      "new": 2330,
+      "kind": 4
+    },
+    {
+      "name": "RepairItemToEquipSlotAck",
+      "old": 2595,
+      "new": 2539,
+      "kind": 1
+    },
+    {
+      "name": "RepairItemToEquipSlotReq",
+      "old": 2274,
+      "new": 2687,
+      "kind": 4
+    },
+    {
+      "name": "RepairItemToInventoryAck",
+      "old": 2698,
+      "new": 3149,
+      "kind": 1
+    },
+    {
+      "name": "RepairItemToInventoryReq",
+      "old": 2354,
+      "new": 2411,
+      "kind": 4
+    },
+    {
+      "name": "RepeatSubMissionListAck",
+      "old": 2944,
+      "new": 2595,
+      "kind": 1
+    },
+    {
+      "name": "ReportFromViewerReq",
+      "old": 2905,
+      "new": 3114,
+      "kind": 4
+    },
+    {
+      "name": "ReportGimmickDropableCheckResultReq",
+      "old": 2942,
+      "new": 2980,
+      "kind": 4
+    },
+    {
+      "name": "ReportStealthReq",
+      "old": 2902,
+      "new": 2434,
+      "kind": 4
+    },
+    {
+      "name": "RequestDelayedEquipmentInOutAck",
+      "old": 2693,
+      "new": 2650,
+      "kind": 1
+    },
+    {
+      "name": "RequestDischargeMercenaryBySellReq",
+      "old": 2756,
+      "new": 3045,
+      "kind": 4
+    },
+    {
+      "name": "RequestDischargeMercenaryForCheatReq",
+      "old": 2144,
+      "new": 2343,
+      "kind": 4
+    },
+    {
+      "name": "RequestFallFailedAck",
+      "old": 2284,
+      "new": 2699,
+      "kind": 1
+    },
+    {
+      "name": "RequestHireMercenaryForCheatReq",
+      "old": 3135,
+      "new": 2921,
+      "kind": 4
+    },
+    {
+      "name": "RequestMoveItemInternalReq",
+      "old": 2771,
+      "new": 2301,
+      "kind": 4
+    },
+    {
+      "name": "RequestQuickTimeEventResultReq",
+      "old": 2356,
+      "new": 3101,
+      "kind": 4
+    },
+    {
+      "name": "RequestSwitchMercenarySummonStateReq",
+      "old": 2197,
+      "new": 2854,
+      "kind": 4
+    },
+    {
+      "name": "ResearchCompleteAck",
+      "old": 2582,
+      "new": 2097,
+      "kind": 1
+    },
+    {
+      "name": "ResearchCompleteReq",
+      "old": 2548,
+      "new": 2179,
+      "kind": 4
+    },
+    {
+      "name": "ResearchStartAck",
+      "old": 2749,
+      "new": 2916,
+      "kind": 1
+    },
+    {
+      "name": "ResearchStartReq",
+      "old": 2723,
+      "new": 2387,
+      "kind": 4
+    },
+    {
+      "name": "ReserveClearCriminalActionAck",
+      "old": 3026,
+      "new": 2208,
+      "kind": 1
+    },
+    {
+      "name": "ReserveSchedulePointAck",
+      "old": 2504,
+      "new": 2448,
+      "kind": 1
+    },
+    {
+      "name": "ReserveShutDownServerReq",
+      "old": 2748,
+      "new": 2447,
+      "kind": 2147483646
+    },
+    {
+      "name": "ReserveSummonAndRideAck",
+      "old": 3128,
+      "new": 2958,
+      "kind": 1
+    },
+    {
+      "name": "ReserveToChangeEquipFromQuickSlotAck",
+      "old": 2358,
+      "new": 2552,
+      "kind": 1
+    },
+    {
+      "name": "ReserveToChangeEquipFromQuickSlotReq",
+      "old": 2435,
+      "new": 2276,
+      "kind": 4
+    },
+    {
+      "name": "ResetAiAck",
+      "old": 2841,
+      "new": 2915,
+      "kind": 1
+    },
+    {
+      "name": "ResetFactionDeliveryCoolTimeReq",
+      "old": 2206,
+      "new": 3049,
+      "kind": 4
+    },
+    {
+      "name": "ResetFogDataByCheatAck",
+      "old": 3083,
+      "new": 2798,
+      "kind": 1
+    },
+    {
+      "name": "ResetFogDataByCheatReq",
+      "old": 2371,
+      "new": 2580,
+      "kind": 4
+    },
+    {
+      "name": "ResetFriendlyCheatAck",
+      "old": 2409,
+      "new": 2344,
+      "kind": 1
+    },
+    {
+      "name": "ResetFriendlyCheatReq",
+      "old": 2558,
+      "new": 3100,
+      "kind": 4
+    },
+    {
+      "name": "ResetGameAdviceCheatReq",
+      "old": 2627,
+      "new": 2954,
+      "kind": 4
+    },
+    {
+      "name": "ResetHistoryByCheatReq",
+      "old": 2826,
+      "new": 2497,
+      "kind": 4
+    },
+    {
+      "name": "ResetImporantGimmickCompleteAck",
+      "old": 2261,
+      "new": 3006,
+      "kind": 1
+    },
+    {
+      "name": "ResetImportantGimmickReq",
+      "old": 2777,
+      "new": 2909,
+      "kind": 4
+    },
+    {
+      "name": "ResetKnowledgeLearnDelayDataAck",
+      "old": 2801,
+      "new": 2100,
+      "kind": 1
+    },
+    {
+      "name": "ResetMissionStartAck",
+      "old": 2296,
+      "new": 3016,
+      "kind": 1
+    },
+    {
+      "name": "ResetNearWitnessCrimeCountAck",
+      "old": 2673,
+      "new": 2574,
+      "kind": 1
+    },
+    {
+      "name": "ResetQuestByCheatAck",
+      "old": 2154,
+      "new": 3053,
+      "kind": 1
+    },
+    {
+      "name": "ResetQuestByCheatReq",
+      "old": 2967,
+      "new": 2511,
+      "kind": 4
+    },
+    {
+      "name": "ResetSkillsAck",
+      "old": 3091,
+      "new": 2614,
+      "kind": 1
+    },
+    {
+      "name": "ResetSkillsIfPossibleReq",
+      "old": 2741,
+      "new": 2166,
+      "kind": 4
+    },
+    {
+      "name": "ResetSpawnDistanceByExternalReq",
+      "old": 2674,
+      "new": 2589,
+      "kind": 4
+    },
+    {
+      "name": "ResetSubLevelReq",
+      "old": 2719,
+      "new": 2163,
+      "kind": 4
+    },
+    {
+      "name": "ResetSubLevelToArtifactReq",
+      "old": 2116,
+      "new": 3126,
+      "kind": 4
+    },
+    {
+      "name": "ResetSyncSceneObjectAck",
+      "old": 2745,
+      "new": 2907,
+      "kind": 1
+    },
+    {
+      "name": "ResolveDurtyFlagRepeatTimer",
+      "old": 2006,
+      "new": 2006,
+      "kind": 2147483646
+    },
+    {
+      "name": "ResponseHiredMercenarySupplyDetailAck",
+      "old": 2336,
+      "new": 2311,
+      "kind": 1
+    },
+    {
+      "name": "ResponseHiredMercenaryToTargetAck",
+      "old": 2901,
+      "new": 2498,
+      "kind": 1
+    },
+    {
+      "name": "ResyncSyncSceneObjectDataForReloadAck",
+      "old": 2589,
+      "new": 2881,
+      "kind": 1
+    },
+    {
+      "name": "ResyncSyncSceneObjectDataForReloadReq",
+      "old": 2319,
+      "new": 2623,
+      "kind": 4
+    },
+    {
+      "name": "RetrievalAbyssArtifactOnceTimer",
+      "old": 2087,
+      "new": 2087,
+      "kind": 2147483646
+    },
+    {
+      "name": "RetryStageEndAck",
+      "old": 2906,
+      "new": 2736,
+      "kind": 1
+    },
+    {
+      "name": "ReviveAck",
+      "old": 3053,
+      "new": 2158,
+      "kind": 1
+    },
+    {
+      "name": "ReviveLoadingAck",
+      "old": 2352,
+      "new": 2544,
+      "kind": 1
+    },
+    {
+      "name": "ReviveLoadingFailAck",
+      "old": 2241,
+      "new": 2737,
+      "kind": 1
+    },
+    {
+      "name": "ReviveLoadingReq",
+      "old": 2390,
+      "new": 2887,
+      "kind": 4
+    },
+    {
+      "name": "ReviveLoadingStartAck",
+      "old": 3137,
+      "new": 2681,
+      "kind": 1
+    },
+    {
+      "name": "ReviveLoadingStartReq",
+      "old": 3139,
+      "new": 2972,
+      "kind": 4
+    },
+    {
+      "name": "ReviveReq",
+      "old": 2957,
+      "new": 2869,
+      "kind": 4
+    },
+    {
+      "name": "RewardAfterRelationalDialogReq",
+      "old": 2446,
+      "new": 2666,
+      "kind": 4
+    },
+    {
+      "name": "RideOffByServerAck",
+      "old": 2945,
+      "new": 2969,
+      "kind": 1
+    },
+    {
+      "name": "RideOnVehicleReq",
+      "old": 2566,
+      "new": 2240,
+      "kind": 4
+    },
+    {
+      "name": "RotateActorAck",
+      "old": 3078,
+      "new": 2664,
+      "kind": 1
+    },
+    {
+      "name": "RotateActorReq",
+      "old": 2852,
+      "new": 2296,
+      "kind": 4
+    },
+    {
+      "name": "RoyalSupplyDataListAck",
+      "old": 2665,
+      "new": 3154,
+      "kind": 1
+    },
+    {
+      "name": "SaveAutoReq",
+      "old": 3134,
+      "new": 2234,
+      "kind": 4
+    },
+    {
+      "name": "SaveCharacterCustomizationReq",
+      "old": 2600,
+      "new": 2616,
+      "kind": 4
+    },
+    {
+      "name": "SaveDataSlotRefreshAck",
+      "old": 2611,
+      "new": 2373,
+      "kind": 1
+    },
+    {
+      "name": "SaveDataSlotRefreshReq",
+      "old": 2250,
+      "new": 3005,
+      "kind": 4
+    },
+    {
+      "name": "SaveGameDataAutoTimer",
+      "old": 2082,
+      "new": 2082,
+      "kind": 2147483646
+    },
+    {
+      "name": "SaveHousingWaitGimmickReq",
+      "old": 2803,
+      "new": 2528,
+      "kind": 4
+    },
+    {
+      "name": "SaveLivingTogetherCharacterCustomizationReq",
+      "old": 2544,
+      "new": 2877,
+      "kind": 4
+    },
+    {
+      "name": "SaveTargetFieldGimmickSaveDataForDevReq",
+      "old": 2635,
+      "new": 2765,
+      "kind": 4
+    },
+    {
+      "name": "SaveToFileCurrentPlayerAck",
+      "old": 2966,
+      "new": 2813,
+      "kind": 1
+    },
+    {
+      "name": "SaveToFileCurrentPlayerReq",
+      "old": 2122,
+      "new": 3158,
+      "kind": 4
+    },
+    {
+      "name": "SceneLevelLoadCompleteSyncSceneObjectListReq",
+      "old": 2713,
+      "new": 2720,
+      "kind": 4
+    },
+    {
+      "name": "SceneLevelOnDemandGimmickSpawnReq",
+      "old": 2976,
+      "new": 2772,
+      "kind": 4
+    },
+    {
+      "name": "SceneLevelOnDemandGimmickUnspawnReq",
+      "old": 2596,
+      "new": 2738,
+      "kind": 4
+    },
+    {
+      "name": "SceneLevelUnloadReq",
+      "old": 2449,
+      "new": 2948,
+      "kind": 4
+    },
+    {
+      "name": "ScheduleStageClosedAck",
+      "old": 2551,
+      "new": 2504,
+      "kind": 1
+    },
+    {
+      "name": "ScopeSenderAck",
+      "old": 2046,
+      "new": 2046,
+      "kind": 1
+    },
+    {
+      "name": "SealGimmickCompleteReq",
+      "old": 2235,
+      "new": 2408,
+      "kind": 4
+    },
+    {
+      "name": "SealTargetToInventoryOnceTimer",
+      "old": 2054,
+      "new": 2054,
+      "kind": 2147483646
+    },
+    {
+      "name": "SearchGuildAck",
+      "old": 2320,
+      "new": 2632,
+      "kind": 1
+    },
+    {
+      "name": "SearchGuildReq",
+      "old": 2282,
+      "new": 2882,
+      "kind": 4
+    },
+    {
+      "name": "SelectMercenarySpawnReq",
+      "old": 2798,
+      "new": 2719,
+      "kind": 4
+    },
+    {
+      "name": "SellHousingGimmickToItemStoreReq",
+      "old": 2696,
+      "new": 2692,
+      "kind": 4
+    },
+    {
+      "name": "SellItemToItemStoreReq",
+      "old": 3109,
+      "new": 2668,
+      "kind": 4
+    },
+    {
+      "name": "SellMercenaryListReq",
+      "old": 2875,
+      "new": 2397,
+      "kind": 4
+    },
+    {
+      "name": "SellVehicleCarriedAnimalAck",
+      "old": 2337,
+      "new": 2619,
+      "kind": 1
+    },
+    {
+      "name": "SellVehicleCarriedAnimalReq",
+      "old": 2350,
+      "new": 3120,
+      "kind": 4
+    },
+    {
+      "name": "SendChatAck",
+      "old": 2245,
+      "new": 2646,
+      "kind": 1
+    },
+    {
+      "name": "SendChatOnlyFieldReq",
+      "old": 2927,
+      "new": 2201,
+      "kind": 4
+    },
+    {
+      "name": "SendChatTranReq",
+      "old": 9999,
+      "new": 9999,
+      "kind": 4
+    },
+    {
+      "name": "SendGameEventUIReq",
+      "old": 3159,
+      "new": 2602,
+      "kind": 4
+    },
+    {
+      "name": "SendSkillPointDataListAck",
+      "old": 2277,
+      "new": 3027,
+      "kind": 1
+    },
+    {
+      "name": "SendUiMessageByGimmickFrameEventResultAck",
+      "old": 2754,
+      "new": 2337,
+      "kind": 1
+    },
+    {
+      "name": "SequencerEvadeTriggerAck",
+      "old": 2307,
+      "new": 2506,
+      "kind": 1
+    },
+    {
+      "name": "SequencerEvadeTriggerLogoutReq",
+      "old": 2211,
+      "new": 2327,
+      "kind": 4
+    },
+    {
+      "name": "SequencerSealActorNodeIdAck",
+      "old": 3004,
+      "new": 2341,
+      "kind": 1
+    },
+    {
+      "name": "SequencerStageFailAck",
+      "old": 2417,
+      "new": 2238,
+      "kind": 1
+    },
+    {
+      "name": "SequencerStageFailReq",
+      "old": 3161,
+      "new": 3069,
+      "kind": 4
+    },
+    {
+      "name": "SequencerTimelineEventSummonCharacterOnceTimer",
+      "old": 2074,
+      "new": 2074,
+      "kind": 2147483646
+    },
+    {
+      "name": "SequencerTriggerVolumeInOutReq",
+      "old": 2620,
+      "new": 2808,
+      "kind": 4
+    },
+    {
+      "name": "ServerTimeInfoAck",
+      "old": 2779,
+      "new": 2474,
+      "kind": 1
+    },
+    {
+      "name": "ServerTimeInfoRepeatTimer",
+      "old": 1022,
+      "new": 1022,
+      "kind": 4
+    },
+    {
+      "name": "SetAIMemoryAck",
+      "old": 3149,
+      "new": 2960,
+      "kind": 1
+    },
+    {
+      "name": "SetAccompanyTypeAck",
+      "old": 2234,
+      "new": 3011,
+      "kind": 1
+    },
+    {
+      "name": "SetActionIndexBySequencerReq",
+      "old": 2136,
+      "new": 2440,
+      "kind": 4
+    },
+    {
+      "name": "SetAvoidByCutSceneAck",
+      "old": 2708,
+      "new": 2698,
+      "kind": 1
+    },
+    {
+      "name": "SetBatteryValueReq",
+      "old": 2774,
+      "new": 2496,
+      "kind": 4
+    },
+    {
+      "name": "SetBlockRegistCrimeByBattleEndReq",
+      "old": 2664,
+      "new": 2277,
+      "kind": 4
+    },
+    {
+      "name": "SetBossRematchLevelReq",
+      "old": 2522,
+      "new": 2607,
+      "kind": 4
+    },
+    {
+      "name": "SetCacheSequenceNoAck",
+      "old": 2806,
+      "new": 2145,
+      "kind": 1
+    },
+    {
+      "name": "SetContentsPhaseModeEnabledAck",
+      "old": 2876,
+      "new": 2987,
+      "kind": 1
+    },
+    {
+      "name": "SetContentsPhaseModeEnabledReq",
+      "old": 2328,
+      "new": 2515,
+      "kind": 4
+    },
+    {
+      "name": "SetCrimeTargetReq",
+      "old": 2639,
+      "new": 2724,
+      "kind": 4
+    },
+    {
+      "name": "SetDyeItemDataToDyeViewAck",
+      "old": 2704,
+      "new": 2399,
+      "kind": 1
+    },
+    {
+      "name": "SetEnableZoneAck",
+      "old": 3065,
+      "new": 2409,
+      "kind": 1
+    },
+    {
+      "name": "SetEnableZoneReq",
+      "old": 2576,
+      "new": 2489,
+      "kind": 4
+    },
+    {
+      "name": "SetExecuteTimeQuestDialogAck",
+      "old": 2934,
+      "new": 2333,
+      "kind": 1
+    },
+    {
+      "name": "SetFieldNPCSaveDataKeyAck",
+      "old": 2951,
+      "new": 2557,
+      "kind": 1
+    },
+    {
+      "name": "SetFieldTimeAck",
+      "old": 2952,
+      "new": 3145,
+      "kind": 1
+    },
+    {
+      "name": "SetFieldTimeReq",
+      "old": 2227,
+      "new": 2150,
+      "kind": 4
+    },
+    {
+      "name": "SetGlobalStageSequencerPlayDataAck",
+      "old": 2312,
+      "new": 2427,
+      "kind": 1
+    },
+    {
+      "name": "SetIgnoreDamageByObserverReq",
+      "old": 2853,
+      "new": 2938,
+      "kind": 4
+    },
+    {
+      "name": "SetInventorySlotCountByCheatReq",
+      "old": 2270,
+      "new": 2403,
+      "kind": 4
+    },
+    {
+      "name": "SetItemExchangeEventSelectedItemAck",
+      "old": 2775,
+      "new": 2977,
+      "kind": 1
+    },
+    {
+      "name": "SetItemExchangeEventSelectedItemReq",
+      "old": 2541,
+      "new": 2253,
+      "kind": 4
+    },
+    {
+      "name": "SetItemLockStateAck",
+      "old": 2298,
+      "new": 2989,
+      "kind": 1
+    },
+    {
+      "name": "SetItemLockStateReq",
+      "old": 2735,
+      "new": 2874,
+      "kind": 4
+    },
+    {
+      "name": "SetLoadedHousingObjectSyncDataIdMaxAck",
+      "old": 2973,
+      "new": 2605,
+      "kind": 1
+    },
+    {
+      "name": "SetMinStatRateAck",
+      "old": 2642,
+      "new": 3042,
+      "kind": 1
+    },
+    {
+      "name": "SetMissionNewAlarmFalseAck",
+      "old": 2148,
+      "new": 2334,
+      "kind": 1
+    },
+    {
+      "name": "SetMissionNewAlarmFalseReq",
+      "old": 3096,
+      "new": 3003,
+      "kind": 4
+    },
+    {
+      "name": "SetMoveFieldAck",
+      "old": 2438,
+      "new": 2712,
+      "kind": 1
+    },
+    {
+      "name": "SetMyPlatformAck",
+      "old": 2404,
+      "new": 2674,
+      "kind": 1
+    },
+    {
+      "name": "SetNextBranchTypeFromAIReq",
+      "old": 2783,
+      "new": 2125,
+      "kind": 4
+    },
+    {
+      "name": "SetQuestDialogAck",
+      "old": 3086,
+      "new": 2180,
+      "kind": 1
+    },
+    {
+      "name": "SetQuestDialogObstacleAck",
+      "old": 2258,
+      "new": 2612,
+      "kind": 1
+    },
+    {
+      "name": "SetQuestDialogObstacleReq",
+      "old": 2332,
+      "new": 3082,
+      "kind": 4
+    },
+    {
+      "name": "SetQuestDialogReq",
+      "old": 2963,
+      "new": 2365,
+      "kind": 4
+    },
+    {
+      "name": "SetRoughNaviMovementReq",
+      "old": 2619,
+      "new": 2867,
+      "kind": 4
+    },
+    {
+      "name": "SetSeatPositionEvadeAreaAck",
+      "old": 2766,
+      "new": 2130,
+      "kind": 1
+    },
+    {
+      "name": "SetSeatPositionEvadeAreaReq",
+      "old": 2563,
+      "new": 3117,
+      "kind": 4
+    },
+    {
+      "name": "SetServerVisibilityReq",
+      "old": 2818,
+      "new": 2159,
+      "kind": 2
+    },
+    {
+      "name": "SetStolenAck",
+      "old": 2732,
+      "new": 2827,
+      "kind": 1
+    },
+    {
+      "name": "SetSubLevelAck",
+      "old": 2666,
+      "new": 2568,
+      "kind": 1
+    },
+    {
+      "name": "SetTimeWrapCoolEndTimeAck",
+      "old": 3068,
+      "new": 2778,
+      "kind": 1
+    },
+    {
+      "name": "SetTimeWrapCoolTimeAck",
+      "old": 2344,
+      "new": 2799,
+      "kind": 1
+    },
+    {
+      "name": "SetTimeWrapCoolTimeReq",
+      "old": 2345,
+      "new": 2564,
+      "kind": 4
+    },
+    {
+      "name": "SetWantedForDevReq",
+      "old": 2212,
+      "new": 2475,
+      "kind": 4
+    },
+    {
+      "name": "SetWantedPriceForDevAck",
+      "old": 2465,
+      "new": 2217,
+      "kind": 1
+    },
+    {
+      "name": "ShareKnowledgeDataListAck",
+      "old": 2628,
+      "new": 2194,
+      "kind": 1
+    },
+    {
+      "name": "ShareKnowledgeDataListReq",
+      "old": 2996,
+      "new": 2984,
+      "kind": 4
+    },
+    {
+      "name": "ShareKnowledgeSeedAck",
+      "old": 2406,
+      "new": 2242,
+      "kind": 1
+    },
+    {
+      "name": "ShipCrewResetAck",
+      "old": 3070,
+      "new": 2388,
+      "kind": 1
+    },
+    {
+      "name": "ShipCrewResetReq",
+      "old": 2198,
+      "new": 2728,
+      "kind": 4
+    },
+    {
+      "name": "ShipCrewStationChangeAck",
+      "old": 2443,
+      "new": 2787,
+      "kind": 1
+    },
+    {
+      "name": "ShipCrewStationChangeReq",
+      "old": 2835,
+      "new": 2262,
+      "kind": 4
+    },
+    {
+      "name": "ShowAIDialogAck",
+      "old": 2361,
+      "new": 2711,
+      "kind": 1
+    },
+    {
+      "name": "ShutDownServerOnceTimer",
+      "old": 2042,
+      "new": 2042,
+      "kind": 2147483646
+    },
+    {
+      "name": "SkillCoolTimeListAck",
+      "old": 2990,
+      "new": 3080,
+      "kind": 1
+    },
+    {
+      "name": "SkillUnlockMarkAck",
+      "old": 2828,
+      "new": 2534,
+      "kind": 1
+    },
+    {
+      "name": "SkillUnlockMarkReq",
+      "old": 2941,
+      "new": 2951,
+      "kind": 4
+    },
+    {
+      "name": "SpawnCharacterCheatReq",
+      "old": 2185,
+      "new": 2981,
+      "kind": 4
+    },
+    {
+      "name": "SpawnCharacterForActionTestReq",
+      "old": 2388,
+      "new": 2244,
+      "kind": 4
+    },
+    {
+      "name": "SpawnDockingActorReq",
+      "old": 2912,
+      "new": 2802,
+      "kind": 4
+    },
+    {
+      "name": "SpawnGuideEffectGimmickListAck",
+      "old": 2686,
+      "new": 2523,
+      "kind": 1
+    },
+    {
+      "name": "SpawnGuideEffectGimmickListNak",
+      "old": 3102,
+      "new": 2830,
+      "kind": 1
+    },
+    {
+      "name": "SpawnGuideEffectGimmickListReq",
+      "old": 2885,
+      "new": 2821,
+      "kind": 4
+    },
+    {
+      "name": "SpawnItemToGroundByCheatReq",
+      "old": 2699,
+      "new": 3084,
+      "kind": 4
+    },
+    {
+      "name": "SpawnMiniGameCharacterAck",
+      "old": 2924,
+      "new": 2810,
+      "kind": 1
+    },
+    {
+      "name": "SpawnMiniGameCharacterReq",
+      "old": 3124,
+      "new": 2281,
+      "kind": 4
+    },
+    {
+      "name": "SpawnMissingManagementWorkersOnceTimer",
+      "old": 2092,
+      "new": 2092,
+      "kind": 2147483646
+    },
+    {
+      "name": "SpawnOnDemandGimmickNak",
+      "old": 2461,
+      "new": 2481,
+      "kind": 1
+    },
+    {
+      "name": "SpawnOrUnspawnHousingGimmickAck",
+      "old": 3031,
+      "new": 2686,
+      "kind": 1
+    },
+    {
+      "name": "SpawnOrUnspawnHousingGimmickReq",
+      "old": 2773,
+      "new": 2442,
+      "kind": 4
+    },
+    {
+      "name": "SpawnOrUnspawnLivingTogetherNpcAck",
+      "old": 2263,
+      "new": 3112,
+      "kind": 1
+    },
+    {
+      "name": "SpawnOrUnspawnLivingTogetherNpcReq",
+      "old": 2423,
+      "new": 3164,
+      "kind": 4
+    },
+    {
+      "name": "SpawnPlacedHousingGimmickFromSyncDataReq",
+      "old": 2943,
+      "new": 2371,
+      "kind": 4
+    },
+    {
+      "name": "StageBranchStateAck",
+      "old": 2920,
+      "new": 2752,
+      "kind": 1
+    },
+    {
+      "name": "StageBranchStateDelayEndReq",
+      "old": 2396,
+      "new": 2654,
+      "kind": 4
+    },
+    {
+      "name": "StageBranchStateFailAck",
+      "old": 3010,
+      "new": 2370,
+      "kind": 1
+    },
+    {
+      "name": "StageBranchStateLoadingAck",
+      "old": 3009,
+      "new": 3035,
+      "kind": 1
+    },
+    {
+      "name": "StageBranchStateNak",
+      "old": 2434,
+      "new": 2895,
+      "kind": 1
+    },
+    {
+      "name": "StageBranchStateOnceTimer",
+      "old": 2048,
+      "new": 2048,
+      "kind": 2147483646
+    },
+    {
+      "name": "StageBranchStateReq",
+      "old": 2880,
+      "new": 2644,
+      "kind": 4
+    },
+    {
+      "name": "StageCharacterLinkAck",
+      "old": 2400,
+      "new": 2407,
+      "kind": 1
+    },
+    {
+      "name": "StageChartForceBranchDevReq",
+      "old": 2442,
+      "new": 2462,
+      "kind": 4
+    },
+    {
+      "name": "StageGameEventAck",
+      "old": 2313,
+      "new": 2585,
+      "kind": 1
+    },
+    {
+      "name": "StageOnBranchEventAck",
+      "old": 2436,
+      "new": 2369,
+      "kind": 1
+    },
+    {
+      "name": "StageQuitAck",
+      "old": 2792,
+      "new": 2484,
+      "kind": 1
+    },
+    {
+      "name": "StageQuitReq",
+      "old": 2683,
+      "new": 2313,
+      "kind": 4
+    },
+    {
+      "name": "StartAIFunctionReq",
+      "old": 2606,
+      "new": 2346,
+      "kind": 4
+    },
+    {
+      "name": "StartActionAck",
+      "old": 2552,
+      "new": 2800,
+      "kind": 1
+    },
+    {
+      "name": "StartActionNak",
+      "old": 2697,
+      "new": 2505,
+      "kind": 1
+    },
+    {
+      "name": "StartActionReq",
+      "old": 2202,
+      "new": 2431,
+      "kind": 4
+    },
+    {
+      "name": "StartChallengeCompleteTimerOnceTimer",
+      "old": 2056,
+      "new": 2056,
+      "kind": 2147483646
+    },
+    {
+      "name": "StartChangeFocusActorAck",
+      "old": 2481,
+      "new": 2689,
+      "kind": 1
+    },
+    {
+      "name": "StartChangeFocusActorReq",
+      "old": 2244,
+      "new": 3146,
+      "kind": 4
+    },
+    {
+      "name": "StartDiscoverLevelSceneObjectAck",
+      "old": 2494,
+      "new": 2764,
+      "kind": 1
+    },
+    {
+      "name": "StartDiscoverLevelSceneObjectReq",
+      "old": 3090,
+      "new": 2480,
+      "kind": 4
+    },
+    {
+      "name": "StartFactionRelationReq",
+      "old": 2243,
+      "new": 2436,
+      "kind": 4
+    },
+    {
+      "name": "StartFixedRateInvestmentReq",
+      "old": 2767,
+      "new": 2184,
+      "kind": 4
+    },
+    {
+      "name": "StartFollowLearnAcquireAck",
+      "old": 2495,
+      "new": 2473,
+      "kind": 1
+    },
+    {
+      "name": "StartFollowLearnAcquireReq",
+      "old": 2819,
+      "new": 2588,
+      "kind": 4
+    },
+    {
+      "name": "StartGlobalStageSequencerOnceTimer",
+      "old": 2058,
+      "new": 2058,
+      "kind": 2147483646
+    },
+    {
+      "name": "StartKnowledgeLearnDelayAck",
+      "old": 3007,
+      "new": 2321,
+      "kind": 1
+    },
+    {
+      "name": "StartKnowledgeLearnDelayReq",
+      "old": 3021,
+      "new": 2305,
+      "kind": 4
+    },
+    {
+      "name": "StartPlayerBehaviorSequencerAck",
+      "old": 2654,
+      "new": 2779,
+      "kind": 1
+    },
+    {
+      "name": "StartPlayerBehaviorSequencerReq",
+      "old": 2457,
+      "new": 2886,
+      "kind": 4
+    },
+    {
+      "name": "StartSpawnActionAck",
+      "old": 2392,
+      "new": 3039,
+      "kind": 1
+    },
+    {
+      "name": "StealItemByFrameEventOnceTimer",
+      "old": 2072,
+      "new": 2072,
+      "kind": 2147483646
+    },
+    {
+      "name": "StoreDataListAck",
+      "old": 2231,
+      "new": 2453,
+      "kind": 1
+    },
+    {
+      "name": "StoreGimmickItemSellDataListAck",
+      "old": 2751,
+      "new": 2661,
+      "kind": 1
+    },
+    {
+      "name": "StoreItemSellDataListAck",
+      "old": 2847,
+      "new": 3062,
+      "kind": 1
+    },
+    {
+      "name": "SubLevelInfoListAck",
+      "old": 2970,
+      "new": 2696,
+      "kind": 1
+    },
+    {
+      "name": "SubMissionProgressListAck",
+      "old": 2283,
+      "new": 2819,
+      "kind": 1
+    },
+    {
+      "name": "SubTimelinePauseAck",
+      "old": 2106,
+      "new": 2214,
+      "kind": 1
+    },
+    {
+      "name": "SubTimelinePauseReq",
+      "old": 3113,
+      "new": 2546,
+      "kind": 4
+    },
+    {
+      "name": "SubTimelineResumeAck",
+      "old": 3088,
+      "new": 2181,
+      "kind": 1
+    },
+    {
+      "name": "SubTimelineResumeReq",
+      "old": 2676,
+      "new": 2924,
+      "kind": 4
+    },
+    {
+      "name": "SummonGimmickDestoryTimeLimitOnceTimer",
+      "old": 2076,
+      "new": 2076,
+      "kind": 2147483646
+    },
+    {
+      "name": "SummonGimmickFrameEventResultAck",
+      "old": 3121,
+      "new": 2384,
+      "kind": 1
+    },
+    {
+      "name": "SummonGimmickSafePositionByBuffReq",
+      "old": 2195,
+      "new": 2300,
+      "kind": 4
+    },
+    {
+      "name": "SummonMercenaryAfterRegistAck",
+      "old": 2279,
+      "new": 2174,
+      "kind": 1
+    },
+    {
+      "name": "SwapEquipSlotToOtherSlotReq",
+      "old": 2125,
+      "new": 3098,
+      "kind": 4
+    },
+    {
+      "name": "SwapOwnedMercenaryAck",
+      "old": 2562,
+      "new": 2331,
+      "kind": 1
+    },
+    {
+      "name": "SwapOwnedMercenaryReq",
+      "old": 3115,
+      "new": 2760,
+      "kind": 4
+    },
+    {
+      "name": "SyncActorDataAck",
+      "old": 2520,
+      "new": 2374,
+      "kind": 1
+    },
+    {
+      "name": "SyncActorDataReq",
+      "old": 2690,
+      "new": 2390,
+      "kind": 4
+    },
+    {
+      "name": "SyncAndConsumeCustomHouseSyncDataAck",
+      "old": 2617,
+      "new": 2862,
+      "kind": 1
+    },
+    {
+      "name": "SyncAndConsumeCustomHouseSyncDataNak",
+      "old": 2266,
+      "new": 2627,
+      "kind": 1
+    },
+    {
+      "name": "SyncAndConsumeHousingPathDataAck",
+      "old": 2205,
+      "new": 2727,
+      "kind": 1
+    },
+    {
+      "name": "SyncChallengeAck",
+      "old": 2604,
+      "new": 2425,
+      "kind": 1
+    },
+    {
+      "name": "SyncElementalGoalStatReq",
+      "old": 2997,
+      "new": 3129,
+      "kind": 4
+    },
+    {
+      "name": "SyncFieldGimmickByDecreaseDropRollCountAck",
+      "old": 2694,
+      "new": 2318,
+      "kind": 1
+    },
+    {
+      "name": "SyncFieldGimmickSavedByCoolTimeAck",
+      "old": 2760,
+      "new": 2985,
+      "kind": 1
+    },
+    {
+      "name": "SyncFieldGimmickSavedByGimmickStateAck",
+      "old": 2304,
+      "new": 2776,
+      "kind": 1
+    },
+    {
+      "name": "SyncHousingPlacedPathDataListAck",
+      "old": 2506,
+      "new": 2717,
+      "kind": 1
+    },
+    {
+      "name": "SyncHousingPlacedPathDataListNak",
+      "old": 2669,
+      "new": 3074,
+      "kind": 1
+    },
+    {
+      "name": "SyncHousingPlacedPathDataListReq",
+      "old": 2831,
+      "new": 2926,
+      "kind": 4
+    },
+    {
+      "name": "SyncHousingPlacedSceneObjectListAck",
+      "old": 2858,
+      "new": 2965,
+      "kind": 1
+    },
+    {
+      "name": "SyncHousingPlacedSceneObjectListReq",
+      "old": 2499,
+      "new": 2943,
+      "kind": 4
+    },
+    {
+      "name": "SyncLivingTogetherCharacterCustomizationListAck",
+      "old": 2099,
+      "new": 2187,
+      "kind": 1
+    },
+    {
+      "name": "SyncPlayerHouseDataListAck",
+      "old": 2477,
+      "new": 2182,
+      "kind": 1
+    },
+    {
+      "name": "SyncSceneObjectAck",
+      "old": 2262,
+      "new": 3055,
+      "kind": 1
+    },
+    {
+      "name": "SyncStageCandidatePostionReq",
+      "old": 3117,
+      "new": 3000,
+      "kind": 4
+    },
+    {
+      "name": "SyncStageOceanLevelCandidatePostionReq",
+      "old": 2640,
+      "new": 2929,
+      "kind": 4
+    },
+    {
+      "name": "SyncWeatherStateReq",
+      "old": 2689,
+      "new": 2959,
+      "kind": 4
+    },
+    {
+      "name": "TargetDivorceCheatReq",
+      "old": 2105,
+      "new": 2872,
+      "kind": 4
+    },
+    {
+      "name": "TargetProposeCheatReq",
+      "old": 2931,
+      "new": 2983,
+      "kind": 4
+    },
+    {
+      "name": "TeleportRevivePointAck",
+      "old": 3071,
+      "new": 3072,
+      "kind": 1
+    },
+    {
+      "name": "TerrainRegionVoxelSpawnDeactivationReq",
+      "old": 2173,
+      "new": 2947,
+      "kind": 4
+    },
+    {
+      "name": "TerrainRegionVoxelSpawnReq",
+      "old": 2401,
+      "new": 2773,
+      "kind": 4
+    },
+    {
+      "name": "ToggleFoldAllItemGroupAck",
+      "old": 2339,
+      "new": 3048,
+      "kind": 1
+    },
+    {
+      "name": "ToggleFoldAllItemGroupReq",
+      "old": 3023,
+      "new": 2456,
+      "kind": 4
+    },
+    {
+      "name": "ToggleFoldItemGroupAck",
+      "old": 2554,
+      "new": 2366,
+      "kind": 1
+    },
+    {
+      "name": "ToggleFoldItemGroupReq",
+      "old": 2568,
+      "new": 2422,
+      "kind": 4
+    },
+    {
+      "name": "TradeMarketAuthKeyUpdateRepeatTimer",
+      "old": 2008,
+      "new": 2008,
+      "kind": 2147483646
+    },
+    {
+      "name": "TransferItemAck",
+      "old": 2505,
+      "new": 2767,
+      "kind": 1
+    },
+    {
+      "name": "TransferItemReq",
+      "old": 2128,
+      "new": 2997,
+      "kind": 4
+    },
+    {
+      "name": "TransferMercenaryItemAck",
+      "old": 2322,
+      "new": 2491,
+      "kind": 1
+    },
+    {
+      "name": "TransferMercenaryItemReq",
+      "old": 2834,
+      "new": 2414,
+      "kind": 4
+    },
+    {
+      "name": "TransformSyncSceneObjectReq",
+      "old": 2808,
+      "new": 3156,
+      "kind": 4
+    },
+    {
+      "name": "UnSetMainMercenaryAndUnSpawnAck",
+      "old": 2325,
+      "new": 2203,
+      "kind": 1
+    },
+    {
+      "name": "UnSetMainPetAndUnSpawnReq",
+      "old": 2978,
+      "new": 3020,
+      "kind": 4
+    },
+    {
+      "name": "UnapplyBuffAck",
+      "old": 2521,
+      "new": 2899,
+      "kind": 1
+    },
+    {
+      "name": "UnapplySkillFromCollideObjectReq",
+      "old": 2636,
+      "new": 2358,
+      "kind": 4
+    },
+    {
+      "name": "UnapplyTimedStateActionRestrictionAck",
+      "old": 2142,
+      "new": 2225,
+      "kind": 1
+    },
+    {
+      "name": "UnequipAndDestroyItemOnceTimer",
+      "old": 2028,
+      "new": 2028,
+      "kind": 2147483646
+    },
+    {
+      "name": "UnequipItemAck",
+      "old": 2615,
+      "new": 3155,
+      "kind": 1
+    },
+    {
+      "name": "UnequipItemListByItemDestroyAck",
+      "old": 3045,
+      "new": 2658,
+      "kind": 1
+    },
+    {
+      "name": "UnequipItemOnlyAck",
+      "old": 2692,
+      "new": 2524,
+      "kind": 1
+    },
+    {
+      "name": "UnequipItemReq",
+      "old": 2351,
+      "new": 2319,
+      "kind": 4
+    },
+    {
+      "name": "UnloadSyncSceneObjectAck",
+      "old": 2146,
+      "new": 2812,
+      "kind": 1
+    },
+    {
+      "name": "UnregistPlayGuideListAck",
+      "old": 2810,
+      "new": 2269,
+      "kind": 1
+    },
+    {
+      "name": "UnregistPlayGuideListReq",
+      "old": 2107,
+      "new": 3047,
+      "kind": 4
+    },
+    {
+      "name": "UnregisterLoadGimmickFromActorImpulseReq",
+      "old": 2755,
+      "new": 2966,
+      "kind": 4
+    },
+    {
+      "name": "UnregisterLoadGimmickFromStageGimmickEventReq",
+      "old": 2321,
+      "new": 2413,
+      "kind": 4
+    },
+    {
+      "name": "UnregisterVisitZoneAck",
+      "old": 2932,
+      "new": 2680,
+      "kind": 1
+    },
+    {
+      "name": "UnregisterVisitZoneReq",
+      "old": 2593,
+      "new": 2953,
+      "kind": 4
+    },
+    {
+      "name": "UnspawnMiniGameCharacterAck",
+      "old": 2587,
+      "new": 2922,
+      "kind": 1
+    },
+    {
+      "name": "UnspawnMiniGameCharacterReq",
+      "old": 2955,
+      "new": 2361,
+      "kind": 4
+    },
+    {
+      "name": "UnspawnOnDemandGimmickNak",
+      "old": 2293,
+      "new": 2345,
+      "kind": 1
+    },
+    {
+      "name": "UpdateAIDestinationReq",
+      "old": 2913,
+      "new": 2637,
+      "kind": 4
+    },
+    {
+      "name": "UpdateAIJumpTargetDataAck",
+      "old": 2246,
+      "new": 2873,
+      "kind": 1
+    },
+    {
+      "name": "UpdateAIJumpTargetDataReq",
+      "old": 2450,
+      "new": 2890,
+      "kind": 4
+    },
+    {
+      "name": "UpdateAISavedTargetPositionReq",
+      "old": 2286,
+      "new": 2167,
+      "kind": 4
+    },
+    {
+      "name": "UpdateActionPointPreemptionStepReq",
+      "old": 2533,
+      "new": 2294,
+      "kind": 4
+    },
+    {
+      "name": "UpdateActivityGroupObstacleReq",
+      "old": 2163,
+      "new": 2763,
+      "kind": 4
+    },
+    {
+      "name": "UpdateBankRepeatTimer",
+      "old": 2018,
+      "new": 2018,
+      "kind": 4
+    },
+    {
+      "name": "UpdateBigDebrisBodyNavigationObstacleTransformReq",
+      "old": 2971,
+      "new": 2228,
+      "kind": 4
+    },
+    {
+      "name": "UpdateBuffOnceTimer",
+      "old": 2024,
+      "new": 2024,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateCallHyosiCoolTimeAck",
+      "old": 2776,
+      "new": 2665,
+      "kind": 1
+    },
+    {
+      "name": "UpdateCallMercenaryCoolTimeAck",
+      "old": 2271,
+      "new": 2153,
+      "kind": 1
+    },
+    {
+      "name": "UpdateCallMercenarySpawnDurationAck",
+      "old": 2987,
+      "new": 2971,
+      "kind": 1
+    },
+    {
+      "name": "UpdateChangeBuffLevelAck",
+      "old": 2386,
+      "new": 2968,
+      "kind": 1
+    },
+    {
+      "name": "UpdateCombinationChildByAttachAndDetachReq",
+      "old": 2909,
+      "new": 2928,
+      "kind": 4
+    },
+    {
+      "name": "UpdateCombinationRootAck",
+      "old": 2112,
+      "new": 2176,
+      "kind": 1
+    },
+    {
+      "name": "UpdateConcurrentSummonActorKeyListAck",
+      "old": 2706,
+      "new": 2389,
+      "kind": 1
+    },
+    {
+      "name": "UpdateDataDefinedRegenerateOnceTimer",
+      "old": 2094,
+      "new": 2094,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateDialTurnRotatedAngleReq",
+      "old": 2557,
+      "new": 2645,
+      "kind": 4
+    },
+    {
+      "name": "UpdateDisabledLevelOriginSceneObjectsAck",
+      "old": 2965,
+      "new": 2865,
+      "kind": 1
+    },
+    {
+      "name": "UpdateDiscoveredLevelGimmickSceneObjectDataAck",
+      "old": 2452,
+      "new": 2114,
+      "kind": 1
+    },
+    {
+      "name": "UpdateElementalAck",
+      "old": 3143,
+      "new": 2849,
+      "kind": 1
+    },
+    {
+      "name": "UpdateEquipItemCoolTimeAck",
+      "old": 2546,
+      "new": 2492,
+      "kind": 1
+    },
+    {
+      "name": "UpdateEquipItemCoolTimeReq",
+      "old": 2979,
+      "new": 2900,
+      "kind": 4
+    },
+    {
+      "name": "UpdateEquipItemDropRollCountAck",
+      "old": 2169,
+      "new": 2630,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionBlockDataAck",
+      "old": 2232,
+      "new": 2483,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionConquerDataAck",
+      "old": 2121,
+      "new": 2233,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionDataAck",
+      "old": 2469,
+      "new": 3050,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionDependencyDataAck",
+      "old": 2532,
+      "new": 2189,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionEnableSubInnerAck",
+      "old": 2652,
+      "new": 2714,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionFireArmDataAck",
+      "old": 2498,
+      "new": 2383,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionLeaderDataAck",
+      "old": 2928,
+      "new": 3004,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionManagerRepeatTimer",
+      "old": 2013,
+      "new": 2013,
+      "kind": 4
+    },
+    {
+      "name": "UpdateFactionMovingCharacterDataAck",
+      "old": 2845,
+      "new": 2567,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionNodeEnableAck",
+      "old": 2425,
+      "new": 2804,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionNodeProtectedAck",
+      "old": 2795,
+      "new": 2391,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionOwnedItemDataAck",
+      "old": 2929,
+      "new": 2703,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionRelationDataAck",
+      "old": 2097,
+      "new": 3127,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionReligionDataAck",
+      "old": 2275,
+      "new": 2222,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionResearchProgressAck",
+      "old": 2473,
+      "new": 2903,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFactionSpawnStageOnceTimer",
+      "old": 2050,
+      "new": 2050,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateFactionSubInnerGimmickAck",
+      "old": 2534,
+      "new": 2149,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFieldGimmickSaveDataKeyAck",
+      "old": 2605,
+      "new": 2517,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFieldGimmickSaveDataToResetAck",
+      "old": 2366,
+      "new": 2302,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFieldGimmickSaveDataToResetRepeatTimer",
+      "old": 2023,
+      "new": 2023,
+      "kind": 4
+    },
+    {
+      "name": "UpdateFieldGimmickSaveDescListAck",
+      "old": 2736,
+      "new": 2596,
+      "kind": 1
+    },
+    {
+      "name": "UpdateFieldNightAndDay",
+      "old": 2017,
+      "new": 2017,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateForbiddenCharacterListAck",
+      "old": 2724,
+      "new": 3136,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGamePlayVariableDataListAck",
+      "old": 2368,
+      "new": 3083,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGimmickAck",
+      "old": 2096,
+      "new": 2883,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGimmickBodyMotionTypeReq",
+      "old": 2251,
+      "new": 2662,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickConstraintDataReq",
+      "old": 2381,
+      "new": 2303,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickDropTransformReq",
+      "old": 2310,
+      "new": 2547,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickEnduranceAck",
+      "old": 2585,
+      "new": 2478,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGimmickFertilizerAmountAck",
+      "old": 2900,
+      "new": 2395,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGimmickFertilizerAmountReq",
+      "old": 2926,
+      "new": 2121,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickInstallationAck",
+      "old": 3162,
+      "new": 3026,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGimmickInstallationReq",
+      "old": 2878,
+      "new": 3102,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickItemSocketSlotAck",
+      "old": 2374,
+      "new": 3032,
+      "kind": 1
+    },
+    {
+      "name": "UpdateGimmickProductTimer",
+      "old": 2022,
+      "new": 2022,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickReq",
+      "old": 2787,
+      "new": 3134,
+      "kind": 4
+    },
+    {
+      "name": "UpdateGimmickSealDropResultAck",
+      "old": 3131,
+      "new": 2910,
+      "kind": 1
+    },
+    {
+      "name": "UpdateHousingModeEnableReq",
+      "old": 2667,
+      "new": 2392,
+      "kind": 4
+    },
+    {
+      "name": "UpdateHyosiMercenaryAck",
+      "old": 2561,
+      "new": 3107,
+      "kind": 1
+    },
+    {
+      "name": "UpdateItemDataAck",
+      "old": 2817,
+      "new": 2964,
+      "kind": 1
+    },
+    {
+      "name": "UpdateItemSharedCoolTimeAck",
+      "old": 2497,
+      "new": 2257,
+      "kind": 1
+    },
+    {
+      "name": "UpdateKnowledgeLearnDelayAck",
+      "old": 2458,
+      "new": 2815,
+      "kind": 1
+    },
+    {
+      "name": "UpdateKnowledgeLearnDelayReq",
+      "old": 2393,
+      "new": 2206,
+      "kind": 4
+    },
+    {
+      "name": "UpdateKnowledgeLearnDelayStackCountListAck",
+      "old": 3077,
+      "new": 2111,
+      "kind": 1
+    },
+    {
+      "name": "UpdateLivingTogetherTargetListAck",
+      "old": 2342,
+      "new": 2324,
+      "kind": 1
+    },
+    {
+      "name": "UpdateLogoutExcludedUuidListAck",
+      "old": 2837,
+      "new": 2394,
+      "kind": 1
+    },
+    {
+      "name": "UpdateManagementItemSellingPriceRateAck",
+      "old": 2104,
+      "new": 2745,
+      "kind": 1
+    },
+    {
+      "name": "UpdateManagementItemSellingPriceRateReq",
+      "old": 2898,
+      "new": 2576,
+      "kind": 4
+    },
+    {
+      "name": "UpdateMercenaryCharacterCustomizationAck",
+      "old": 2500,
+      "new": 2807,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMercenaryCharacterInfoAck",
+      "old": 2496,
+      "new": 2428,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMercenaryClanRepeatTimer",
+      "old": 2014,
+      "new": 2014,
+      "kind": 4
+    },
+    {
+      "name": "UpdateMercenaryExpandedSlotListAck",
+      "old": 3153,
+      "new": 2747,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMercenaryPositionAck",
+      "old": 2916,
+      "new": 2710,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMiniGameLeaderboardDataAck",
+      "old": 3028,
+      "new": 2477,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMiniGameLeaderboardDataReq",
+      "old": 2300,
+      "new": 2215,
+      "kind": 4
+    },
+    {
+      "name": "UpdateMiniGameLeaderboardPlayerNameAck",
+      "old": 2103,
+      "new": 3061,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMiniGameLeaderboardPlayerNameReq",
+      "old": 2265,
+      "new": 2134,
+      "kind": 4
+    },
+    {
+      "name": "UpdateMissionListAck",
+      "old": 2360,
+      "new": 2558,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMissionUIStateListAck",
+      "old": 2272,
+      "new": 2730,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMissionUIStateListReq",
+      "old": 2553,
+      "new": 2748,
+      "kind": 4
+    },
+    {
+      "name": "UpdateNavigationObstacleSectorAndCollisionTypeTimer",
+      "old": 2083,
+      "new": 2083,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateNextFeedTimeAck",
+      "old": 3072,
+      "new": 2227,
+      "kind": 1
+    },
+    {
+      "name": "UpdateOnDemandCombinationChildSpawnReq",
+      "old": 2139,
+      "new": 3128,
+      "kind": 4
+    },
+    {
+      "name": "UpdateOnDemandDockingNak",
+      "old": 2953,
+      "new": 2405,
+      "kind": 1
+    },
+    {
+      "name": "UpdateOnDemandEquipDockingNak",
+      "old": 2264,
+      "new": 2742,
+      "kind": 1
+    },
+    {
+      "name": "UpdateOnDemandGimmickAck",
+      "old": 2923,
+      "new": 2367,
+      "kind": 1
+    },
+    {
+      "name": "UpdatePassiveBuffOnceTimer",
+      "old": 2025,
+      "new": 2025,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdatePlayableStateReq",
+      "old": 2431,
+      "new": 2421,
+      "kind": 4
+    },
+    {
+      "name": "UpdateQuestGaugeAck",
+      "old": 3035,
+      "new": 3057,
+      "kind": 1
+    },
+    {
+      "name": "UpdateQuestGaugeListAck",
+      "old": 2714,
+      "new": 2559,
+      "kind": 1
+    },
+    {
+      "name": "UpdateQuestListAck",
+      "old": 3054,
+      "new": 3135,
+      "kind": 1
+    },
+    {
+      "name": "UpdateRegenerateServerStatRepeatTimer",
+      "old": 2015,
+      "new": 2015,
+      "kind": 4
+    },
+    {
+      "name": "UpdateReserveClearCriminalActionAck",
+      "old": 2162,
+      "new": 2495,
+      "kind": 1
+    },
+    {
+      "name": "UpdateScheduleNPCAliasFilterStageAck",
+      "old": 2959,
+      "new": 2514,
+      "kind": 1
+    },
+    {
+      "name": "UpdateScheduleStageOnceTimer",
+      "old": 2049,
+      "new": 2049,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateSeatDataAck",
+      "old": 2662,
+      "new": 2762,
+      "kind": 1
+    },
+    {
+      "name": "UpdateSeatDataReq",
+      "old": 2821,
+      "new": 2615,
+      "kind": 4
+    },
+    {
+      "name": "UpdateSelfDestinationAck",
+      "old": 3017,
+      "new": 2691,
+      "kind": 1
+    },
+    {
+      "name": "UpdateSequencerGamePlayDataEventReq",
+      "old": 2752,
+      "new": 2672,
+      "kind": 4
+    },
+    {
+      "name": "UpdateStageBranchTimeAck",
+      "old": 3085,
+      "new": 2402,
+      "kind": 1
+    },
+    {
+      "name": "UpdateStageChartDelayedEventAck",
+      "old": 2962,
+      "new": 2851,
+      "kind": 1
+    },
+    {
+      "name": "UpdateStageChartDelayedEventReq",
+      "old": 2098,
+      "new": 3141,
+      "kind": 4
+    },
+    {
+      "name": "UpdateStageChartEventAck",
+      "old": 2187,
+      "new": 2105,
+      "kind": 1
+    },
+    {
+      "name": "UpdateStageChartEventReq",
+      "old": 2839,
+      "new": 2200,
+      "kind": 4
+    },
+    {
+      "name": "UpdateStageListAck",
+      "old": 2946,
+      "new": 2185,
+      "kind": 1
+    },
+    {
+      "name": "UpdateStageListReq",
+      "old": 2316,
+      "new": 2925,
+      "kind": 4
+    },
+    {
+      "name": "UpdateStageOnceTimer",
+      "old": 2047,
+      "new": 2047,
+      "kind": 2147483646
+    },
+    {
+      "name": "UpdateStageStateAck",
+      "old": 2349,
+      "new": 2713,
+      "kind": 1
+    },
+    {
+      "name": "UpdateSyncSceneObjectOutOfLevelBoundaryReq",
+      "old": 2341,
+      "new": 3095,
+      "kind": 4
+    },
+    {
+      "name": "UpdateSyncSceneObjectSupportChangedReq",
+      "old": 2207,
+      "new": 3038,
+      "kind": 4
+    },
+    {
+      "name": "UpdateTraceMissionAck",
+      "old": 2459,
+      "new": 2375,
+      "kind": 1
+    },
+    {
+      "name": "UpdateTraceMissionReq",
+      "old": 2462,
+      "new": 2458,
+      "kind": 4
+    },
+    {
+      "name": "UpdateTradeAuthKeyAck",
+      "old": 2601,
+      "new": 2967,
+      "kind": 1
+    },
+    {
+      "name": "UpdateUIFilterGroupDataReq",
+      "old": 2418,
+      "new": 2937,
+      "kind": 4
+    },
+    {
+      "name": "UpdateVisiblePlayerAck",
+      "old": 2555,
+      "new": 2913,
+      "kind": 1
+    },
+    {
+      "name": "UpdateWaitingCustomHousingGimmickSyncDataListAck",
+      "old": 3084,
+      "new": 2836,
+      "kind": 1
+    },
+    {
+      "name": "UpdateWallUpDataAck",
+      "old": 3024,
+      "new": 2939,
+      "kind": 1
+    },
+    {
+      "name": "UpdateWallUpDataReq",
+      "old": 2357,
+      "new": 2973,
+      "kind": 4
+    },
+    {
+      "name": "UpdateWorldObserverStateAck",
+      "old": 2221,
+      "new": 2216,
+      "kind": 1
+    },
+    {
+      "name": "UpdateWorldObserverStateReq",
+      "old": 2753,
+      "new": 2479,
+      "kind": 4
+    },
+    {
+      "name": "UseEquipItemChargeByGimmickReq",
+      "old": 3049,
+      "new": 3068,
+      "kind": 4
+    },
+    {
+      "name": "UseEquipItemCoolTimeByActionAck",
+      "old": 3157,
+      "new": 2543,
+      "kind": 1
+    },
+    {
+      "name": "UseEquipItemCoolTimeByGimmickAck",
+      "old": 2309,
+      "new": 2193,
+      "kind": 1
+    },
+    {
+      "name": "UseEquipedItemAck",
+      "old": 2383,
+      "new": 2441,
+      "kind": 1
+    },
+    {
+      "name": "UseGimmickItemByFrameEventOnceTimer",
+      "old": 2039,
+      "new": 2039,
+      "kind": 2147483646
+    },
+    {
+      "name": "UseItemByFrameEventOnceTimer",
+      "old": 2038,
+      "new": 2038,
+      "kind": 2147483646
+    },
+    {
+      "name": "UseItemByItemInfoReq",
+      "old": 2559,
+      "new": 2209,
+      "kind": 4
+    },
+    {
+      "name": "UseItemByUsingSkillOnceTimer",
+      "old": 2045,
+      "new": 2045,
+      "kind": 2147483646
+    },
+    {
+      "name": "UseItemReq",
+      "old": 3060,
+      "new": 2944,
+      "kind": 4
+    },
+    {
+      "name": "UseItemReserveSlotReq",
+      "old": 2119,
+      "new": 2104,
+      "kind": 4
+    },
+    {
+      "name": "UseItemShieldReserveSlotXXXAck",
+      "old": 2936,
+      "new": 2731,
+      "kind": 1
+    },
+    {
+      "name": "UseRandomBoxAck",
+      "old": 2631,
+      "new": 2548,
+      "kind": 1
+    },
+    {
+      "name": "UsedQuestDialogInterrogationAck",
+      "old": 3141,
+      "new": 2706,
+      "kind": 1
+    },
+    {
+      "name": "UserOnceTimerProcessRepeatTimer",
+      "old": 1007,
+      "new": 1007,
+      "kind": 2147483646
+    },
+    {
+      "name": "VaryAffinityByCheatReq",
+      "old": 2248,
+      "new": 2743,
+      "kind": 4
+    },
+    {
+      "name": "VaryAvailableReorderedItemCountAck",
+      "old": 2222,
+      "new": 2503,
+      "kind": 1
+    },
+    {
+      "name": "VaryDataDefinedStaticStatAck",
+      "old": 2362,
+      "new": 2914,
+      "kind": 1
+    },
+    {
+      "name": "VaryEnduranceItemByCheatReq",
+      "old": 2527,
+      "new": 2599,
+      "kind": 4
+    },
+    {
+      "name": "VaryEquipItemBatteryStatAck",
+      "old": 3032,
+      "new": 2532,
+      "kind": 1
+    },
+    {
+      "name": "VaryEquipItemEnduranceAck",
+      "old": 2123,
+      "new": 2116,
+      "kind": 1
+    },
+    {
+      "name": "VaryExpandedFarmSlotAck",
+      "old": 2427,
+      "new": 2610,
+      "kind": 1
+    },
+    {
+      "name": "VaryExpandedInventorySlotAck",
+      "old": 2420,
+      "new": 2278,
+      "kind": 1
+    },
+    {
+      "name": "VaryExpandedNoSaveInventorySlotAck",
+      "old": 2862,
+      "new": 2670,
+      "kind": 1
+    },
+    {
+      "name": "VaryFriendlyByFrameEventOnceTimer",
+      "old": 2073,
+      "new": 2073,
+      "kind": 2147483646
+    },
+    {
+      "name": "VaryGimmickItemCountAck",
+      "old": 2180,
+      "new": 2326,
+      "kind": 1
+    },
+    {
+      "name": "VaryHPAck",
+      "old": 2740,
+      "new": 2608,
+      "kind": 1
+    },
+    {
+      "name": "VaryItemTradeCountAck",
+      "old": 2193,
+      "new": 2750,
+      "kind": 1
+    },
+    {
+      "name": "VaryLootDropSubItemCountAck",
+      "old": 2904,
+      "new": 2368,
+      "kind": 1
+    },
+    {
+      "name": "VaryResourceReq",
+      "old": 2630,
+      "new": 2465,
+      "kind": 4
+    },
+    {
+      "name": "VarySharpnessAck",
+      "old": 3063,
+      "new": 2609,
+      "kind": 1
+    },
+    {
+      "name": "VaryStatByAccInputReq",
+      "old": 2565,
+      "new": 2284,
+      "kind": 4
+    },
+    {
+      "name": "VaryStatCheatReq",
+      "old": 2326,
+      "new": 2136,
+      "kind": 4
+    },
+    {
+      "name": "VarySubLevelExpByResourceReq",
+      "old": 2918,
+      "new": 3160,
+      "kind": 4
+    },
+    {
+      "name": "WantedAddCrimeRecordAck",
+      "old": 2569,
+      "new": 2828,
+      "kind": 1
+    },
+    {
+      "name": "WantedAddCrimeRecordReq",
+      "old": 2836,
+      "new": 2314,
+      "kind": 4
+    },
+    {
+      "name": "WantedAddWitnessActorAck",
+      "old": 2727,
+      "new": 2323,
+      "kind": 1
+    },
+    {
+      "name": "WantedAddWitnessActorReq",
+      "old": 2823,
+      "new": 2586,
+      "kind": 4
+    },
+    {
+      "name": "WantedEndWitnessStateReq",
+      "old": 2877,
+      "new": 2102,
+      "kind": 4
+    },
+    {
+      "name": "WantedRegionDataListAck",
+      "old": 3101,
+      "new": 2259,
+      "kind": 1
+    },
+    {
+      "name": "WetnessReq",
+      "old": 3092,
+      "new": 2797,
+      "kind": 4
+    },
+    {
+      "name": "WorldChattingAck",
+      "old": 2133,
+      "new": 3019,
+      "kind": 1
+    },
+    {
+      "name": "WorldChattingReq",
+      "old": 2363,
+      "new": 2191,
+      "kind": 4
+    },
+    {
+      "name": "WorldMarketPopItemToMyWalletAck",
+      "old": 2688,
+      "new": 2875,
+      "kind": 1
+    },
+    {
+      "name": "WorldMarketPopItemToMyWalletReq",
+      "old": 2174,
+      "new": 3023,
+      "kind": 4
+    },
+    {
+      "name": "WorldMarketPreparePopItemToMyWalletAck",
+      "old": 2448,
+      "new": 2858,
+      "kind": 1
+    },
+    {
+      "name": "WorldMarketPreparePopItemToMyWalletReq",
+      "old": 3079,
+      "new": 2962,
+      "kind": 4
+    },
+    {
+      "name": "WorldMarketPreparePushItemToMyWalletAck",
+      "old": 3097,
+      "new": 2801,
+      "kind": 1
+    },
+    {
+      "name": "WorldMarketPreparePushItemToMyWalletReq",
+      "old": 2490,
+      "new": 3073,
+      "kind": 4
+    },
+    {
+      "name": "WorldMarketPushItemToMyWalletAck",
+      "old": 2634,
+      "new": 2198,
+      "kind": 1
+    },
+    {
+      "name": "WorldMarketPushItemToMyWalletReq",
+      "old": 2228,
+      "new": 2796,
+      "kind": 4
+    },
+    {
+      "name": "WorldMarketTicketNoAck",
+      "old": 2186,
+      "new": 2288,
+      "kind": 1
+    },
+    {
+      "name": "WorldMarketTicketNoReq",
+      "old": 2482,
+      "new": 2486,
+      "kind": 4
+    },
+    {
+      "name": "WorldObserverDisableLoadCompleteReq",
+      "old": 2854,
+      "new": 2617,
+      "kind": 4
+    }
+  ],
+  "unmapped_old_opcodes": [
+    {
+      "name": "RequestFallMustFailedAck",
+      "old": 3045,
+      "kind": 1
+    },
+    {
+      "name": "EscapeAck",
+      "old": 2584,
+      "kind": 1
+    },
+    {
+      "name": "UpdateMercenaryShipCrewAck",
+      "old": 2296,
+      "kind": 1
+    },
+    {
+      "name": "EscapeReq",
+      "old": 2141,
+      "kind": 4
+    },
+    {
+      "name": "UpdateEnableNeedItemListReq",
+      "old": 2686,
+      "kind": 4
+    },
+    {
+      "name": "PushTargetToInventoryReq",
+      "old": 2198,
+      "kind": 4
+    },
+    {
+      "name": "SetShipCrewRegisteredReq",
+      "old": 2097,
+      "kind": 4
+    }
+  ],
+  "added_opcodes": [
+    {
+      "name": "GameEventGiveUpStageAck",
+      "new": 2601,
+      "kind": 1
+    },
+    {
+      "name": "LastStageRetryCountAck",
+      "new": 2470,
+      "kind": 1
+    },
+    {
+      "name": "RegisterLoadGimmickFromOnNavigationPathReq",
+      "new": 2265,
+      "kind": 4
+    },
+    {
+      "name": "UnregisterLoadGimmickFromOnNavigationPathReq",
+      "new": 2961,
+      "kind": 4
+    }
+  ],
+  "new_names": [
+    "ChangeHouseOwnerCharacterAck",
+    "ChangeHouseOwnerCharacterReq",
+    "ChangeHousingObjectOwnerGamePlayTriggerInfoAck",
+    "ClearEnableContentsPhaseUIReq",
+    "CreateAndJoinRoomOnceTimer",
+    "CreatePreemptedTeleportPositionObstacleReq",
+    "CreateRoomAck",
+    "DeactivateLargeScalePlacementAutoSpawnReq",
+    "DeleteStageOceanLevelCandidatePostionReq",
+    "DestroyPreemptedTeleportPositionObstacleReq",
+    "DockingByCreatePlatformPotalFrameEventAck",
+    "ExitManagementOnceTimer",
+    "FactionManagementBuffUpdateAck",
+    "ForceFieldAffectStartEndReq",
+    "GameEventGiveUpStageAck",
+    "GimmickSaveSearchDataAck",
+    "InitializeNpcNameSaveIndexAck",
+    "JoinRoomAck",
+    "JoinRoomOnceTimer",
+    "LargeScalePlacementAutoSpawnReq",
+    "LastStageRetryCountAck",
+    "LeaveRoomAck",
+    "LivingTogetherCharacterCustomizationAck",
+    "LogoutActorByAIWatchdogReq",
+    "ManagementLoadLevelReq",
+    "ManagementRewardedLevelUpdateAck",
+    "ManagementUpdateWorkerAck",
+    "NotifySummonCharacterPhaseAck",
+    "NpcMaritalStateAck",
+    "NpcPushInventoryOnceTimer",
+    "OperationEndReq",
+    "OperationReadyForCompleteAck",
+    "PushCharacterToInventoryReq",
+    "PushHousingObjectToInventoryNak",
+    "PushTargetHousingGimmickToInventoryReq",
+    "ReadyBossRushAck",
+    "ReadyBossRushReq",
+    "RecallAllHousingGimmickAck",
+    "RefreshEnableItemAck",
+    "RefreshEnableItemReq",
+    "RegisterLoadGimmickFromOnNavigationPathReq",
+    "RequestFallFailedAck",
+    "ReviveLoadingFailAck",
+    "ReviveLoadingStartAck",
+    "ReviveLoadingStartReq",
+    "SaveLivingTogetherCharacterCustomizationReq",
+    "SendGameEventUIReq",
+    "SetLoadedHousingObjectSyncDataIdMaxAck",
+    "SetMyPlatformAck",
+    "SetRoughNaviMovementReq",
+    "ShipCrewResetAck",
+    "ShipCrewResetReq",
+    "ShipCrewStationChangeAck",
+    "ShipCrewStationChangeReq",
+    "SpawnMissingManagementWorkersOnceTimer",
+    "SpawnOrUnspawnLivingTogetherNpcAck",
+    "SpawnOrUnspawnLivingTogetherNpcReq",
+    "SyncAndConsumeHousingPathDataAck",
+    "SyncHousingPlacedPathDataListAck",
+    "SyncHousingPlacedPathDataListNak",
+    "SyncHousingPlacedPathDataListReq",
+    "SyncLivingTogetherCharacterCustomizationListAck",
+    "SyncPlayerHouseDataListAck",
+    "SyncStageOceanLevelCandidatePostionReq",
+    "TargetDivorceCheatReq",
+    "TargetProposeCheatReq",
+    "UnregisterLoadGimmickFromOnNavigationPathReq",
+    "UpdateFieldGimmickSaveDataToResetRepeatTimer",
+    "UpdateGimmickProductTimer",
+    "UpdateWorldObserverStateAck",
+    "UseEquipItemCoolTimeByActionAck"
+  ],
+  "metadata_changes": [],
+  "limitations": [
+    "Matching RTTI names identify message semantics, not binary payload compatibility.",
+    "Variable-size payload field layouts must be verified independently before native injection.",
+    "ScopeSenderAck may fragment nested packets: preserve its payload as opaque native-build bytes unless a complete reassembler is implemented.",
+    "Missing old names are not automatically aliased to similar new names.",
+    "This is static evidence; it does not launch, modify, or validate a live game session."
+  ]
+}

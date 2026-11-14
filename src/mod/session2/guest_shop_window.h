@@ -1,5 +1,5 @@
 #pragma once
-// [session2] guest_shop_window = 0 (default) | 1, GUEST, builds 3549 and 3576. The shopkeeper's buy window on the guest.
+// [session2] guest_shop_window = 0 (default) | 1, GUEST, builds 3549, 3576 and 3663 (static). The shopkeeper's buy window on the guest.
 //
 // On the host a shopkeeper's window comes from its scene: "Buy" in the menu sends the StageChartUIControl events
 // (live, 2026-11-06, shop_ui_trace) to window 'NpcStoreBuyView' / control 'selector-stagechart-self': type 9 (the

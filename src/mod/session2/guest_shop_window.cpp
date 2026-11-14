@@ -31,6 +31,18 @@ constexpr Addrs k3549{0x59ECA30, 0xE8BD20, 0xE8C020, 0x71C0E0, 0x6CCA40, 0x71BDF
 // The two functions this module calls directly are checked by their heads below before the first call (kHandleHead3576,
 // kDispatchHead3576; 3549 calls them unchecked, as before).
 constexpr Addrs k3576{0x59EEB08, 0xE8C140, 0xE8C440, 0x71C740, 0x6CD0A0, 0x71C0150};
+// Build 1.0.0.3663 (static, 2026-11-13; never run):
+// - the window's vtable 0x5A6AE58 (RTTI UIGamePlayControlRootNpcBuyStore2, 172 slots as in 3576); its +0x498 =
+//   0xEC5F40 (mov [rbx+0x2F0],ecx at 0xEC5F88, lea rdi,[rcx+0x2F4] at 0xEC5F64), +0x490 = 0xEC6210 (the show: command type
+//   [r9], 0x15 with its kind-0xE parameters at 0xEC6242..0xEC6265);
+// - the dispatcher 0x6F8D30: kDispatchHead3576's 42 bytes, unique in the code section; its five callers pass (rdx =
+//   [actor+0x60], r8 / r9 window / control, [rsp+0x20] stage*, [rsp+0x28] cmd*), three of them with the list
+//   [[[0x7245210]+0x28]+0xA38] (0x6CCBA2..0x6CCBC3, 0x6CD139..0x6CD15D, 0x6D2505..0x6D2529);
+// - the handle 0x748890: kHandleHead3576's 27 bytes, unique; key 0 = the empty handle (0x7488A8..0x7488DF), else
+//   through [[0x72451C0]+0x30] (0x7488F2).
+// The heads of both are 3576's, checked the same way before the first call. The window's +0x130 (shown) and its node
+// +0x08 / +0x100 (the body's name) are 3549's live values, not re-derived.
+constexpr Addrs k3663{0x5A6AE58, 0xEC5F40, 0xEC6210, 0x748890, 0x6F8D30, 0x7245210};
 constexpr uint8_t kHandleHead3576[] = {0x48, 0x89, 0x5C, 0x24, 0x08, 0x48, 0x89, 0x54, 0x24, 0x10, 0x57, 0x48, 0x83, 0xEC,
                                        0x50, 0x48, 0x8B, 0xDA, 0x33, 0xFF, 0x89, 0x7C, 0x24, 0x20, 0x45, 0x85, 0xC0};
 constexpr uint8_t kDispatchHead3576[] = {0x4C, 0x8B, 0xDC, 0x49, 0x89, 0x5B, 0x18, 0x49, 0x89, 0x73, 0x20, 0x89, 0x54, 0x24,
@@ -100,11 +112,11 @@ DWORD WINAPI worker(LPVOID) {
             Sleep(500);
         }
         Sleep(kDelayAfterWorldMs);
-        if (game::is_3576()) {
+        if (game::is_3576() || game::is_3663()) {  // 3663: the same heads (k3663)
             const bool ok = head_is(g_a.handle, kHandleHead3576, sizeof kHandleHead3576) &&
                             head_is(g_a.dispatch, kDispatchHead3576, sizeof kDispatchHead3576);
             if (!ok) {
-                log::error("GuestShopWindow: 0x{:X} / 0x{:X} are not build 3576's expected code; off", g_a.handle,
+                log::error("GuestShopWindow: 0x{:X} / 0x{:X} are not this build's expected code; off", g_a.handle,
                            g_a.dispatch);
                 return 0;
             }
@@ -307,13 +319,16 @@ void guest_shop_window_start(const std::string& mode, bool guest) {
         log::info("GuestShopWindow: guest_shop_window is a guest key; ignored on the host");
         return;
     }
-    if (!game::is_3549() && !game::is_3576()) {
-        log::warn("GuestShopWindow: guest_shop_window is for builds 3549 and 3576 only; off");
+    if (!game::is_3549() && !game::is_3576() && !game::is_3663()) {
+        log::warn("GuestShopWindow: guest_shop_window is for builds 3549, 3576 and 3663 only; off");
         return;
     }
     if (g_started.exchange(true)) return;
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    if (game::is_3576()) {
+    if (game::is_3663()) {
+        g_a = k3663;
+        g_world_slot = 0x72451C0;  // docs/research/port-3663.md (two AOB patterns)
+    } else if (game::is_3576()) {
         g_a = k3576;
         g_world_slot = 0x71C0100;  // core_globals_3576.json (no reader profile for 3576 yet)
     } else if (const auto* profile = game::reader_profile()) {

@@ -167,6 +167,34 @@ constexpr uint8_t kP1Sig3576[] = {0x4C, 0x89, 0x4C, 0x24, 0x20, 0x48, 0x89, 0x54
 constexpr uint8_t kP1Caller3576[] = {0x48, 0x8B, 0x0B, 0x48, 0x8D, 0x54, 0x24, 0x58, 0x4C, 0x8B, 0xC6, 0xE8, 0x71, 0x74,
                                      0xB1, 0xFF};  // 0xBA949F
 
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the 2661 handler moved as a whole function by +0x38ED0 from 3527
+// (.pdata [0xD6C750,0xD6CE61), 3527's size 0x711) and 0xBA7D00 by +0x37F90 ([0xBDFC90,0xBE081E), 3527's size 0xB8E): every
+// fix array is 3527's at old + that shift with the same bytes (kCreateWalk / kCreateType / kVecInit are anchors of
+// anchors_3663.json), but the handler's call to the create (the two functions no longer moved together: new rel32,
+// target 0xBDFC90). P1 by +0x2C5E0 ([0x6EC8A0,0x6ED050), 3527's size 0x7B0; kP1Sig3527 / kP1Caller3527 are anchors): its
+// signature with a new __chkstk rel32; its only caller 0xBE100F in 0xBE0F60 (3527's 0xBA8FD0) with a new rel32 to it. P1
+// reads the stage as on 3527 (0x6EC987 / 0x6EC98E +0x130 / +0x128, stride 0x28 at 0x6EC9CA, node +0xAC at 0x6ECB63, key
+// entry+8 at 0x6ECB72, info +0x50 at 0x6ECA05, the scene key comp+0x2E0 vs stage+0x30 at 0x6ECBB4). No branch lands in
+// P1's patched bytes (rel8 sweep of the function, rel32 scan of both code sections).
+constexpr uint8_t kCreateCall3663[] = {0x4C, 0x8D, 0x4D, 0x80, 0x4C, 0x8D, 0x45, 0x10, 0x48, 0x8D, 0x95, 0x00,
+                                       0x01, 0x00, 0x00, 0x48, 0x8B, 0xC8, 0xE8, 0x2E, 0x30, 0xE7, 0xFF};  // 0xD6CC4B
+const Ctx kFixCode3663[] = {{0xD6C81C, kVecZero3527},   {0xD6CA0B, kVecStore3527},  {0xD6CA20, kVecInit3527},
+                            {0xD6CA47, kVecCount3527},  {0xD6CA60, kVecStride3527}, {0xD6C7C8, kPlayData3527},
+                            {0xD6CC4B, kCreateCall3663}, {0xD6CD05, kVecFree3527},  {0xBDFCB9, kCreateArg3527},
+                            {0xBDFE05, kCreateWalk3527}, {0xBDFE58, kCreateType3527}, {0xBDFEF3, kCreateCopy3527}};
+constexpr uint32_t kHandlerBegin3663 = 0xD6C750, kHandlerEnd3663 = 0xD6CE61, kCreateBegin3663 = 0xBDFC90,
+                   kCreateEnd3663 = 0xBE081E;
+constexpr uint8_t kP1Sig3663[] = {0x4C, 0x89, 0x4C, 0x24, 0x20, 0x48, 0x89, 0x54, 0x24, 0x10, 0x55, 0x53, 0x56, 0x57,
+                                  0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57, 0x48, 0x8D, 0xAC, 0x24, 0x88, 0xEF,
+                                  0xFF, 0xFF, 0xB8, 0x78, 0x11, 0x00, 0x00, 0xE8, 0x08, 0x81, 0x53, 0x04};  // 0x6EC8A0
+constexpr uint8_t kP1Caller3663[] = {0x48, 0x8B, 0x0B, 0x48, 0x8D, 0x54, 0x24, 0x58, 0x4C, 0x8B, 0xC6, 0xE8, 0x81, 0xB8,
+                                     0xB0, 0xFF};  // 0xBE100F
+// The stage fields on 3663: 3527's but `started` (+0x2C4 there). The timeline id moved +0x2D0 -> +0x2E0 (0xBE0FFD; the
+// stage constructor 0x90714C0 writes -1 there at 0x9071509), so the block from +0x2C4 on is taken as moved +0x10: +0x2D4
+// [E: 0xBDA43E reads a byte there, only ever logged here]. +0x69 at 0xBDA399 (+0x68 next to it [E]); owner +0xA0 (the
+// owner lookup 0x228876B, observer_scene_copy's bytes); binds / info / name as P1 and SetInteraction 0x25CFA60 read them.
+constexpr gsf::StageOffsets kStage3663{0x68, 0x69, 0xA0, 0x128, 0x130, 0x2D4, 0x50, 0x1B8};
+
 enum ProbeId : uint8_t { kP1, kP21, kP22, kP3, kP4, kProbes };
 struct ProbeDef {
     ProbeId id;
@@ -182,8 +210,9 @@ struct ProbeDef {
 
 uintptr_t g_base = 0;
 // The build and its stage fields: written by guest_seq_foreign_start before any hook or thread.
-bool g_3527 = false;  // 3527's layout (3527, 3549, 3576)
+bool g_3527 = false;  // 3527's layout (3527, 3549, 3576, 3663: the same handler frames)
 bool g_3576 = false;  // 3576's addresses
+bool g_3663 = false;  // 3663's addresses (and kStage3663)
 const gsf::StageOffsets* g_so = &gsf::kStage2976;
 uintptr_t g_world_slot = off::kWorldSystemSlot;
 std::atomic<bool> g_probe{false};
@@ -702,8 +731,8 @@ bool read_pdata(std::vector<RUNTIME_FUNCTION>& out, std::string& why) {
     if (g_base != off::kImageBase || !game::safe_read(g_base, &dos, sizeof dos) || dos.e_magic != IMAGE_DOS_SIGNATURE ||
         dos.e_lfanew <= 0 || dos.e_lfanew > 0x100000 ||
         !game::safe_read(g_base + static_cast<uint32_t>(dos.e_lfanew), &nt, sizeof nt) ||
-        nt.Signature != IMAGE_NT_SIGNATURE || !(game::legacy_layout() || g_3576)) {
-        why = "not build 1.0.0.2976 nor 1.0.0.3527 (base / PE timestamp)";
+        nt.Signature != IMAGE_NT_SIGNATURE || !(game::legacy_layout() || g_3576 || g_3663)) {
+        why = "not build 1.0.0.2976, 3527, 3549, 3576 nor 3663 (base / PE timestamp)";
         return false;
     }
     const auto pd = nt.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXCEPTION];
@@ -725,12 +754,14 @@ bool has_function(const std::vector<RUNTIME_FUNCTION>& pdata, uint32_t begin, ui
 
 bool install_fix(std::span<const gad::Section> secs, const std::vector<RUNTIME_FUNCTION>& pdata) {
     std::string why;
-    if (g_3576   ? !has_function(pdata, kHandlerBegin3576, kHandlerEnd3576) || !has_function(pdata, kCreateBegin3576, kCreateEnd3576)
+    if (g_3663   ? !has_function(pdata, kHandlerBegin3663, kHandlerEnd3663) || !has_function(pdata, kCreateBegin3663, kCreateEnd3663)
+        : g_3576 ? !has_function(pdata, kHandlerBegin3576, kHandlerEnd3576) || !has_function(pdata, kCreateBegin3576, kCreateEnd3576)
         : g_3527 ? !has_function(pdata, kHandlerBegin3527, kHandlerEnd3527) || !has_function(pdata, kCreateBegin3527, kCreateEnd3527)
                  : !has_function(pdata, kHandlerBegin, kHandlerEnd) || !has_function(pdata, kCreateBegin, kCreateEnd)) {
         why = ".pdata of 0xC05BB0 / 0xA9CA40 not the expected";
     }
-    for (const Ctx& c : g_3576   ? std::span<const Ctx>(kFixCode3576)
+    for (const Ctx& c : g_3663   ? std::span<const Ctx>(kFixCode3663)
+                        : g_3576 ? std::span<const Ctx>(kFixCode3576)
                         : g_3527 ? std::span<const Ctx>(kFixCode3527)
                                  : std::span<const Ctx>(kFixCode)) {
         if (!why.empty()) break;
@@ -773,6 +804,10 @@ void install_probes(std::span<const gad::Section> secs, const std::vector<RUNTIM
         {kP1, 0x6C0920, 5, 0x6C0920, 0x6C10D0, kP1Sig3576, {{0xBA949F, kP1Caller3576}},
          "P1 0x6C0920 entry (scene start, build 3576)"},
     };
+    const ProbeDef defs3663[] = {
+        {kP1, 0x6EC8A0, 5, 0x6EC8A0, 0x6ED050, kP1Sig3663, {{0xBE100F, kP1Caller3663}},
+         "P1 0x6EC8A0 entry (scene start, build 3663)"},
+    };
     const ProbeDef defs2976[] = {
         {kP1, 0x602940, 5, 0x602940, 0x6030C8, kP1Sig, {}, "P1 0x602940 entry (scene start)"},
         {kP21, 0x601470, 5, 0x601470, 0x601C04, kP21Sig, {}, "P2 vf21 0x601470 entry (SequencerControl start)"},
@@ -789,7 +824,8 @@ void install_probes(std::span<const gad::Section> secs, const std::vector<RUNTIM
     if (g_3527 && (probe || fix)) {
         refused += " P4 and, with guest_seq_foreign_probe, P2 / P3 (not ported to build 3527: read-only, no effect on the scenes);";
     }
-    for (const ProbeDef& d : g_3576   ? std::span<const ProbeDef>(defs3576)
+    for (const ProbeDef& d : g_3663   ? std::span<const ProbeDef>(defs3663)
+                             : g_3576 ? std::span<const ProbeDef>(defs3576)
                              : g_3527 ? std::span<const ProbeDef>(defs3527)
                                       : std::span<const ProbeDef>(defs2976)) {
         const bool wanted = probe || (fix && (d.id == kP1 || d.id == kP4)) || (present && d.id == kP1);
@@ -855,11 +891,14 @@ bool guest_seq_foreign_p1_hooked() noexcept { return g_on[kP1].load(std::memory_
 
 void guest_seq_foreign_start(bool probe, const std::string& player, const std::string& route_mode, bool present) {
     g_3576 = game::current_build() == game::Build::v3576;
-    g_3527 = game::current_build() == game::Build::v3527 || g_3576;
+    g_3663 = game::current_build() == game::Build::v3663;
+    g_3527 = game::current_build() == game::Build::v3527 || g_3576 || g_3663;
     if (g_3527) {
-        g_so = &gsf::kStage3527;
+        g_so = g_3663 ? &kStage3663 : &gsf::kStage3527;
         if (const auto* profile = game::reader_profile()) g_world_slot = profile->world_system;
         if (g_3576) g_world_slot = 0x71C0100;  // core_globals_3576.json
+        // Build 1.0.0.3663 (static, 2026-11-13; never run): WorldSystem, profile_s2.h's rva3663().
+        if (g_3663) g_world_slot = 0x72451C0;
     }
     bool bad = false;
     const gsf::Mode m = gsf::parse_mode(player, &bad);

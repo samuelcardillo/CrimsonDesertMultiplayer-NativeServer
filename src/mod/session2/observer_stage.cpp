@@ -616,6 +616,13 @@ constexpr uint8_t kDeleteBytes3527[] = {0x48, 0x89, 0x5C, 0x24, 0x08, 0x4C, 0x89
 // callback reads are observer_scene_copy's to verify (observer_scene_copy_verify_current), as on 3527.
 constexpr uintptr_t kDelete3576 = 0x2CDB7D0;
 constexpr uintptr_t kWorldSlot3576 = 0x71C0100;  // reader_profile() may be null on 3576
+// Build 1.0.0.3663 (static, 2026-11-13; never run): the serializer is 0x2D42250 (3527's 0x2CDAB60 + 0x676F0; .pdata to
+// 0x2D42725), kDeleteBytes3527 at its entry; it is the only function that writes DeleteSequencerAck's 3663 native
+// (`mov word [r14],0xA63` at 0x2D4239C; 2292 -> 2659, opcode_mapping_3576_3663.json), and DeleteSequencer 0x2B393C0
+// calls it at 0x2B39783 (the exe's only rel32 call to it; observer_scene_copy.cpp kLayout3663 has the same 0x2D42250).
+// World slot 0x72451C0 (core_globals_3663.json).
+constexpr uintptr_t kDelete3663 = 0x2D42250;
+constexpr uintptr_t kWorldSlot3663 = 0x72451C0;
 
 void on_delete_3527(safetyhook::Context& ctx) noexcept {
     observer_scene_copy_on_delete(ctx.rcx, ctx.r8, ctx.r9, ctx.rdi, ctx.r13, ctx.rsp);
@@ -671,15 +678,20 @@ void stage_thread_3527() {
         return;
     }
     const bool b3576 = game::current_build() == game::Build::v3576;
+    const bool b3663 = game::current_build() == game::Build::v3663;
     const auto* profile = game::reader_profile();
-    const uintptr_t world_slot = b3576 ? kWorldSlot3576 : profile ? profile->world_system : 0;
+    const uintptr_t world_slot = b3663   ? kWorldSlot3663
+                                 : b3576 ? kWorldSlot3576
+                                 : profile ? profile->world_system
+                                           : 0;
     for (int i = 0; world_slot && i < 1200; ++i) {
         uintptr_t world = 0;
         if (peek(g_base + world_slot, world) && world) break;
         Sleep(500);
     }
     if (!observer_scene_copy_verify_current(g_base)) return;
-    if (!p8_install_mid(g_base, g_secs, b3576 ? kDelete3576 : kDelete3527, kPatch5, kDeleteBytes3527, on_delete_3527,
+    if (!p8_install_mid(g_base, g_secs, b3663 ? kDelete3663 : b3576 ? kDelete3576 : kDelete3527, kPatch5,
+                        kDeleteBytes3527, on_delete_3527,
                         g_hooks[kKDelete], "ObserverStage", kKindName[kKDelete])) {
         observer_scene_copy_disable("the 2810 hook is not installed");
         return;
@@ -700,7 +712,8 @@ void stage_thread_3527() {
 
 DWORD WINAPI stage_thread(LPVOID) {
     g_base = reinterpret_cast<uintptr_t>(GetModuleHandleW(nullptr));
-    if (game::current_build() == game::Build::v3527 || game::current_build() == game::Build::v3576) {
+    if (game::current_build() == game::Build::v3527 || game::current_build() == game::Build::v3576 ||
+        game::current_build() == game::Build::v3663) {
         stage_thread_3527();
         return 0;
     }

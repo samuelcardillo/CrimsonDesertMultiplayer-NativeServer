@@ -168,6 +168,35 @@ inline constexpr uintptr_t kFindTree3576 = 0x53AD60;
 inline constexpr uintptr_t kClientRemoteCatchVtbl3576 = 0x59188F0;
 inline constexpr uintptr_t kMainThreadId3576 = 0x6EA5C78;
 
+// ---------------------------------------------------------------- build 1.0.0.3663 (static, 2026-11-13; never run)
+
+// From RTTI: RemoteCatchFunctions vtable 0x5B19188 (vtable_map_3576_3663.json), slot 2 = 0x138B170 (kVf2Head, .pdata 0x15C
+// bytes; the release call 0x138B26C -> 0x68F130, remote_rope_logic.h; f6 still +0xFA, 0x138B203 after [+0x40] / [+0x88]).
+// Its call 0x138B2A1 (+0x131 as before; only its rel32 differs) -> the apply 0x139F550 (kApplyHead, 0x5B4 bytes, only
+// caller), whose calls give FUN_1405b1600 = 0x699130 (+0x83, kGetTargetHead) and FUN_140491ac0 = 0x566360 (+0x97,
+// kFindTreeHead; its [obj+0x210] walk 0x56637D) and, last, SetBend 0x37E33D0 (kSetBendHead; its only caller 0x139FAB2,
+// rdx = state+0x3C8, xmm2 = state+0x3C0 (0x139FAA0 / 0x139FAA8); the same writes +0x2A8 / +0x2B0, +0x2AC, +0x2A4, +0x2B4,
+// +0x59). The tick 0x6845E0 (kTickHead; of the three functions with that head in 0x660000..0x6A0000 the only one that
+// reads [comp+0xCF8], 0x68471A): its callers are call 0x9B9437 and jmp 0x9BDEF0, as before. ClientRemoteCatchActorComponent
+// 0x5994CC8 (RTTI; vf158 = the release 0x68F130). The main thread's id 0x6F29B54: the release's `cmp [rip],eax` at
+// 0x68F19D (231 RIP references). The slot state +0xA4C (remote_rope_logic.h's 3663 evidence).
+inline constexpr uintptr_t kCodeEnd3663 = 0x5613000;
+inline constexpr uintptr_t kVf23663 = 0x138B170;
+inline constexpr uintptr_t kVf2Slot3663 = 0x5B19198;  // vtable 0x5B19188 slot 2
+inline constexpr uintptr_t kApply3663 = 0x139F550;
+inline constexpr uintptr_t kApplyCall3663 = 0x138B2A1;
+inline constexpr uint8_t kApplyCallBytes3663[5] = {0xE8, 0xAA, 0x42, 0x01, 0x00};
+inline constexpr uintptr_t kSetBend3663 = 0x37E33D0;
+inline constexpr uintptr_t kSetBendCall3663 = 0x139FAB2;
+inline constexpr uint8_t kSetBendCallBytes3663[5] = {0xE8, 0x19, 0x39, 0x44, 0x02};
+inline constexpr uintptr_t kTick3663 = 0x6845E0;
+inline constexpr uintptr_t kTickJump3663 = 0x9BDEF0;
+inline constexpr uint8_t kTickJumpBytes3663[5] = {0xE9, 0xEB, 0x66, 0xCC, 0xFF};
+inline constexpr uintptr_t kGetTarget3663 = 0x699130;
+inline constexpr uintptr_t kFindTree3663 = 0x566360;
+inline constexpr uintptr_t kClientRemoteCatchVtbl3663 = 0x5994CC8;
+inline constexpr uintptr_t kMainThreadId3663 = 0x6F29B54;
+
 // As the natives (0x5947B4, 0x5A5370, FUN_1405b1600): a scene id is set when one of its first three dwords is.
 inline bool scene_set(const uint8_t* s) {
     uint32_t d[3];

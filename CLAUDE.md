@@ -23,10 +23,11 @@ se escribió sobre la build 2976: sus direcciones no valen en 3527, pero las exp
     cargar ninguna partida. La prueba entre dos PC sigue siendo la final (red real, túnel por Steam, cargas
     a distinta velocidad).
 - Juego: `D:\SteamLibrary\steamapps\common\Crimson Desert\bin64\CrimsonDesert.exe`,
-  versión 1.0.0.3549 desde el 2026-11-05, PE timestamp `0x6AEB7D59`, base fija `0x140000000`. Cualquier
-  offset o firma vale solo para esta build; anota la build junto a cada hallazgo.
-  El código sigue admitiendo 3527 (`0x6AEA07A6`; misma distribución salvo la sección RWX: `Build::v3527` y `game::is_3549()`)
-  y 2976 (`0x6AB28F00`) con tablas por build. Steam puede actualizar el juego en cualquier momento: si el mod se
+  versión 1.0.0.3663 desde el 2026-11-13 (PE timestamp `0x6AF5D198`), portada esa noche (estático por módulos;
+  en vivo: unión y vuelta; `docs/research/port-3663.md`). Base fija `0x140000000`. Cualquier offset o firma vale solo para su
+  build; anota la build junto a cada hallazgo.
+  El código admite también 3576 (`0x6AED2E85`), 3549 (`0x6AEB7D59`), 3527 (`0x6AEA07A6`; misma
+  distribución que 3549 salvo la sección RWX: `Build::v3527` y `game::is_3549()`) y 2976 (`0x6AB28F00`) con tablas por build. Steam puede actualizar el juego en cualquier momento: si el mod se
   desactiva, compara con `python tools/porting/build_delta.py`.
 - Las partidas están en `%LOCALAPPDATA%\Pearl Abyss\CD\save`. Haz una copia en
   `backups/` antes de cualquier prueba que **escriba** en la memoria del juego.
@@ -38,10 +39,16 @@ se escribió sobre la build 2976: sus direcciones no valen en 3527, pero las exp
 - Compilar y pasar tests: `.\scripts\build.ps1` (busca solo las VS Build Tools; cmake no está en el PATH).
 - Instalar en el juego: `.\scripts\deploy.ps1`; desinstalar con `-Remove`. Falla si el juego está abierto.
 - Si cambias `tools/porting/configs/cdmp.3527-2inst-*.ini`, regenera el kit de dos PC: `python tools/porting/make_steam_kit.py`.
+- Launcher de jugadores (`cdmp_launcher.exe`, `docs/LAUNCHER.md`): instala el mod, lanza con o sin él y elige con quién.
+  Para probarlo sin tocar el juego: `--game-dir <bin64 falso> --data-dir <carpeta> --bundle <kit> --no-launch`.
+  `scripts\package_coop.ps1 -Suffix 3663-vNN` lo mete en el kit junto con `package.txt`.
 - Prueba completa sin juego: arranca `cdmp_peer.exe` y luego `cdmp_host.exe <ruta\cdmp.asi> <segundos>`.
   `LoadLibrary` falla con rutas largas (error 206), así que usa `build\e2e\`.
 - Prueba en el juego: arranca `cdmp_peer`, lanza `steam://rungameid/3321460` y lee `bin64\cdmp.log`.
   El juego ignora WM_CLOSE: si está en la pantalla de título, ciérralo con `Stop-Process`.
+- Prueba automática con dos copias (`tools/porting/livetest/README.md`): `ui.ps1` (entrada solo a la ventana del
+  juego), `walk.py` / `shipwalk.py` (andar leyendo la posición en vivo) y `shipsession.sh` (del arranque al anfitrión
+  al timón con el invitado en cubierta). Hopkins (barco en Vellua) depende de la postura, no de la hora.
 
 ## Reglas de ingeniería
 - Nada de inline hooks en direcciones que estén a mitad de una función. Para puntos

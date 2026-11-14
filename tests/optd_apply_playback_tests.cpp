@@ -442,8 +442,10 @@ int wmain(int argc, wchar_t** argv) {
         const std::filesystem::path path(argv[2]);
         if (!std::filesystem::exists(path)) { std::printf("SKIP: installed 3527 executable is absent\n"); return 77; }
         // 1.0.0.3576 (Steam, 2026-11-06): a new layout; this replay is 3527 / 3549 code and is not ported to it.
-        if (std::filesystem::file_size(path) == 326872984) {
-            std::printf("SKIP: the installed executable is 1.0.0.3576; this replay is 3527 / 3549 code\n");
+        // 1.0.0.3663 (Steam, 2026-11-13): another new layout, the same reason.
+        if (const auto size = std::filesystem::file_size(path); size == 326872984 || size == 335440280) {
+            std::printf("SKIP: the installed executable is 1.0.0.%s; this replay is 3527 / 3549 code\n",
+                        size == 326872984 ? "3576" : "3663");
             return 77;
         }
         PeReader pe(path);

@@ -65,8 +65,15 @@ void test_roundtrip() {
         s.health = 254.5f;
         s.health_max = 300.0f;
         s.flags = proto::kStateSynthetic;
+        s.self_key = 0xA0100066;
+        s.anchor = 0xB010083F;
+        s.anchor_pos = {-1.46f, 2.97f, 4.4f};
+        s.anchor_rot = {0.0f, 1.0f, 0.0f, 0.0f};
         auto p = proto::decode(proto::encode(make(s)));
         auto* d = p ? std::get_if<proto::PlayerState>(&p->body) : nullptr;
+        CHECK(d && d->self_key == 0xA0100066 && d->anchor == 0xB010083F);
+        CHECK(d && d->anchor_pos.x == -1.46f && d->anchor_pos.y == 2.97f && d->anchor_pos.z == 4.4f);
+        CHECK(d && d->anchor_rot.y == 1.0f && d->anchor_rot.w == 0.0f);
         CHECK(d && d->pos.x == 1.5f && d->pos.y == -2.0f && d->pos.z == 3.25f);
         CHECK(d && d->health == 254.5f && d->health_max == 300.0f);
         CHECK(d && d->rot.y == 0.7071f && d->rot.w == 0.7071f);
@@ -108,6 +115,9 @@ void test_rejects_bad_input() {
     proto::PlayerState inf_state;
     inf_state.rot.w = std::numeric_limits<float>::infinity();
     CHECK(!proto::decode(proto::encode(make(inf_state))));
+    proto::PlayerState nan_anchor;
+    nan_anchor.anchor_pos.y = std::numeric_limits<float>::quiet_NaN();
+    CHECK(!proto::decode(proto::encode(make(nan_anchor))));
 
     // Long names are truncated on encode, and non-printable bytes sanitised.
     auto p = proto::decode(proto::encode(make(proto::Hello{std::string(100, 'a') , 1})));
